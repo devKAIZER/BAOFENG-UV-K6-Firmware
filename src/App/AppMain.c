@@ -289,6 +289,7 @@ extern void KeyProcess_Main(U8 keyEvent)
             BeepOut(BEEP_FMSW1);
             break;
         case KEYID_BAND:
+            Radio_SwitchBand();
             break;
         case KEYID_STAR:
             Radio_ReverseSwitch();
