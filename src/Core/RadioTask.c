@@ -204,6 +204,11 @@ extern void RxReset(void)
 
 extern void Radio_SwitchBand(void)
 {
+    if (g_ChannelVfoInfo.chVfoInfo[g_ChannelVfoInfo.switchAB].chVfoMode == CHAN_MODE)
+    {
+        return;
+    }
+
     U32 freq;
     U32 freqBand;
     U32 newFreq;
@@ -337,9 +342,6 @@ extern void RF_TxRoger(void)
         Rfic_EnterMDC1200Mode();
         Rfic_MDC1200ToneTx();
         Rfic_ExitMDC1200Mode();
-    }
-    else
-    {
     }
 
     if (g_radioInform.tailSwitch)
