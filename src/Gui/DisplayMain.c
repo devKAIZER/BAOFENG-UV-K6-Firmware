@@ -12,7 +12,7 @@ extern void DisplayProgrom(void)
     LCD_DisplayText(42,24, "Program...", FONTSIZE_16x16,LCD_DIS_NORMAL);
     LCD_UpdateFullScreen();
 
-    //¿ªÆô°´¼ü±³¹âµÆ
+    //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     LCD_BackLightSetOn();
 }
 
@@ -42,28 +42,28 @@ extern void DisplayStateBar(void)
 
     reverse = g_ChannelVfoInfo.chVfoInfo[g_ChannelVfoInfo.switchAB].reverseFlag;
 
-    //ÏÔÊ¾Éù¿Ø·¢ÉäÍ¼±ê
+    //ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½Ø·ï¿½ï¿½ï¿½Í¼ï¿½ï¿½
     if(g_radioInform.voxSwitch)
     {
         LCD_DisplayPicture(0,34,ICON_VOX_SIZEX,ICON_VOX_SIZEY,iconVox,LCD_DIS_NORMAL);
     }
 
-    //ÏÔÊ¾Ë«ÆµÊØºòÍ¼±ê
+    //ï¿½ï¿½Ê¾Ë«Æµï¿½Øºï¿½Í¼ï¿½ï¿½
     if(g_radioInform.dualRxFlag == 1)
     {
         LCD_DisplayPicture(0,67,ICON_DUAL_SIZEX,ICON_DUAL_SIZEY,iconDual,LCD_DIS_NORMAL);
     }
 
-    //¸üÐÂÏÔÊ¾¼üÅÌËø¶¨Í¼±ê
+    //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í¼ï¿½ï¿½
     DisplayUpdateLockFlag(0);
 
-    //ÏÔÊ¾²àÒô¿ª¹ØÍ¼±ê
+    //ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í¼ï¿½ï¿½
     if(g_radioInform.dtmfTone)
     {
         LCD_DisplayPicture(0,17,ICON_DTMF_SIZEX,ICON_DTMF_SIZEY,iconDTMF,LCD_DIS_NORMAL);
     }
 
-    /*µ¹Æµ¹¦ÄÜ±êÖ¾*/
+    /*ï¿½ï¿½Æµï¿½ï¿½ï¿½Ü±ï¿½Ö¾*/
     if(reverse == 2)
     {
         LCD_DisplayPicture(0,1,ICON_UNNET_SIZEX,ICON_UNNET_SIZEY,iconUnNet,LCD_DIS_NORMAL);
@@ -186,11 +186,11 @@ extern void DisplayUpdateChFlag(U8 disAB)
     else
     {
         if(disAB == 0)
-        {//ÏÔÊ¾ÔÚ²Ù×÷½çÃæ
+        {//ï¿½ï¿½Ê¾ï¿½Ú²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
             posY = 29;
         }
         else
-        {//B¶ÎÔÚÖ÷½çÃæÊ±ÏÔÊ¾Í¼±êÎ»ÖÃ
+        {//Bï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½Ê¾Í¼ï¿½ï¿½Î»ï¿½ï¿½
             posY = 57;
         }
     }
@@ -204,7 +204,7 @@ extern void DisplayUpdateChFlag(U8 disAB)
         LCD_DisplayPicture(posY,46,ICON_DTXPWR_SIZEX,ICON_DTXPWR_SIZEY,iconPowerH,0);
     }
     
-    /*ÏÔÊ¾¿íÕ­´ø±êÖ¾*/
+    /*ï¿½ï¿½Ê¾ï¿½ï¿½Õ­ï¿½ï¿½ï¿½ï¿½Ö¾*/
     if(g_ChannelVfoInfo.chVfoInfo[disAB].wideNarrow)
     {
         LCD_DisplayPicture(posY,65,ICON_NARROW_SIZEX,ICON_NARROW_SIZEY,iconNarrow,LCD_DIS_NORMAL);
@@ -214,13 +214,13 @@ extern void DisplayUpdateChFlag(U8 disAB)
         LCD_ClearArea(posY,65,ICON_NARROW_SIZEX,ICON_NARROW_SIZEY);
     }
 				
-    /*ÏÔÊ¾AM±êÖ¾*/
+    /*ï¿½ï¿½Ê¾AMï¿½ï¿½Ö¾*/
     if(g_ChannelVfoInfo.chVfoInfo[disAB].rx->frequency >= 10800000 && g_ChannelVfoInfo.chVfoInfo[disAB].rx->frequency < 13600000 )
     {
         LCD_ClearArea(posY,85,ICON_QT_SIZEX,ICON_QT_SIZEY);
         LCD_DisplayPicture(posY,85,ICON_AM_SIZEX,ICON_AM_SIZEY,iconAM,LCD_DIS_NORMAL);
         
-        //AMÄ£Ê½ÏÂ ÑÇÒôÆµ ÌøÆµ µ¹Æµ¾ùÎÞÐ§
+        //AMÄ£Ê½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Æµ ï¿½ï¿½Æµ ï¿½ï¿½Æµï¿½ï¿½ï¿½ï¿½Ð§
         LCD_ClearArea(posY,55,ICON_ADDSUB_SIZEX,ICON_ADDSUB_SIZEY);
         return;
     }
@@ -236,7 +236,7 @@ extern void DisplayUpdateChFlag(U8 disAB)
         }
     }
 
-    /*ÏÔÊ¾ÑÇÒôÆµÀàÐÍ*/
+    /*ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½Æµï¿½ï¿½ï¿½ï¿½*/
     if(g_rfState == RF_RX)
     {
         ctsType = g_ChannelVfoInfo.chVfoInfo[disAB].rx->dcsCtsType;
@@ -259,7 +259,7 @@ extern void DisplayUpdateChFlag(U8 disAB)
         LCD_DisplayPicture(posY,26,ICON_DCS_SIZEX,ICON_DCS_SIZEY,iconDcs,LCD_DIS_NORMAL);
 	}
 
-	/*ÏÔÊ¾Æµ²îÆµÂÊ*/
+	/*ï¿½ï¿½Ê¾Æµï¿½ï¿½Æµï¿½ï¿½*/
 	if(g_ChannelVfoInfo.chVfoInfo[disAB].freqDir == 1)
 	{
 		LCD_DisplayPicture(posY,55,ICON_ADDSUB_SIZEX,ICON_ADDSUB_SIZEY,iconAdd,LCD_DIS_NORMAL);
@@ -273,7 +273,7 @@ extern void DisplayUpdateChFlag(U8 disAB)
 		LCD_ClearArea(posY,55,ICON_ADDSUB_SIZEX,ICON_ADDSUB_SIZEY);
 	}
 
-	/*ÏÔÊ¾ÌøÆµ±êÖ¾*/
+	/*ï¿½ï¿½Ê¾ï¿½ï¿½Æµï¿½ï¿½Ö¾*/
 	if(g_ChannelVfoInfo.chVfoInfo[disAB].fhssFlag)
 	{
 		LCD_DisplayPicture(posY,75,ICON_FHSS_SIZEX,ICON_FHSS_SIZEY,iconFhss,LCD_DIS_NORMAL);
@@ -367,7 +367,7 @@ extern void DisplayChannelMsg(U8 disMode,U8 disAB, U8 txOrRx)
         }
         else
         {
-            LCD_DisplayText(ypox,30,(U8 *)((g_radioInform.language == LANG_CN)?"   Î´ÃüÃû   ":"   No Name  "),FONTSIZE_12x12,LCD_DIS_NORMAL);
+            LCD_DisplayText(ypox,30,(U8 *)((g_radioInform.language == LANG_CN)?"   Î´ï¿½ï¿½ï¿½ï¿½   ":"   No Name  "),FONTSIZE_12x12,LCD_DIS_NORMAL);
         }
 				
         if(txOrRx == DIS_TX)
@@ -380,12 +380,12 @@ extern void DisplayChannelMsg(U8 disMode,U8 disAB, U8 txOrRx)
         }
     }
     else if(disMode == CH_DISNAME && FillChannelName2Buf(g_ChannelVfoInfo.chVfoInfo[disAB].channelName,nameBuf) == TRUE)
-    {//ÏÔÊ¾ÐÅµÀÃû³Æ
+    {//ï¿½ï¿½Ê¾ï¿½Åµï¿½ï¿½ï¿½ï¿½ï¿½
         LCD_DisplayText(ypox,30,(U8 *)nameBuf,FONTSIZE_16x16,LCD_DIS_NORMAL);
     }
     else if(disMode == CH_DISCHNUM)
     {
-        //Çå³ýÏÔÊ¾ÇøÓòµÄÊý¾Ý
+        //ï¿½ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         memset(nameBuf, ' ', 12);
 		nameBuf[12] = '\0';
         LCD_DisplayText(ypox-2,30,(U8 *)nameBuf,FONTSIZE_16x16,LCD_DIS_NORMAL);
@@ -394,7 +394,7 @@ extern void DisplayChannelMsg(U8 disMode,U8 disAB, U8 txOrRx)
 	    LCD_DisplayBoldNum12X13(ypox,30,(U8 *)nameBuf);
     }
     else
-    {//ÏÔÊ¾ÐÅµÀÆµÂÊ
+    {//ï¿½ï¿½Ê¾ï¿½Åµï¿½Æµï¿½ï¿½
 		if(txOrRx == DIS_TX)
         {
             DisplayCurFreq(30,ypox,g_ChannelVfoInfo.chVfoInfo[disAB].tx->frequency);
@@ -404,7 +404,7 @@ extern void DisplayChannelMsg(U8 disMode,U8 disAB, U8 txOrRx)
             DisplayCurFreq(30,ypox,g_ChannelVfoInfo.chVfoInfo[disAB].rx->frequency);
         }
     }
-    //ÏÔÊ¾ÐÅµÀ±êÖ¾
+    //ï¿½ï¿½Ê¾ï¿½Åµï¿½ï¿½ï¿½Ö¾
     DisplayUpdateChFlag(disAB);
 }
 
@@ -514,10 +514,10 @@ extern void DisplayHomePage(void)
 {
     LCD_ClearFullBuf();
 
-    //ÏÔÊ¾×´Ì¬À¸
+    //ï¿½ï¿½Ê¾×´Ì¬ï¿½ï¿½
     DisplayStateBar();
 
-    //ÏÔÊ¾Ö÷½çÃæ
+    //ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     DisplayRadioHome();
 }
 
@@ -570,20 +570,21 @@ extern void DisplayInputVfoFreq(void)
     U8 i,j,posY;
     U8 buf[10];
     U8 fontBuf[3];
-	 
+    
     memset(&buf[0],'-',9);
     buf[3] = '.';
     j = 0;
+
     for(i=0;i<g_inputbuf.len;i++)
     {
         if(i == 3)
         {
-           j++;
+            j++;
         }
         buf[j++] = g_inputbuf.buf[i];
     }
+
     buf[9] = 0;
-    
 
     memcpy(fontBuf,&buf[7],2);
     buf[7] = 0;	
@@ -597,16 +598,16 @@ extern void DisplayInputVfoFreq(void)
     {
         if(g_ChannelVfoInfo.switchAB)
         {
-    	    posY = 43;
+            posY = 43;
         }
         else
         {
-    		posY = 15;
+            posY = 15;
         }
     }
 
-    LCD_DisplayBoldNum12X13(posY,30,(U8 *)buf);
-    LCD_DisplayBoldNum6X7(posY + 6,115,fontBuf);
+    LCD_DisplayBoldNum12X13(posY - 1, 30, (U8 *)buf);
+    LCD_DisplayBoldNum6X7(posY + 5, 115, fontBuf);
 
     LCD_UpdateWorkAre();
 }
@@ -619,7 +620,7 @@ extern void DisplayTxSingalFlag(U8 level)
         return;
     }
     if(g_radioInform.dualRxFlag == 0)
-    {//µ¥ÏÔÄ£Ê½
+    {//ï¿½ï¿½ï¿½ï¿½Ä£Ê½
         iconY = 55;
         flagY = 39;
     }
@@ -715,7 +716,7 @@ extern void DisplaySingalFlag(U8 level,U8 UpdateF)
     }
     
     if(g_radioInform.dualRxFlag == 0)
-    {//µ¥ÏÔÄ£Ê½
+    {//ï¿½ï¿½ï¿½ï¿½Ä£Ê½
         iconY = 55;
         flagY = 39;
     }
@@ -735,7 +736,7 @@ extern void DisplaySingalFlag(U8 level,U8 UpdateF)
     if(level == 0xff)
     {
         if(g_radioInform.dualRxFlag == 0)
-        {//µ¥ÏÔÄ£Ê½
+        {//ï¿½ï¿½ï¿½ï¿½Ä£Ê½
             LCD_ClearArea(iconY,1,ICON_SINGAL_SIZEX,ICON_SINGAL_SIZEY);
             LCD_ClearArea(flagY,13,ICON_SINGALTX_SIZEX,ICON_SINGALTX_SIZEY);
         }
@@ -777,7 +778,7 @@ extern void DisplaySingalFlag(U8 level,U8 UpdateF)
 }
 
 
-// Ìî³äºô½Ð·½Ãû³Æ
+// ï¿½ï¿½ï¿½ï¿½ï¿½Ð·ï¿½ï¿½ï¿½ï¿½ï¿½
 U8 FillAniName(String *pDisName, String *pId)
 {
     U8 i,j;
@@ -872,13 +873,13 @@ extern void DisplayAniMsg(U8 *pCallerId, U8 *pCalledId)
 }
 
 /*********************************************************************
-* º¯ Êý Ãû: ClearAniDisplay
-* ¹¦ÄÜÃèÊö: Çå³ýÉí·ÝÂëÏÔÊ¾ÐÅÏ¢
-* È«¾Ö±äÁ¿: 
-* ÊäÈë²ÎÊý£º
-* Êä³ö²ÎÊý:
-* ·µ¡¡¡¡»Ø:
-* Ëµ    Ã÷£º
+* ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½: ClearAniDisplay
+* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½: ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½Ï¢
+* È«ï¿½Ö±ï¿½ï¿½ï¿½: 
+* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:
+* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:
+* Ëµ    ï¿½ï¿½ï¿½ï¿½
 ***********************************************************************/
 extern void ClearAniDisplay(void)
 {
@@ -886,12 +887,12 @@ extern void ClearAniDisplay(void)
     {
         if(dtmfInfo.flagDtmfMatch == 2 || (g_radioInform.dualRxFlag == 0))
         {
-            //Çå³ýA¶ÎÏÔÊ¾ÇøÓò
+            //ï¿½ï¿½ï¿½Aï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½
             LCD_ClearArea(11, 0, 128,32);
         }
         else
         {
-            //Çå³ýB¶ÎÏÔÊ¾ÇøÓò
+            //ï¿½ï¿½ï¿½Bï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½
             LCD_ClearArea(39, 0, 128,32);
         }
         dtmfInfo.flagDtmfMatch = 0;
@@ -922,18 +923,18 @@ extern void DisplaySoftVersion(void)
     len = sprintf((String *)&disbuf,"%sNRF",strModelType);  
     LCD_DisplayText(4,60-(len<<2),disbuf,FONTSIZE_16x16,LCD_DIS_NORMAL);  
   
-    //ÏÔÊ¾°æ±¾ºÅ
+    //ï¿½ï¿½Ê¾ï¿½æ±¾ï¿½ï¿½
     sprintf((String *)&disbuf,"VER:%s","V0.22" );
     LCD_DisplayText(24,28,disbuf,FONTSIZE_16x16,LCD_DIS_NORMAL);  
 
-    //ÏÔÊ¾¹ú¼ÒÂë
+    //ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     sprintf((String *)&disbuf,"%s",modelTypeStr[g_sysRunPara.moduleType]);
     LCD_DisplayText(44,51,disbuf,FONTSIZE_16x16,LCD_DIS_NORMAL);  
 
     LCD_UpdateFullScreen();
     LcdBackLightSwitch(LED_ON);
 
-    //ÑÓÊ±2SÓÃÓÚÏÔÊ¾°æ±¾ºÅ
+    //ï¿½ï¿½Ê±2Sï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½æ±¾ï¿½ï¿½
     DelaySysMs(2000);
 }
 
