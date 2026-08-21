@@ -74,7 +74,6 @@ extern void Menu_GetSubItemPara(U8 menuIndex)
         g_menuInfo.inputMode = MENU_ONE_CTCSS;
         g_menuInfo.subMaxItem = 51;
         g_menuInfo.selectedItem = loadCtcssVal(g_CurrentVfo->rx->dcsCtsNum);
-
         break;
     case S_RXDCS:
         g_menuInfo.inputMode = MENU_ONE_DECODE;
@@ -736,11 +735,11 @@ extern void SaveRadioCtcss(U8 tx)
     {
         if (tx)
         {
-            g_ChannelVfoInfo.vfoInfo[g_ChannelVfoInfo.switchAB].rxDCSCTSNum = ctcss;
+            g_ChannelVfoInfo.vfoInfo[g_ChannelVfoInfo.switchAB].txDCSCTSNum = ctcss;
         }
         else
         {
-            g_ChannelVfoInfo.vfoInfo[g_ChannelVfoInfo.switchAB].txDCSCTSNum = ctcss;
+            g_ChannelVfoInfo.vfoInfo[g_ChannelVfoInfo.switchAB].rxDCSCTSNum = ctcss;
         }
         g_ChannelVfoInfo.vfoInfo[g_ChannelVfoInfo.switchAB].vfoFlag.Byte &= 0xFE;
     }
@@ -776,11 +775,11 @@ extern void SaveRadioDcs(U8 tx)
     {
         if (tx)
         {
-            g_ChannelVfoInfo.vfoInfo[g_ChannelVfoInfo.switchAB].rxDCSCTSNum = dcs;
+            g_ChannelVfoInfo.vfoInfo[g_ChannelVfoInfo.switchAB].txDCSCTSNum = dcs;
         }
         else
         {
-            g_ChannelVfoInfo.vfoInfo[g_ChannelVfoInfo.switchAB].txDCSCTSNum = dcs;
+            g_ChannelVfoInfo.vfoInfo[g_ChannelVfoInfo.switchAB].rxDCSCTSNum = dcs;
         }
         g_ChannelVfoInfo.vfoInfo[g_ChannelVfoInfo.switchAB].vfoFlag.Byte &= 0xFE;
     }
