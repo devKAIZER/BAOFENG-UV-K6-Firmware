@@ -317,63 +317,79 @@ extern void DtmfSendTask(void)
     U8 tblOnTime[] = {5, 10, 20, 30, 40, 50};
     U8 tblOffTime[] = {5, 10, 20, 30, 40, 50};
 
-    while (dtmfInfo.state)
+    if (dtmfInfo.state == 0)
+        return;
+
+    if (dtmfInfo.timeOut != 0)
+        return;
+
+    switch (dtmfInfo.state)
     {
-        if (dtmfInfo.timeOut == 0)
+    case DTMF_SETUP:
+        dtmfInfo.sendFlag = 0;
+        dtmfInfo.enCodeNum = 0;
+
+        Rfic_EnterDTMFMode(1);
+
+        dtmfInfo.enCode = dtmfInfo.code[dtmfInfo.enCodeNum];
+
+        if (g_radioInform.dtmfTone & BIT1)
         {
-            switch (dtmfInfo.state)
+            Rfic_RxTxOnOffSetup(RFIC_TXTONE);
+            Rfic_SetAfout(0xF1);
+            SpeakerSwitch(ON);
+        }
+
+        dtmfInfo.state = DTMF_FREQ;
+        break;
+
+    case DTMF_FREQ:
+        if (dtmfInfo.sendFlag == 0)
+        {
+            Rfic_SetDtmfFreq(
+                DTMFCODE[dtmfInfo.enCode].tone1Freq,
+                DTMFCODE[dtmfInfo.enCode].tone2Freq
+            );
+
+            dtmfInfo.timeOut = tblOnTime[g_dtmfStore.onTime] * 10;
+            dtmfInfo.sendFlag = 1;
+        }
+        else
+        {
+            Rfic_SetDtmfFreq(0, 0);
+
+            dtmfInfo.timeOut = tblOffTime[g_dtmfStore.offTime] * 10;
+            dtmfInfo.sendFlag = 0;
+
+            dtmfInfo.enCodeNum++;
+
+            if (dtmfInfo.enCodeNum >= 16 ||
+                dtmfInfo.code[dtmfInfo.enCodeNum] == 0xFF)
             {
-            case DTMF_SETUP:
-                dtmfInfo.sendFlag = 0;
+                dtmfInfo.state = DTMF_STOP;
                 dtmfInfo.enCodeNum = 0;
-                Rfic_EnterDTMFMode(1);
+                dtmfInfo.timeOut = 10;
 
+                SpeakerSwitch(OFF);
+                Rfic_TxSingleTone_Off();
+                Rfic_SetAfout(0);
+                Rfic_ExitDTMFMode();
+            }
+            else
+            {
                 dtmfInfo.enCode = dtmfInfo.code[dtmfInfo.enCodeNum];
-
-                if (g_radioInform.dtmfTone & BIT1)
-                {
-
-                    Rfic_RxTxOnOffSetup(RFIC_TXTONE);
-                    Rfic_SetAfout(0xF1);
-                    SpeakerSwitch(ON);
-                }
-                dtmfInfo.state = DTMF_FREQ;
-
-            case DTMF_FREQ:
-                if (dtmfInfo.sendFlag == 0)
-                {
-                    Rfic_SetDtmfFreq(DTMFCODE[dtmfInfo.enCode].tone1Freq, DTMFCODE[dtmfInfo.enCode].tone2Freq);
-                    dtmfInfo.timeOut = tblOnTime[g_dtmfStore.onTime] * 10;
-                    dtmfInfo.sendFlag = 1;
-                }
-                else
-                {
-                    Rfic_SetDtmfFreq(0, 0);
-                    dtmfInfo.timeOut = tblOffTime[g_dtmfStore.offTime] * 10;
-                    dtmfInfo.sendFlag = 0;
-                    dtmfInfo.enCodeNum++;
-                    dtmfInfo.enCode = dtmfInfo.code[dtmfInfo.enCodeNum];
-
-                    if (dtmfInfo.enCode == 0xFF || dtmfInfo.enCodeNum >= 16)
-                    {
-                        dtmfInfo.state = DTMF_STOP;
-                        dtmfInfo.enCodeNum = 0;
-                        dtmfInfo.timeOut = 10;
-
-                        SpeakerSwitch(OFF);
-                        Rfic_TxSingleTone_Off();
-                        Rfic_SetAfout(0);
-                        Rfic_ExitDTMFMode();
-                    }
-                }
-                break;
-            case DTMF_STOP:
-            default:
-                dtmfInfo.state = DTMF_OVER;
-                dtmfInfo.sendFlag = 0;
-                break;
             }
         }
+        break;
+
+    case DTMF_STOP:
+        dtmfInfo.state = DTMF_OVER;
+        dtmfInfo.sendFlag = 0;
+        break;
+
+    default:
+        dtmfInfo.state = DTMF_OVER;
+        break;
     }
 }
 
