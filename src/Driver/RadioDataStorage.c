@@ -302,7 +302,7 @@ extern void Flash_SaveSystemRunData(void)
     addrOffset = Flash_GetLogicAddrShift(SYSTEMRAN_ADDR,32);
 
     //提取数据
-    memcpy(buf, (U8  *)&g_ChannelVfoInfo.channelNum, 2);
+    memcpy(buf, (U8  *)&g_ChannelVfoInfo.channelNum, 4);
 
     //计算CRC校验
     checkSum = CRC_ValidationCalc(buf,14);
@@ -344,7 +344,7 @@ extern void Flash_ReadSystemRunData(void)
         memcpy((U8  *)&checkSum,&buf[14],2);
         if(checkSum == CRC_ValidationCalc(buf,14))
         {//数据校验正确
-            memcpy((U8  *)&g_ChannelVfoInfo.channelNum, buf, 2);
+            memcpy((U8  *)&g_ChannelVfoInfo.channelNum, buf, 4);
             
             return;
         }
