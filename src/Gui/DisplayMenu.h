@@ -1,7 +1,7 @@
 #ifndef __DISPLAYMENU_H
     #define __DISPLAYMENU_H
 
-#define MENU_MAX_CNT              55
+#define MENU_MAX_CNT              56
 
 typedef struct
 {

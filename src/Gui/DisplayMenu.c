@@ -772,28 +772,7 @@ extern void Menu_GetSubItemString(U8 menuIndex)
             }
             break;
         case S_INFO:
-            if (g_menuInfo.selectedItem == 0)
-            {
-                if (g_radioInform.language == LANG_CN)
-                {
-                    sprintf(disBuf, "�����汾:%s", "V0.01");
-                }
-                else
-                {
-                    sprintf(disBuf, "Firmware:%s", "V01  ");
-                }
-            }
-            else
-            {
-                if (g_radioInform.language == LANG_CN)
-                {
-                    sprintf(disBuf, "Ӳ���汾:%s", "V0.01");
-                }
-                else
-                {
-                    sprintf(disBuf, "Hardware:%s", "V01  ");
-                }
-            }
+            sprintf(disBuf, "KAI: %s", FIRMWARE_VERSION);
             break;
         default:
             break;
