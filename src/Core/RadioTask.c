@@ -217,24 +217,24 @@ extern void Radio_SwitchBand(void)
 
     freqBand = freq / 10000;
 
-    if(freqBand >= bandRang.bandFreq.vhfL && freqBand < bandRang.bandFreq.vhfH)
+    if (freqBand >= bandRang.bandFreq.vhfL && freqBand < bandRang.bandFreq.vhfH)
     {
         newFreq = bandRang.bandFreq.freqV2L;
     }
 
-    else if(freqBand >= bandRang.bandFreq.vhf2L &&
-            freqBand < bandRang.bandFreq.vhf2H)
+    else if (freqBand >= bandRang.bandFreq.vhf2L &&
+             freqBand < bandRang.bandFreq.vhf2H)
     {
         newFreq = bandRang.bandFreq.freq350ML;
     }
 
-    else if(freqBand >= bandRang.bandFreq.B350ML &&
-            freqBand < bandRang.bandFreq.B350MH)
+    else if (freqBand >= bandRang.bandFreq.B350ML &&
+             freqBand < bandRang.bandFreq.B350MH)
     {
         newFreq = bandRang.bandFreq.freqUL;
     }
-    else if(freqBand >= bandRang.bandFreq.uhfL &&
-            freqBand < bandRang.bandFreq.uhfH)
+    else if (freqBand >= bandRang.bandFreq.uhfL &&
+             freqBand < bandRang.bandFreq.uhfH)
     {
         newFreq = bandRang.bandFreq.freqVL;
     }
@@ -243,30 +243,24 @@ extern void Radio_SwitchBand(void)
         return;
     }
 
-    /*
-     * Update VFO RX frequency.
-     */
     g_ChannelVfoInfo.chVfoInfo[g_ChannelVfoInfo.switchAB]
         .freqRx.frequency = newFreq;
 
-    /*
-     * Recalculate TX frequency.
-     */
-    if(g_ChannelVfoInfo.chVfoInfo[g_ChannelVfoInfo.switchAB].freqDir == 1)
+    if (g_ChannelVfoInfo.chVfoInfo[g_ChannelVfoInfo.switchAB].freqDir == 1)
     {
         g_ChannelVfoInfo.chVfoInfo[g_ChannelVfoInfo.switchAB]
             .freqTx.frequency =
             newFreq +
             g_ChannelVfoInfo.chVfoInfo[g_ChannelVfoInfo.switchAB]
-            .freqOffset;
+                .freqOffset;
     }
-    else if(g_ChannelVfoInfo.chVfoInfo[g_ChannelVfoInfo.switchAB].freqDir == 2)
+    else if (g_ChannelVfoInfo.chVfoInfo[g_ChannelVfoInfo.switchAB].freqDir == 2)
     {
         g_ChannelVfoInfo.chVfoInfo[g_ChannelVfoInfo.switchAB]
             .freqTx.frequency =
             newFreq -
             g_ChannelVfoInfo.chVfoInfo[g_ChannelVfoInfo.switchAB]
-            .freqOffset;
+                .freqOffset;
     }
     else
     {
@@ -274,28 +268,15 @@ extern void Radio_SwitchBand(void)
             .freqTx.frequency = newFreq;
     }
 
-    /*
-     * Update the VFO stored frequency buffer.
-     */
     VfoFrequency2Buf(
         newFreq,
         g_ChannelVfoInfo.vfoInfo[g_ChannelVfoInfo.switchAB].freq,
-        8
-    );
+        8);
 
-    /*
-     * Update the hardware band according to the new frequency.
-     */
     GetHardWorkBand(newFreq / 10000);
 
-    /*
-     * Apply the new frequency.
-     */
     RxReset();
 
-    /*
-     * Refresh display.
-     */
     DisplayRadioHome();
 
     BeepOut(BEEP_FASTSW);
@@ -465,6 +446,7 @@ extern void RF_TxTask(void)
         break;
     }
 }
+
 const U8 RssiLevel[5][4] =
     {
         {135, 128, 124, 120}, // V段 ,116
