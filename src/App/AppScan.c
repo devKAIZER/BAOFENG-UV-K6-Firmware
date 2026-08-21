@@ -58,6 +58,9 @@ void ScanNextChannel(void)
         return;
     }
 
+    Rfic_SetAfout(OFF);
+    SpeakerSwitch(OFF);
+
     if (g_scanInfo.direction == SCAN_UP)
     {
         if (g_ChannelVfoInfo.chVfoInfo[g_ChannelVfoInfo.switchAB].chVfoMode == CHAN_MODE)
@@ -75,15 +78,17 @@ void ScanNextChannel(void)
         if (g_ChannelVfoInfo.chVfoInfo[g_ChannelVfoInfo.switchAB].chVfoMode == CHAN_MODE)
         {
             ChannelDown(1, 0);
-            DisplayChannelNum(g_ChannelVfoInfo.currentChannelNum, g_ChannelVfoInfo.switchAB);
+            DisplayChannelNum(g_ChannelVfoInfo.currentChannelNum,
+                g_ChannelVfoInfo.switchAB);
         }
         else
         {
             VfoFreqDown(1);
         }
     }
-    // ResetSqlLevel();
+
     ResetTimeKeyLockAndPowerSave();
+
     g_scanInfo.state = SCANNING;
     g_scanInfo.scanTime = 2;
 }

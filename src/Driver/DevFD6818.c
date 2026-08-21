@@ -897,7 +897,7 @@ void Rfic_RxTxOnOffSetup(U8  ON_FLAG)
             break;
         default:
         case RFIC_IDLE:
-            //Rfic_WriteWord(0x30, 0x0000);
+            Rfic_WriteWord(0x30, 0x0000);
             break;
     }   
 }
