@@ -17,7 +17,7 @@ def postBuild(source, target, env):
     now = datetime.datetime.now()
     timeStr = now.strftime("%Y%m%d%H%M")
     
-    outFile = os.path.join(outDir,"bfk6-"+timeStr+ ".bin")
+    outFile = os.path.join(outDir,"bfk6-kai-alpha"+ ".bin")
 
     # create out directory if it doesn't exist
     if not os.path.exists(outDir):

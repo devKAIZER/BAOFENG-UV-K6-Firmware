@@ -216,7 +216,7 @@ extern void Menu_GetSubItemPara(U8 menuIndex)
         g_menuInfo.selectedItem = g_CurrentVfo->busyLock;
         break;
     case S_PONTYPE:
-        g_menuInfo.subMaxItem = 2;
+        g_menuInfo.subMaxItem = 3;
         g_menuInfo.selectedItem = g_radioInform.OpFlag1.Bit.b0;
         break;
     case S_PONTONE:
