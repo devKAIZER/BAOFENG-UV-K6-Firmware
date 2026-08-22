@@ -253,9 +253,12 @@ const String *PwrOnCnStr[] =
         "��ص�ѹ"};
 const String *PwrOnEnStr[] =
     {
+        "OFF",
         "LOGO",
         "MESSAGE",
-        "VOLTAGE"};
+        "VOLTAGE",
+        "BUILD",
+    };
 
 const String *SideKeyCnStr[] =
     {
@@ -772,7 +775,7 @@ extern void Menu_GetSubItemString(U8 menuIndex)
             }
             break;
         case S_INFO:
-            sprintf(disBuf, "KAI: %s", FIRMWARE_VERSION);
+            sprintf(disBuf, "KAI: %s", BUILD_NUMBER);
             break;
         default:
             break;

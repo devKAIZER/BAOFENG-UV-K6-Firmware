@@ -303,6 +303,7 @@ typedef union {
     struct {
             __BYTE  b0:2;
             __BYTE  b2:2;
+            __BYTE  b3:3;
             __BYTE  b4:1;
             __BYTE  b5:1;
             __BYTE  b6:1;
