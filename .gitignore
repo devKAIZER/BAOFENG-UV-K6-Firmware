@@ -9,3 +9,4 @@ bf_uvk6
 !Libraries/CMSIS/Device/suport/**/*.s
 .vscode
 .pio
+BFUVK6-KAI.code-workspace
