@@ -60,5 +60,6 @@
 #include "VoiceBroadcast.h"
 
 #include "ProgromFlash.h"
+#include "Version.h"
 
 #endif
