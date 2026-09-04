@@ -1309,8 +1309,8 @@ extern void Menu_SaveSelectItem(U8 menuIndex)
         g_radioInform.rtone = g_menuInfo.selectedItem;
         break;
     case S_STEP:
-        g_ChannelVfoInfo.chVfoInfo[g_ChannelVfoInfo.switchAB].freqStep = g_menuInfo.inputVal;
-        g_ChannelVfoInfo.vfoInfo[g_ChannelVfoInfo.switchAB].STEP = g_menuInfo.inputVal;
+        g_ChannelVfoInfo.chVfoInfo[g_ChannelVfoInfo.switchAB].freqStep = g_menuInfo.selectedItem;
+        g_ChannelVfoInfo.vfoInfo[g_ChannelVfoInfo.switchAB].STEP = g_menuInfo.selectedItem;
         break;
     case S_TAIL:
         g_radioInform.tailSwitch = g_menuInfo.selectedItem;
