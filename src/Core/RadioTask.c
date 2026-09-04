@@ -193,12 +193,11 @@ extern void RxReset(void)
 {
     LedRxSwitch(LED_OFF);
     Rfic_SetAfout(OFF);
-    // SpeakerSwitch(SPK_RX_OFF);
+    SpeakerSwitch(OFF);
 
     g_rfRxState = RX_READY;
     g_sysRunPara.rfRxFlag.rxReceived = OFF;
     g_sysRunPara.rfRxFlag.rxReceiveOn = OFF;
-    // 接收结束后重新计算省电时间
     ResetTimeKeyLockAndPowerSave();
 }
 
@@ -287,7 +286,7 @@ extern void RfOff(void)
     LedTxSwitch(LED_OFF);
     LedRxSwitch(LED_OFF);
     RF_PowerSet(g_ChannelVfoInfo.BandFlag, PWR_OFF);
-    // SpeakerSwitch(SPK_RX_OFF);
+    SpeakerSwitch(OFF);
     Rfic_SetAfout(OFF);
 }
 
