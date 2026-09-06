@@ -1462,7 +1462,7 @@ extern void Menu_EnterNextLevel(void)
     }
     else
     { // ѡ��˵�ģʽ
-        // ResetInputBuf();
+        ResetInputBuf();
         if (g_menuInfo.inputMode == MENU_ONE_NULL)
         { // ��ǰ�˵�ֻ������ʾ���ݣ���������ʱ��ֱ�ӷ���
             VoiceBroadcastWithBeepLock(vo_Cancel, BEEP_EXITMENU);
