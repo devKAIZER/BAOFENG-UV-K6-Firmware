@@ -6,15 +6,14 @@ U8 searchSaveFlag;
 extern void EnterSearchFreqMode(void)
 {
     Menu_ExitMode();
-
-    // 关闭双守功能
     DualStandbyWorkOFF();
 
     SpeakerSwitch(OFF);
     Rfic_SetAfout(OFF);
     LedRxSwitch(LED_OFF);
-
     g_sysRunPara.sysRunMode = MODE_SEARCH;
+
+    LCD_BackLightSetOn();
 
     searchFreqImofs.band = FREQ_BAND_UHF;
     searchFreqImofs.step = SF_Setup;
@@ -477,6 +476,7 @@ extern void SearchFreqTask(void)
                 SpeakerSwitch(OFF);
                 Rfic_SetAfout(OFF);
                 LedRxSwitch(LED_OFF);
+                LCD_BackLightSetOn();
             }
         }
         break;

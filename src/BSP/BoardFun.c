@@ -190,11 +190,6 @@ extern void LCD_CheckBackLight(void)
         return;
     }
 
-    if(g_sysRunPara.sysRunMode == MODE_SEARCH || g_sysRunPara.sysRunMode == MODE_SCAN_QT)
-    {
-        return;
-    }
-
     if(g_sysRunPara.lcdAutoLight == 0)
     {
         LcdBackLightSwitch(LED_OFF);

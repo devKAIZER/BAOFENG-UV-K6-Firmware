@@ -50,7 +50,13 @@ extern void SysTickHandler(void)
             {
                 dtmfInfo.timeRxOut--;
             }
-            if((g_sysRunPara.sysRunMode == MODE_MAIN || g_sysRunPara.sysRunMode == MODE_FM || g_sysRunPara.sysRunMode == MODE_WEATHER ) && g_sysRunPara.lcdAutoLight)
+            if((g_sysRunPara.sysRunMode == MODE_MAIN ||
+                g_sysRunPara.sysRunMode == MODE_FM ||
+                g_sysRunPara.sysRunMode == MODE_WEATHER ||
+                g_sysRunPara.sysRunMode == MODE_SEARCH ||
+                g_sysRunPara.sysRunMode == MODE_SCAN ||
+                g_sysRunPara.sysRunMode == MODE_SCAN_QT) &&
+            g_sysRunPara.lcdAutoLight)
             {
                 g_sysRunPara.lcdAutoLight--;
             }

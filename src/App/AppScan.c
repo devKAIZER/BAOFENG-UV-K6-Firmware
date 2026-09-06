@@ -96,6 +96,7 @@ void ScanNextChannel(void)
 extern void ScanStart(void)
 {
     DualStandbyWorkOFF();
+    LCD_BackLightSetOn();
 
     if (g_ChannelVfoInfo.chVfoInfo[g_ChannelVfoInfo.switchAB].chVfoMode == CHAN_MODE)
     { // 信道模式下，没有信道开启扫描直接返回
@@ -123,8 +124,6 @@ extern void ScanStart(void)
     DisplayRadioHome();
 
     VoiceBroadcastWithBeepLock(vo_scanbegin, BEEP_FMSW1);
-
-    // 强制进入扫描频点
     ScanNextChannel();
 }
 
@@ -159,26 +158,33 @@ extern void ScanTask(void)
                 return;
             }
 
+            // Signal confirmed - wake backlight
+            LCD_BackLightSetOn();
+
             switch (g_radioInform.scanMode)
             {
             case TIME_MODE:
                 g_scanInfo.state = WAIT_TIME;
                 g_scanInfo.scanTime = SCAN_LOST_TIME;
                 break;
+
             case FREQ_MODE:
                 g_scanInfo.state = WAIT_LOST;
                 g_scanInfo.scanTime = SCAN_LOST_TIME;
                 break;
+
             case FINE_MODE:
                 g_scanInfo.state = SCAN_STOP;
                 g_scanInfo.scanTime = SCAN_FIND_TIME;
                 break;
+
             default:
                 break;
             }
+
             return;
         }
-        // 扫描下一个信道
+
         ScanNextChannel();
         sqCnt = 0;
 
