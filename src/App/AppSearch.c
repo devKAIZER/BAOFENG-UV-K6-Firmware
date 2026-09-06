@@ -360,7 +360,7 @@ extern void SearchFreqTask(void)
 
     case SCtsDcs_Setup:
 
-        searchFreqImofs.overTime = 15; // 1.5s
+        searchFreqImofs.overTime = 3; // 3s
         searchFreqImofs.step = SCtsDcs_Wait;
 
         break;
@@ -368,60 +368,81 @@ extern void SearchFreqTask(void)
     case SCtsDcs_Wait:
 
         searchFreqImofs.CtsResult = Rfic_GetCtsDcsData();
+
         if (searchFreqImofs.CtsResult != 0)
         {
             searchFreqImofs.dcsCtsType = Rfic_GetSCtsDcsType();
+
             if (searchFreqImofs.dcsCtsType == SUBAUDIO_CTS)
             {
-                searchFreqImofs.CtsResult = searchFreqImofs.CtsResult * 10 * 10000 / 206489;
-                DelayMs(200);
+                searchFreqImofs.CtsResult =
+                    searchFreqImofs.CtsResult * 10 * 10000 / 206489;
 
-                if (Rfic_SubaudioDetect() == 0)
+                if (searchFreqImofs.CtsResult > 600)
                 {
-                    SearchFreqModeDisplayDCSData(SUBAUDIO_NONE, 0, 0);
-                    searchFreqImofs.dcsCtsType = SUBAUDIO_NONE;
+                    searchFreqImofs.CtsResult =
+                        CheckIsStandardCTCSS(searchFreqImofs.CtsResult);
+
+                    SearchFreqModeDisplayDCSData(
+                        SUBAUDIO_CTS,
+                        searchFreqImofs.CtsResult,
+                        0
+                    );
                 }
                 else
                 {
-                    if (searchFreqImofs.CtsResult > 600)
-                    {
-                        searchFreqImofs.CtsResult = CheckIsStandardCTCSS(searchFreqImofs.CtsResult);
-                        SearchFreqModeDisplayDCSData(SUBAUDIO_CTS, searchFreqImofs.CtsResult, 0);
-                    }
-                    else
-                    {
-                        SearchFreqModeDisplayDCSData(SUBAUDIO_NONE, 0, 0);
-                        searchFreqImofs.dcsCtsType = SUBAUDIO_NONE;
-                    }
+                    searchFreqImofs.CtsResult = 0;
+                    searchFreqImofs.dcsCtsType = SUBAUDIO_NONE;
+
+                    SearchFreqModeDisplayDCSData(
+                        SUBAUDIO_NONE,
+                        0,
+                        0
+                    );
                 }
             }
-            else
+
+            else if (searchFreqImofs.dcsCtsType == SUBAUDIO_DCS_N)
             {
+                U32 tempDCS;
+
                 DTCSS_WithRfic(searchFreqImofs.CtsResult, 1);
-                DelayMs(200);
-                if (Rfic_SubaudioDetect() == 0)
+
+                tempDCS = CheckIsStandardDCS(searchFreqImofs.CtsResult);
+
+                if (tempDCS != 0)
                 {
-                    SearchFreqModeDisplayDCSData(SUBAUDIO_NONE, 0, 0);
-                    searchFreqImofs.dcsCtsType = SUBAUDIO_NONE;
+                    searchFreqImofs.dcsIsStandard = 1;
+                    searchFreqImofs.CtsResult = tempDCS;
+
+                    SearchFreqModeDisplayDCSData(
+                        SUBAUDIO_DCS_N,
+                        tempDCS,
+                        1
+                    );
                 }
                 else
                 {
-                    {
-                        U32 tempDCS;
+                    searchFreqImofs.dcsIsStandard = 0;
 
-                        tempDCS = CheckIsStandardDCS(searchFreqImofs.CtsResult);
-                        if (tempDCS != 0)
-                        {
-                            searchFreqImofs.dcsIsStandard = 1;
-                            SearchFreqModeDisplayDCSData(SUBAUDIO_DCS_N, tempDCS, 1);
-                        }
-                        else
-                        {
-                            searchFreqImofs.dcsIsStandard = 0;
-                            SearchFreqModeDisplayDCSData(SUBAUDIO_DCS_N, searchFreqImofs.CtsResult, 0);
-                        }
-                    }
+                    SearchFreqModeDisplayDCSData(
+                        SUBAUDIO_DCS_N,
+                        searchFreqImofs.CtsResult,
+                        0
+                    );
                 }
+            }
+
+            else
+            {
+                searchFreqImofs.CtsResult = 0;
+                searchFreqImofs.dcsCtsType = SUBAUDIO_NONE;
+
+                SearchFreqModeDisplayDCSData(
+                    SUBAUDIO_NONE,
+                    0,
+                    0
+                );
             }
 
             searchFreqImofs.step = SCtsDcs_Issue;
@@ -434,35 +455,30 @@ extern void SearchFreqTask(void)
             searchFreqImofs.overTime--;
         }
         else
-        { // 超时
-            SearchFreqModeDisplayDCSData(SUBAUDIO_NONE, 0, 0);
+        {
+            SearchFreqModeDisplayDCSData(
+                SUBAUDIO_NONE,
+                0,
+                0
+            );
 
             searchFreqImofs.CtsResult = 0;
             searchFreqImofs.dcsCtsType = SUBAUDIO_NONE;
+
             searchFreqImofs.step = SCtsDcs_Issue;
         }
 
         break;
 
     case SCtsDcs_Issue:
+
         if (Rfic_GetSQLinkState() == TRUE)
         {
-            // 增加判断亚音频
-            if (searchFreqImofs.dcsCtsType > SUBAUDIO_NONE)
-            {
-                if (Rfic_SubaudioDetect() == 0)
-                {
-                    searchFreqImofs.flagRx = 0;
-                    SpeakerSwitch(OFF);
-                    Rfic_SetAfout(OFF);
-                    LedRxSwitch(LED_OFF);
-                    break;
-                }
-            }
-
             if (searchFreqImofs.flagRx == 0)
             {
                 searchFreqImofs.flagRx = 1;
+                LCD_BackLightSetOn();
+
                 Rfic_SetAfout(ON);
                 SpeakerSwitch(ON);
                 LedRxSwitch(LED_ON);
@@ -473,12 +489,13 @@ extern void SearchFreqTask(void)
             if (searchFreqImofs.flagRx == 1)
             {
                 searchFreqImofs.flagRx = 0;
+
                 SpeakerSwitch(OFF);
                 Rfic_SetAfout(OFF);
                 LedRxSwitch(LED_OFF);
-                LCD_BackLightSetOn();
             }
         }
+
         break;
 
     default:

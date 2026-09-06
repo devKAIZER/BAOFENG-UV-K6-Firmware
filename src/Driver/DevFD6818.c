@@ -1558,11 +1558,11 @@ U32 Rfic_GetCtsDcsData(void)
         cnt00 = 0;
         for(i = 0; i < 5; i++)
         {
-            if(buf[0] == 0xFF)
+            if(buf[i] == 0xFF)
             {
                 cntFF++;
             }
-            else if(buf[0] == 0x00)
+            else if(buf[i] == 0x00)
             {
                 cnt00++;
             }
