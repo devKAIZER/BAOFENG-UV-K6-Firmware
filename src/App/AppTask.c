@@ -26,6 +26,7 @@ extern void App_100msTask(void)
     g_100msFlag = FALSE;
     SearchFreqTask();
     TaskRemoteScanQT();
+    CalculateSqlLevel();
     CheckExitMenu();
     CheckPowerOff();
     CheckAutoKeyLockTask();
@@ -37,7 +38,6 @@ extern void App_500msTask(void)
 {
     g_500msFlag = FALSE;
     BatteryCheckTask();
-    CalculateSqlLevel();
     CheckSjTimeout();
 }
 

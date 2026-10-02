@@ -466,8 +466,36 @@ extern void CalculateSqlLevel(void)
 
     if (g_sysRunPara.rfRxFlag.rxReceiveOn == ON)
     {
-        // 计算SQL信号强度等级
         rssi = Rfic_GetRssiVal();
+
+        if (g_radioInform.dualRxFlag == 0)
+        {
+            U16 low = RssiLevel[g_ChannelVfoInfo.BandFlag][3];
+            U16 high = RssiLevel[g_ChannelVfoInfo.BandFlag][0];
+            U8 signalLevel;
+
+            if (rssi < low)
+            {
+                signalLevel = 0;
+            }
+            else if (rssi >= high)
+            {
+                signalLevel = 9;
+            }
+            else
+            {
+                signalLevel = 1 + ((rssi - low) * 8) / (high - low);
+            }
+
+            if (periodSqlLevel != signalLevel)
+            {
+                DisplaySingleWatchSignal(signalLevel);
+                periodSqlLevel = signalLevel;
+            }
+            return;
+        }
+
+        // 计算SQL信号强度等级
         if (rssi < RssiLevel[g_ChannelVfoInfo.BandFlag][3])
         {
             rssi = 0;
@@ -514,6 +542,7 @@ extern void RF_RxEnd(void)
     g_rfRxState = RX_READY;
     g_sysRunPara.rfRxFlag.rxReceived = OFF;
     g_sysRunPara.rfRxFlag.rxReceiveOn = OFF;
+    periodSqlLevel = 0xff;
     g_sysRunPara.rfTxFlag.voxDetDly = 10;
 
     if (DtmfGetMatchStatue() == 0)
@@ -671,6 +700,7 @@ extern void RF_RxTask(void)
             ctcsDetFlag = 0;
             tailDetFlag = 0;
             g_rfRxState = WAIT_RXEND;
+            CalculateSqlLevel();
         }
         else
         {
