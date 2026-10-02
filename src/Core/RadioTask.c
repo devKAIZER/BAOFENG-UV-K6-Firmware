@@ -564,6 +564,18 @@ extern void RF_RxTask(void)
 {
     static U8 ctcsDetFlag, tailDetFlag;
 
+    if (g_sysRunPara.sysRunMode == MODE_MENU)
+    {
+        Rfic_RxTxOnOffSetup(RFIC_IDLE);
+        RF_PowerSet(g_ChannelVfoInfo.BandFlag, PWR_OFF);
+        Rfic_SetAfout(OFF);
+        LedRxSwitch(LED_OFF);
+        g_sysRunPara.rfRxFlag.rxReceived = OFF;
+        g_sysRunPara.rfRxFlag.rxReceiveOn = OFF;
+        g_rfRxState = RX_READY;
+        return;
+    }
+
     if (Audio_CheckBusy() || alarmDat.alarmStates)
     {
         return;
