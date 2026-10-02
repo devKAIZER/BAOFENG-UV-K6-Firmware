@@ -126,7 +126,6 @@ extern void AlarmTask(void)
                     AlarmOut(OFF);
                     RF_TxRoger();
                     Rfic_SetPA(0);
-                    ;
                     Rfic_RxTxOnOffSetup(RFIC_IDLE);
                     RF_PowerSet(g_ChannelVfoInfo.BandFlag, PWR_OFF);
                     LedRxSwitch(LED_ON);
