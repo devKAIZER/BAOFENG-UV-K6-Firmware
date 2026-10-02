@@ -79,7 +79,7 @@ typedef struct
 //--------------------------以下为系统运行需要的结构体--------------------------------------------------------
 enum {RF_NONE=0,RF_RX,RF_TX};
 enum {RX_READY=0,GET_CALL,WAIT_RXEND,RX_MONI};            //RXSTATE
-enum {TX_READY=0,WAIT_PTT_RELEASE,PTT_RELEASE,TX_STOP,ALARM_TXID,TX_KILLED}; //TXSTATE
+enum {TX_READY=0,WAIT_PTT_RELEASE,PTT_RELEASE,TX_ROGER_BEEP,TX_ROGER_PATTERN,TX_STOP,ALARM_TXID,TX_KILLED}; //TXSTATE
 enum {VFO_MODE=0,CHAN_MODE};
 enum {CHAN_DISABLE=0,CHAN_ACTIVE};
 
@@ -357,7 +357,7 @@ typedef struct
     U8   tailSwitch;      //STE   尾音消除       0: 关      1: 开
     U8   rpste;           //RPSTE 过中继尾音消除 0-1000MS（步进为100MS）。取值:0 1 2 3 .... 10 默认：0 
     U8   rptrl;           //RPTRL 过中继尾音检测 0-1000MS（步进为100MS）。取值:0 1 2 3 .... 10 默认：0     
-    U8   txOffTone;       //ROGER 发射结束提示音 0: 关      1: 开 
+    U8   txOffTone;       //ROGER 0:OFF 1:STANDARD 2-8:custom patterns 9:ECHO 10:CHIRP 11:REVERSE 12:RADIO 13:SIGNATURE
 
     U8   switchAB;        //当前工作模式     0:B段       1:A段
     U8   fmEnale;         //FM调频收音机允许使用  1:允许 0:不允许

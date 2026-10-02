@@ -293,15 +293,37 @@ const String *RxEndTailSelEnStr[] =
 
 const String *TxEndToneCnStr[] =
     {
-        "�ر�",
-        "�����",
-        "TONE1200"};
+        "OFF",
+        "STANDARD",
+        "CLASSIC",
+        "DOUBLE",
+        "DESCEND",
+        "ASCEND",
+        "2-TONE",
+        "TRIPLE",
+        "M-RADIO",
+        "ECHO",
+        "CHIRP",
+        "REVERSE CHIRP",
+        "ROGER RADIO",
+        "SIGNATURE"};
 
 const String *TxEndToneEnStr[] =
     {
         "OFF",
-        "BEEP",
-        "TONE1200"};
+        "STANDARD",
+        "CLASSIC",
+        "DOUBLE",
+        "DESCEND",
+        "ASCEND",
+        "2-TONE",
+        "TRIPLE",
+        "M-RADIO",
+        "ECHO",
+        "CHIRP",
+        "REVERSE CHIRP",
+        "ROGER",
+        "SIGNATURE"};
 
 const String *ReflexCnStr[] =
     {

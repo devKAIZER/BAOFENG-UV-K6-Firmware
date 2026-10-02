@@ -2,6 +2,94 @@
 
 static U8 periodSqlLevel = 0xff;
 static U8 sqCnt = 0;
+static U8 rogerToneStage = 0;
+static U8 rogerToneTicks = 0;
+static U8 rogerPatternIndex = 0;
+static U8 rogerPatternCount = 0;
+static U8 rogerPatternInGap = 0;
+static U8 rogerPatternMode = 0;
+static U8 totEndPending = 0;
+
+typedef struct
+{
+    U16 frequency;
+    U8 durationTicks;
+    U8 gapTicks;
+} STR_ROGER_TONE;
+
+static const STR_ROGER_TONE RogerClassic[] =
+{
+    {F1200HZ, 10, 3},
+    {F900HZ, 15, 0}
+};
+static const STR_ROGER_TONE RogerDouble[] =
+{
+    {F1000HZ, 10, 5},
+    {F1000HZ, 10, 0}
+};
+static const STR_ROGER_TONE RogerDescend[] =
+{
+    {F1200HZ, 10, 3},
+    {F1000HZ, 10, 3},
+    {F800HZ, 15, 0}
+};
+static const STR_ROGER_TONE RogerAscend[] =
+{
+    {F800HZ, 10, 3},
+    {F1000HZ, 10, 3},
+    {F1200HZ, 15, 0}
+};
+static const STR_ROGER_TONE RogerTwoTone[] =
+{
+    {F1000HZ, 15, 5},
+    {F1400HZ, 20, 0}
+};
+static const STR_ROGER_TONE RogerTriple[] =
+{
+    {F1000HZ, 8, 4},
+    {F1000HZ, 8, 4},
+    {F1000HZ, 15, 0}
+};
+static const STR_ROGER_TONE RogerRadio[] =
+{
+    {F1200HZ, 8, 5},
+    {F1800HZ, 8, 5},
+    {F1200HZ, 15, 0}
+};
+static const STR_ROGER_TONE RogerEcho[] =
+{
+    {F1400HZ, 7, 5},
+    {F900HZ, 22, 0}
+};
+static const STR_ROGER_TONE RogerChirp[] =
+{
+    {F800HZ, 6, 2},
+    {F1000HZ, 6, 2},
+    {F1200HZ, 6, 2},
+    {F1400HZ, 10, 0}
+};
+static const STR_ROGER_TONE RogerReverseChirp[] =
+{
+    {F1400HZ, 6, 2},
+    {F1200HZ, 6, 2},
+    {F1000HZ, 6, 2},
+    {F800HZ, 10, 0}
+};
+static const STR_ROGER_TONE RogerRadioExtended[] =
+{
+    {F1200HZ, 10, 4},
+    {F1500HZ, 10, 4},
+    {F900HZ, 22, 0}
+};
+static const STR_ROGER_TONE RogerSignature[] =
+{
+    {F1400HZ, 7, 3},
+    {F900HZ, 7, 3},
+    {F1400HZ, 7, 3},
+    {F900HZ, 16, 0}
+};
+
+static const STR_ROGER_TONE *RF_GetRogerPattern(U8 mode, U8 *count);
 
 extern void GetHardWorkBand(U16 freq)
 {
@@ -315,15 +403,161 @@ extern void RF_TxRoger(void)
 {
     if (g_radioInform.txOffTone == 1)
     {
-        DtmfSendTxOver();
+        if (alarmDat.alarmStates)
+        {
+            DtmfSendTxOver();
+        }
+        else
+        {
+            rogerToneStage = 1;
+            rogerToneTicks = 8;
+            Rfic_TxSingleTone_On(1);
+            Rfic_SetToneFreq(F1000HZ);
+            g_rfTxState = TX_ROGER_BEEP;
+            return;
+        }
     }
-    else if (g_radioInform.txOffTone == 2)
+    else if (g_radioInform.txOffTone >= 2 && g_radioInform.txOffTone <= 13)
     {
-        Rfic_EnterMDC1200Mode();
-        Rfic_MDC1200ToneTx();
-        Rfic_ExitMDC1200Mode();
+        const STR_ROGER_TONE *pattern;
+
+        rogerPatternMode = g_radioInform.txOffTone;
+        pattern = RF_GetRogerPattern(rogerPatternMode, &rogerPatternCount);
+        if (pattern != NULL && rogerPatternCount != 0)
+        {
+            rogerPatternIndex = 0;
+            rogerPatternInGap = 0;
+            rogerToneTicks = pattern[0].durationTicks;
+            Rfic_TxSingleTone_On(1);
+            Rfic_SetToneFreq(pattern[0].frequency);
+            g_rfTxState = TX_ROGER_PATTERN;
+            return;
+        }
     }
 
+    if (g_radioInform.tailSwitch)
+    {
+        RF_SendTail(ON);
+        DelayMs(300);
+    }
+    RF_TxEnd();
+}
+
+static const STR_ROGER_TONE *RF_GetRogerPattern(U8 mode, U8 *count)
+{
+    switch (mode)
+    {
+    case 2:
+        *count = sizeof(RogerClassic) / sizeof(RogerClassic[0]);
+        return RogerClassic;
+    case 3:
+        *count = sizeof(RogerDouble) / sizeof(RogerDouble[0]);
+        return RogerDouble;
+    case 4:
+        *count = sizeof(RogerDescend) / sizeof(RogerDescend[0]);
+        return RogerDescend;
+    case 5:
+        *count = sizeof(RogerAscend) / sizeof(RogerAscend[0]);
+        return RogerAscend;
+    case 6:
+        *count = sizeof(RogerTwoTone) / sizeof(RogerTwoTone[0]);
+        return RogerTwoTone;
+    case 7:
+        *count = sizeof(RogerTriple) / sizeof(RogerTriple[0]);
+        return RogerTriple;
+    case 8:
+        *count = sizeof(RogerRadio) / sizeof(RogerRadio[0]);
+        return RogerRadio;
+    case 9:
+        *count = sizeof(RogerEcho) / sizeof(RogerEcho[0]);
+        return RogerEcho;
+    case 10:
+        *count = sizeof(RogerChirp) / sizeof(RogerChirp[0]);
+        return RogerChirp;
+    case 11:
+        *count = sizeof(RogerReverseChirp) / sizeof(RogerReverseChirp[0]);
+        return RogerReverseChirp;
+    case 12:
+        *count = sizeof(RogerRadioExtended) / sizeof(RogerRadioExtended[0]);
+        return RogerRadioExtended;
+    case 13:
+        *count = sizeof(RogerSignature) / sizeof(RogerSignature[0]);
+        return RogerSignature;
+    default:
+        *count = 0;
+        return NULL;
+    }
+}
+
+static void RF_TxRogerPatternTask(void)
+{
+    const STR_ROGER_TONE *pattern;
+
+    pattern = RF_GetRogerPattern(rogerPatternMode, &rogerPatternCount);
+    if (pattern == NULL || rogerPatternCount == 0)
+    {
+        Rfic_TxSingleTone_Off();
+        RF_TxEnd();
+        return;
+    }
+
+    if (rogerToneTicks != 0)
+    {
+        rogerToneTicks--;
+        if (rogerToneTicks != 0)
+        {
+            return;
+        }
+    }
+
+    if (rogerPatternInGap == 0 && pattern[rogerPatternIndex].gapTicks != 0)
+    {
+        Rfic_SetToneFreq(0);
+        rogerPatternInGap = 1;
+        rogerToneTicks = pattern[rogerPatternIndex].gapTicks;
+        return;
+    }
+
+    rogerPatternInGap = 0;
+    rogerPatternIndex++;
+    if (rogerPatternIndex >= rogerPatternCount)
+    {
+        Rfic_TxSingleTone_Off();
+        rogerToneStage = 0;
+        if (g_radioInform.tailSwitch)
+        {
+            RF_SendTail(ON);
+            DelayMs(300);
+        }
+        RF_TxEnd();
+        return;
+    }
+
+    Rfic_SetToneFreq(pattern[rogerPatternIndex].frequency);
+    rogerToneTicks = pattern[rogerPatternIndex].durationTicks;
+}
+
+static void RF_TxRogerBeepTask(void)
+{
+    if (rogerToneTicks != 0)
+    {
+        rogerToneTicks--;
+        if (rogerToneTicks != 0)
+        {
+            return;
+        }
+    }
+
+    if (rogerToneStage == 1)
+    {
+        Rfic_SetToneFreq(F850HZ);
+        rogerToneStage = 2;
+        rogerToneTicks = 8;
+        return;
+    }
+
+    Rfic_TxSingleTone_Off();
+    rogerToneStage = 0;
     if (g_radioInform.tailSwitch)
     {
         RF_SendTail(ON);
@@ -369,14 +603,9 @@ void TotTimeWarning(void)
             g_sysRunPara.dtmfToneFlag = 0;
             KeyScanReset();
         }
+        totEndPending = 1;
         RF_TxRoger();
-        g_rfState = RF_RX;
-        Rfic_SetPA(0);
-        RF_PowerSet(g_ChannelVfoInfo.BandFlag, PWR_OFF);
-        Rfic_RxTxOnOffSetup(RFIC_IDLE);
-        Audio_PlayVoiceLock(vo_Txovertime);
-        WaitPttRelease();
-        DisplayRadioHome();
+        return;
     }
 }
 
@@ -405,6 +634,11 @@ extern void RF_TxTask(void)
     case WAIT_PTT_RELEASE:
         TotTimeWarning();
 
+        if (g_rfTxState != WAIT_PTT_RELEASE)
+        {
+            return;
+        }
+
         if (alarmDat.alarmStates || g_sysRunPara.rfTxFlag.voxWorkDly)
         {
             return;
@@ -421,6 +655,12 @@ extern void RF_TxTask(void)
         }
 
         RF_TxRoger();
+        break;
+    case TX_ROGER_BEEP:
+        RF_TxRogerBeepTask();
+        break;
+    case TX_ROGER_PATTERN:
+        RF_TxRogerPatternTask();
         break;
     case ALARM_TXID:
         DtmfSendCodeOn(DTMF_ALARMID);
@@ -439,6 +679,13 @@ extern void RF_TxTask(void)
         RF_PowerSet(g_ChannelVfoInfo.BandFlag, PWR_OFF);
         g_rfTxState = TX_READY;
         g_rfState = RF_RX;
+        if (totEndPending)
+        {
+            totEndPending = 0;
+            Audio_PlayVoiceLock(vo_Txovertime);
+            WaitPttRelease();
+            DisplayRadioHome();
+        }
         break;
 
     default:

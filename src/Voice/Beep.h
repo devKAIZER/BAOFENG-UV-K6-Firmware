@@ -23,6 +23,7 @@ typedef enum
 #define F710HZ       71 
 #define F750HZ       75 
 #define F780HZ       78
+#define F800HZ       80
     
 #define F850HZ       85 
 #define F900HZ       90 
@@ -36,6 +37,7 @@ typedef enum
 #define F1400HZ      140
 #define F1500HZ      150 
 #define F1570HZ      157 
+#define F1800HZ      180
 /********************************************************************************************/
 typedef struct
 {

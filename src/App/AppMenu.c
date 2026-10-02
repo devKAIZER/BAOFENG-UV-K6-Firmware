@@ -208,7 +208,7 @@ extern void Menu_GetSubItemPara(U8 menuIndex)
         g_menuInfo.selectedItem = g_radioInform.beepsSwitch;
         break;
     case S_ROGE:
-        g_menuInfo.subMaxItem = 3;
+        g_menuInfo.subMaxItem = 14;
         g_menuInfo.selectedItem = g_radioInform.txOffTone;
         break;
     case S_BUSYLOCK:

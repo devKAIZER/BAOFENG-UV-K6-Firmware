@@ -12,7 +12,7 @@ const U8  BEEP_tone[9][3] =
     {F590HZ,   F700HZ,0  },    //EXITMENU
     {F700HZ,   F930HZ,0  },    //FASTSW
     {F1500HZ,  0,  F1500HZ  }, //ERROR
-    {F1200HZ,  F660HZ, F530HZ} //LOWBAT 
+    {F1200HZ,  F660HZ, F530HZ} //LOWBAT
 };
 const U8  BEEP_time[9][3]= 
 {
@@ -24,7 +24,7 @@ const U8  BEEP_time[9][3]=
     {    50, 65,0 },    //EXITMENU
     {    50, 65,0 },    //FASTSW
     {    50, 25,50},    //ERROR  
-    {    60, 70,60}     //LOWBAT 
+    {    60, 70,60}     //LOWBAT
 };
 
 extern void BeepOut(ENUM_BEEPMODE beepmode)

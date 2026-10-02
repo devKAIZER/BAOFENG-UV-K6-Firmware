@@ -295,21 +295,15 @@ extern void DtmfSendTxOver(void)
     U8 code;
 
     Rfic_EnterDTMFMode(1);
-    SpeakerSwitch(ON);
-
     Rfic_RxTxOnOffSetup(RFIC_TXTONE);
-    Rfic_SetAfout(0xF1);
 
     for (code = 17; code > 15; code--)
     {
         Rfic_SetDtmfFreq(DTMFCODE[code].tone1Freq, DTMFCODE[code].tone2Freq);
         DelayMs(80);
     }
-    SpeakerSwitch(OFF);
-
     Rfic_SetDtmfFreq(0, 0);
     Rfic_ExitDTMFMode();
-    Rfic_SetAfout(0);
 }
 
 extern void DtmfSendTask(void)
