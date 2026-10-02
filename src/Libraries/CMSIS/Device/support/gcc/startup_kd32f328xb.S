@@ -42,6 +42,20 @@ LoopCopyDataInit:
   cmp r4, r1
   bcc CopyDataInit
 
+/* Zero the NOLOAD interrupt function table. */
+  ldr r0, =_sintfun
+  ldr r1, =_eintfun
+  movs r2, #0
+  b LoopFillIntfun
+
+FillIntfun:
+  str r2, [r0]
+  adds r0, r0, #4
+
+LoopFillIntfun:
+  cmp r0, r1
+  bcc FillIntfun
+
 /* Zero fill the bss segment. */
   ldr r2, =_sbss
   ldr r4, =_ebss

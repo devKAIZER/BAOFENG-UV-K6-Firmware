@@ -6,8 +6,8 @@
 typedef struct
 {
     uint8_t voiceId;
-    const char nameEn[16];  //英文名称
-    const char nameCn[16];  //中文名称
+    const char *nameEn;  //英文名称
+    const char *nameCn;  //中文名称
 }STR_MENU_ITEM;
 
 //定义菜单序列
@@ -69,7 +69,7 @@ enum{
     S_WATCH,
     S_INFO
 };
-extern String disBuf[17];
+extern String disBuf[19];
 /********************************************************************************************************************/
 extern const STR_MENU_ITEM MenuList[];
 extern U8 inputTypeBack;

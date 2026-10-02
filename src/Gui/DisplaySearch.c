@@ -2,25 +2,26 @@
 
 extern void SearchFreqModeDisplayDCSData(U8 ctsDcsType, U32 dat, U8 isStandard)
 {
-    String disBuf[12] = {0};
+    String disBuf[15] = {0};
     memset( disBuf, ' ', 11 );
     LCD_DisplayText(49,37,(U8 *)&disBuf,FONTSIZE_12x12,LCD_DIS_NORMAL);
     if( ctsDcsType > SUBAUDIO_CTS )
     {
         if(isStandard == 1)
         {
-            sprintf( disBuf, "   D%03oN ", dat );
+            sprintf( disBuf, "   D%03loN ", (unsigned long)dat );
 		    LCD_DisplayText(49,37,(U8 *)&disBuf,FONTSIZE_12x12,LCD_DIS_NORMAL);
         }
         else
         {
-            sprintf( disBuf, "   %6X", dat );
+            sprintf( disBuf, "   %6lX", (unsigned long)dat );
 		    LCD_DisplayText(49,37,(U8 *)&disBuf,FONTSIZE_12x12,LCD_DIS_NORMAL);
         }
 	}
     else if(ctsDcsType == SUBAUDIO_CTS)
     {
-        sprintf( disBuf, "   %3d.%0.1d", dat/10, dat%10 );
+        snprintf(disBuf, sizeof(disBuf), "   %3lu.%1lu",
+             (unsigned long)(dat / 10U), (unsigned long)(dat % 10U));
 		LCD_DisplayText(49,37,(U8 *)&disBuf,FONTSIZE_12x12,LCD_DIS_NORMAL);
     }
 	else
@@ -37,20 +38,20 @@ extern void SearchFreqModeDisplayStepMsg( ENUM_SEARCHFREQ_STEP step )
 
     if( searchFreqImofs.band == FREQ_BAND_UHF )
     {
-        LCD_DisplayText(17,108,"UHF",FONTSIZE_12x12,LCD_DIS_NORMAL);
+        LCD_DisplayText(17,108,(U8 *)"UHF",FONTSIZE_12x12,LCD_DIS_NORMAL);
     }
     else if(searchFreqImofs.band == FREQ_BAND_200M)
     {
-        LCD_DisplayText(17,108,"200",FONTSIZE_12x12,LCD_DIS_NORMAL);
+        LCD_DisplayText(17,108,(U8 *)"200",FONTSIZE_12x12,LCD_DIS_NORMAL);
     }
     
     else if(searchFreqImofs.band == FREQ_BAND_350M)
     {
-        LCD_DisplayText(17,108,"350",FONTSIZE_12x12,LCD_DIS_NORMAL);
+        LCD_DisplayText(17,108,(U8 *)"350",FONTSIZE_12x12,LCD_DIS_NORMAL);
     }
     else
     {
-        LCD_DisplayText(17,108,"VHF",FONTSIZE_12x12,LCD_DIS_NORMAL);
+        LCD_DisplayText(17,108,(U8 *)"VHF",FONTSIZE_12x12,LCD_DIS_NORMAL);
     }
 
 	if( step == STEP_SEEK_FREQ )
@@ -64,7 +65,9 @@ extern void SearchFreqModeDisplayStepMsg( ENUM_SEARCHFREQ_STEP step )
 	{
         LCD_DisplayText(49,37,(U8 *)&disBuf,FONTSIZE_12x12,LCD_DIS_NORMAL);
 	
-        sprintf(disBuf, "%3d.%0.5d", searchFreqImofs.freq/100000, searchFreqImofs.freq%100000 );
+        sprintf(disBuf, "%3lu.%05lu",
+            (unsigned long)(searchFreqImofs.freq / 100000U),
+            (unsigned long)(searchFreqImofs.freq % 100000U));
         LCD_DisplayText(33,37,(U8 *)&disBuf,FONTSIZE_12x12,LCD_DIS_NORMAL);
 	}
 

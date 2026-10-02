@@ -143,7 +143,6 @@ extern U16 CheckIsStandardCTCSS(U32 dcsData)
 
 extern void SearchFreqTask(void)
 {
-    U8 noise;
     U32 tempFreq;
 
     if (g_sysRunPara.sysRunMode != MODE_SEARCH)

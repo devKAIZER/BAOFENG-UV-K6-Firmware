@@ -110,15 +110,24 @@ SECTIONS
 
   } >RAM AT> FLASH
 
+  /* User interrupt function table is fixed at 0x20001000 and zeroed at startup. */
+  .intfun 0x20001000 (NOLOAD) :
+  {
+    . = ALIGN(4);
+    _sintfun = .;
+    KEEP(*(.intfun))
+    . = ALIGN(4);
+    _eintfun = .;
+  } >RAM
+
   /* Uninitialized data section into "RAM" Ram type memory */
   . = ALIGN(4);
-  .bss 0x20001000 :
+  .bss :
   {
     /* This is used by the startup in order to initialize the .bss section */
     _sbss = .;         /* define a global symbol at bss start */
     __bss_start__ = _sbss;
     
-    *(.intfun)
     *(.bss)
     *(.bss*)
     *(COMMON)
@@ -126,7 +135,7 @@ SECTIONS
     . = ALIGN(4);
     _ebss = .;         /* define a global symbol at bss end */
     __bss_end__ = _ebss;
-  } >RAM AT > FLASH
+  } >RAM
 
   /* User_heap_stack section, used to check that there is enough "RAM" Ram  type memory left */
   ._user_heap_stack :

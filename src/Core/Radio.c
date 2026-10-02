@@ -308,10 +308,10 @@ extern void ChannelNumTypeIn(STR_INPUTBOX *input)
 
 extern void VfoFrequency2Buf(U32 freq,U8  *dest,U8  len)
 {   
-    String buf[9];
+    String buf[11];
     U8  i;
     
-    sprintf(buf,"%06d",freq);
+    snprintf(buf, sizeof(buf), "%06lu", (unsigned long)freq);
 
     for(i=0;i<len;i++)
     {//将ASC转换为hex
@@ -699,7 +699,7 @@ U32 VfoOffsetCalculate(U8 *buf)
 //初始化信道数据
 extern void ChannleVfoDataInit(U8 flagAB,U8 readFlag)
 {
-    U16 chNum;
+    U16 chNum = 0;
     U8 *buf;
     U8 calcBuf[8];
     U8 i;

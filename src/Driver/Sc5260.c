@@ -200,7 +200,6 @@ void SC5260_DisplaySmallArea( U8 posY, U8 posX, U8 length,U8 wide,const U8 *pdat
 void SC5260_ClearArea( U8 posY, U8 posX, U8 length,U8 wide,U8 fillData)
 {
     U8 i = 0;
-    U8 *pdat;
     
 
 	if( wide == 0 || length == 0 )
@@ -212,11 +211,11 @@ void SC5260_ClearArea( U8 posY, U8 posX, U8 length,U8 wide,U8 fillData)
 	{
         if( i > 1 )
         {
-            SC5260_DisplaySmallArea( posY, posX, length, 8, pdat, 1 , fillData);
+			SC5260_DisplaySmallArea( posY, posX, length, 8, NULL, 1 , fillData);
 		}
 		else
 		{
-            SC5260_DisplaySmallArea( posY, posX, length, wide % 8,  pdat, 1 , fillData);
+			SC5260_DisplaySmallArea( posY, posX, length, wide % 8, NULL, 1 , fillData);
 		}
 
 		posY += 8;

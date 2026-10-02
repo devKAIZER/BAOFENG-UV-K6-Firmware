@@ -52,14 +52,14 @@ extern void FmDisplayInputChNum(void)
 extern void FmDisplaySeek(void)
 {
     LCD_ClearWorkArea();
-    LCD_DisplayText(17,56,"FM",FONTSIZE_16x16, LCD_DIS_NORMAL);
-    LCD_DisplayText(35,36,"SEEK...",FONTSIZE_16x16,LCD_DIS_NORMAL);
+    LCD_DisplayText(17,56,(U8 *)"FM",FONTSIZE_16x16, LCD_DIS_NORMAL);
+    LCD_DisplayText(35,36,(U8 *)"SEEK...",FONTSIZE_16x16,LCD_DIS_NORMAL);
     LCD_UpdateWorkAre();
 }
 
 extern void FmDisplayChNum(void)
 {
-    U8 buf[3] = {0};
+    U8 buf[4] = {0};
     
     if(g_FMInform.fmChVfo == CHAN_MODE)
     {
@@ -80,7 +80,9 @@ extern void FmDisplayFreq(void)
     String disBuf[10] = {0};
     U8 len = 0,xpos=36;
     
-    len = sprintf(disBuf,"%d.%d00",fmInfo.freq/10,fmInfo.freq%10);
+    len = snprintf(disBuf, sizeof(disBuf), "%u.%u00",
+                   (unsigned int)(fmInfo.freq / 10U),
+                   (unsigned int)(fmInfo.freq % 10U));
     if(len == 6)
     {
         xpos += 4; 
@@ -98,7 +100,7 @@ extern void FmDisplayHome(void)
 {
     LCD_ClearWorkArea();
 
-    LCD_DisplayText(17,56,"FM",FONTSIZE_16x16, LCD_DIS_NORMAL);
+    LCD_DisplayText(17,56,(U8 *)"FM",FONTSIZE_16x16, LCD_DIS_NORMAL);
     FmDisplayFreq();
 }
 

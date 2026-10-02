@@ -5,7 +5,7 @@
 #define Num "123"
 #define Pinyin " PY"
 
-String disBuf[17];
+String disBuf[19];
 
 const STR_MENU_ITEM MenuList[] =
     {
@@ -367,11 +367,11 @@ extern void Menu_GetSubItemString(U8 menuIndex)
         case 0:
             if (CheckFmChActive(g_menuInfo.selectedItem))
             {
-                sprintf(disBuf, "CH-%02d", g_menuInfo.selectedItem + 1);
+                sprintf(disBuf, "CH-%02lu", (unsigned long)g_menuInfo.selectedItem + 1UL);
             }
             else
             {
-                sprintf(disBuf, "%02d", g_menuInfo.selectedItem + 1);
+                sprintf(disBuf, "%02lu", (unsigned long)g_menuInfo.selectedItem + 1UL);
             }
             break;
         case 1:
@@ -400,7 +400,7 @@ extern void Menu_GetSubItemString(U8 menuIndex)
             {
                 if (g_sysRunPara.decoderCode)
                 {
-                    sprintf(disBuf, "%06X", (g_sysRunPara.decoderCode & 0xFFFFFF));
+                    sprintf(disBuf, "%06lX", (unsigned long)(g_sysRunPara.decoderCode & 0xFFFFFFUL));
                 }
                 else
                 {
@@ -474,11 +474,11 @@ extern void Menu_GetSubItemString(U8 menuIndex)
         case S_DELCH:
             if (CheckChannelActive(g_menuInfo.selectedItem, 0))
             {
-                sprintf(disBuf, "CH-%03d", g_menuInfo.selectedItem + 1);
+                sprintf(disBuf, "CH-%03lu", (unsigned long)g_menuInfo.selectedItem + 1UL);
             }
             else
             {
-                sprintf(disBuf, "%03d", g_menuInfo.selectedItem + 1);
+                sprintf(disBuf, "%03lu", (unsigned long)g_menuInfo.selectedItem + 1UL);
             }
             break;
         case S_SCREV:
@@ -515,7 +515,7 @@ extern void Menu_GetSubItemString(U8 menuIndex)
             sprintf(disBuf, "%dMs", PttIDDelay[g_menuInfo.selectedItem] * 100);
             break;
         case S_SQL:
-            sprintf(disBuf, "%d", g_menuInfo.selectedItem);
+            sprintf(disBuf, "%lu", (unsigned long)g_menuInfo.selectedItem);
             break;
         case S_SAVE:
             if (g_radioInform.language == LANG_CN)
@@ -551,7 +551,7 @@ extern void Menu_GetSubItemString(U8 menuIndex)
             }
             else
             {
-                sprintf(disBuf, "%dS", g_menuInfo.selectedItem * 15);
+                sprintf(disBuf, "%luS", (unsigned long)(g_menuInfo.selectedItem * 15U));
             }
             break;
         case S_LAN:
@@ -564,7 +564,7 @@ extern void Menu_GetSubItemString(U8 menuIndex)
             }
             else
             {
-                sprintf(disBuf, "%dsec", (g_menuInfo.selectedItem + 1) * 5);
+                sprintf(disBuf, "%lusec", (unsigned long)((g_menuInfo.selectedItem + 1U) * 5U));
             }
             break;
 
@@ -648,7 +648,7 @@ extern void Menu_GetSubItemString(U8 menuIndex)
             }
             else
             {
-                sprintf(disBuf, "%dS", g_menuInfo.selectedItem);
+                sprintf(disBuf, "%luS", (unsigned long)g_menuInfo.selectedItem);
             }
             break;
         case S_RTONE:
@@ -695,7 +695,7 @@ extern void Menu_GetSubItemString(U8 menuIndex)
             {
                 if (g_menuInfo.selectedItem < 5)
                 {
-                    sprintf(disBuf, "%dsec", g_menuInfo.selectedItem * 5);
+                    sprintf(disBuf, "%lusec", (unsigned long)(g_menuInfo.selectedItem * 5U));
                 }
                 else if (g_menuInfo.selectedItem == 5)
                 {
@@ -703,12 +703,12 @@ extern void Menu_GetSubItemString(U8 menuIndex)
                 }
                 else
                 {
-                    sprintf(disBuf, "%dmin", (g_menuInfo.selectedItem - 5));
+                    sprintf(disBuf, "%lumin", (unsigned long)(g_menuInfo.selectedItem - 5U));
                 }
             }
             break;
         case S_BRIGHT:
-            sprintf(disBuf, "%d", g_menuInfo.selectedItem + 1);
+            sprintf(disBuf, "%lu", (unsigned long)(g_menuInfo.selectedItem + 1U));
             break;
         case S_REFLEX:
             if (g_radioInform.language == LANG_CN)
@@ -734,7 +734,7 @@ extern void Menu_GetSubItemString(U8 menuIndex)
             }
             else
             {
-                sprintf(disBuf, "%dS", g_menuInfo.selectedItem * 5);
+                sprintf(disBuf, "%luS", (unsigned long)(g_menuInfo.selectedItem * 5U));
             }
             break;
         case S_RESET:
@@ -810,13 +810,13 @@ void DisplayInputOffect(U32 selItem)
     selItem = g_menuInfo.inputVal / 10;
     if (g_menuInfo.isSubMenu == 0)
     {
-        sprintf(disBuf, "%d.%04d", selItem / 10000, selItem % 10000);
+        sprintf(disBuf, "%lu.%04lu", (unsigned long)(selItem / 10000U), (unsigned long)(selItem % 10000U));
     }
     else
     {
         if (g_menuInfo.inputVal)
         {
-            sprintf(disBuf, "%d.%04d", selItem / 10000, selItem % 10000);
+            sprintf(disBuf, "%lu.%04lu", (unsigned long)(selItem / 10000U), (unsigned long)(selItem % 10000U));
         }
         else
         {
@@ -845,13 +845,13 @@ void DisplayInputChFreq(U32 selItem)
     selItem = g_menuInfo.inputVal;
     if (g_menuInfo.isSubMenu == 0)
     {
-        sprintf(disBuf, "%d.%05d", selItem / 100000, selItem % 100000);
+        sprintf(disBuf, "%lu.%05lu", (unsigned long)(selItem / 100000U), (unsigned long)(selItem % 100000U));
     }
     else
     {
         if (g_menuInfo.inputVal)
         {
-            sprintf(disBuf, "%d.%05d", selItem / 100000, selItem % 100000);
+            sprintf(disBuf, "%lu.%05lu", (unsigned long)(selItem / 100000U), (unsigned long)(selItem % 100000U));
         }
         else
         {
@@ -880,13 +880,13 @@ void DisplayInputVfoScan(U32 selItem)
     selItem = g_menuInfo.inputVal;
     if (g_menuInfo.isSubMenu == 0)
     {
-        sprintf(disBuf, "%03d-%03d", selItem / 1000, selItem % 1000);
+        sprintf(disBuf, "%03lu-%03lu", (unsigned long)(selItem / 1000U), (unsigned long)(selItem % 1000U));
     }
     else
     {
         if (g_menuInfo.inputVal)
         {
-            sprintf(disBuf, "%03d-%03d", selItem / 1000, selItem % 1000);
+            sprintf(disBuf, "%03lu-%03lu", (unsigned long)(selItem / 1000U), (unsigned long)(selItem % 1000U));
         }
         else
         {
@@ -943,7 +943,7 @@ void GetCtcssDisBuf(U16 Index)
     }
     else if (Index == 0xFF)
     {
-        sprintf(disBuf, "%d.%dHz", g_menuInfo.inputVal / 10, g_menuInfo.inputVal % 10);
+        sprintf(disBuf, "%lu.%luHz", (unsigned long)(g_menuInfo.inputVal / 10U), (unsigned long)(g_menuInfo.inputVal % 10U));
     }
     else
     {
@@ -984,22 +984,22 @@ extern void UpdateMenuDisplay(void)
     {
         if (g_radioInform.language == LANG_CN)
         {
-            strcpy(headbuf, MenuFmList[g_menuInfo.menuIndex].nameCn);
+            snprintf(headbuf, sizeof(headbuf), "%s", MenuFmList[g_menuInfo.menuIndex].nameCn);
         }
         else
         {
-            strcpy(headbuf, MenuFmList[g_menuInfo.menuIndex].nameEn);
+            snprintf(headbuf, sizeof(headbuf), "%s", MenuFmList[g_menuInfo.menuIndex].nameEn);
         }
     }
     else
     {
         if (g_radioInform.language == LANG_CN)
         {
-            strcpy(headbuf, MenuList[g_menuInfo.menuIndex].nameCn);
+            snprintf(headbuf, sizeof(headbuf), "%s", MenuList[g_menuInfo.menuIndex].nameCn);
         }
         else
         {
-            strcpy(headbuf, MenuList[g_menuInfo.menuIndex].nameEn);
+            snprintf(headbuf, sizeof(headbuf), "%s", MenuList[g_menuInfo.menuIndex].nameEn);
         }
     }
     TranStrToMiddle(lcdDisBuf, headbuf, 12);
@@ -1020,11 +1020,11 @@ extern void UpdateMenuDisplay(void)
     {
         if (g_menuInfo.inputMode == MENU_ONE_DECODE)
         {
-            sprintf(lcdDisBuf, "%03d", g_menuInfo.selectedItem);
+            sprintf(lcdDisBuf, "%03lu", (unsigned long)g_menuInfo.selectedItem);
         }
         else
         {
-            sprintf(lcdDisBuf, " %02d", g_menuInfo.selectedItem);
+            sprintf(lcdDisBuf, " %02lu", (unsigned long)g_menuInfo.selectedItem);
         }
         LCD_DisplayNumber(47, 109, (U8 *)lcdDisBuf, 0);
     }
@@ -1170,7 +1170,7 @@ extern void Menu_Display(void)
         ShowCtcssList();
         break;
     case MENU_ONE_DIGIT:
-        sprintf(disBuf, "%d", g_menuInfo.selectedItem);
+        sprintf(disBuf, "%lu", (unsigned long)g_menuInfo.selectedItem);
         break;
     case MENU_ONE_SELECT:
     default:

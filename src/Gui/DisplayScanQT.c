@@ -9,18 +9,19 @@ extern void QTScanDisplay(U8 ctsDcsType, U32 dat, U8 isStandard)
     {
         if(isStandard == 1)
         {
-            sprintf( disBuf, "   D%03oN ", dat );
+            sprintf( disBuf, "   D%03loN ", (unsigned long)dat );
 		    LCD_DisplayText(49,28,(U8 *)&disBuf,FONTSIZE_12x12,LCD_DIS_NORMAL);
         }
         else
         {
-            sprintf( disBuf, "   %6X", dat );
+            sprintf( disBuf, "   %6lX", (unsigned long)dat );
 		    LCD_DisplayText(49,28,(U8 *)&disBuf,FONTSIZE_12x12,LCD_DIS_NORMAL);
         }
 	}
     else if(ctsDcsType == SUBAUDIO_CTS)
     {
-        sprintf( disBuf, "   %3d.%0.1d", dat/10, dat%10 );
+        sprintf( disBuf, "   %3lu.%1lu", (unsigned long)(dat / 10U),
+             (unsigned long)(dat % 10U));
 		LCD_DisplayText(49,28,(U8 *)&disBuf,FONTSIZE_12x12,LCD_DIS_NORMAL);
     }
 	else
@@ -58,7 +59,9 @@ extern void QTScanDisplayHome(void)
     
     LCD_ClearWorkArea();
 
-    sprintf(disBuf, "%3d.%0.5d", g_ChannelVfoInfo.chVfoInfo[g_ChannelVfoInfo.switchAB].freqRx.frequency/100000, g_ChannelVfoInfo.chVfoInfo[g_ChannelVfoInfo.switchAB].freqRx.frequency%100000 );
+        sprintf(disBuf, "%3lu.%05lu",
+            (unsigned long)(g_ChannelVfoInfo.chVfoInfo[g_ChannelVfoInfo.switchAB].freqRx.frequency / 100000U),
+            (unsigned long)(g_ChannelVfoInfo.chVfoInfo[g_ChannelVfoInfo.switchAB].freqRx.frequency % 100000U));
     LCD_DisplayText(30,28,(U8 *)&disBuf,FONTSIZE_16x16,LCD_DIS_NORMAL);
     
     QTScanDisplayStatus(0);

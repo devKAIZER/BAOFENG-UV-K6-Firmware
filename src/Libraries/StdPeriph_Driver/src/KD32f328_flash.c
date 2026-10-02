@@ -191,7 +191,6 @@ FLASH_Status FLASH_EraseAllPages(void)
 FLASH_Status FLASH_ProgramWord(uint32_t Address, uint32_t Data)
 {
   FLASH_Status status = FLASH_COMPLETE;
-  __IO uint32_t tmp = 0;
 
   /* Check the parameters */
   assert_param(IS_FLASH_PROGRAM_ADDRESS(Address));

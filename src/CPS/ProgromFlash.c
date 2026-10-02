@@ -463,8 +463,8 @@ U8 CheckRxDataOk(void)
 void HandleProgromCmd(void)
 {
     U8 temp;
-    U16 packedNum;
-    U32 addr;
+    U16 packedNum = 0;
+    U32 addr = 0;
 
     memcpy(flashProgrom.txBuf,progrom.rxBuf,4);
     flashProgrom.txLength = 4;

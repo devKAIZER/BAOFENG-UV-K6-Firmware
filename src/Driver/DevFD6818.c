@@ -462,8 +462,8 @@ void Rfic_GpioFlash( U8  gpiox )
 
 U8 Rfic_GetTxPAPara(void)
 {
-    U8 index;
-    U8 *bufAPC;
+    U8 index = 0;
+    U8 *bufAPC = NULL;
     U32 calcFreq;
     
     calcFreq = g_CurrentVfo->tx->frequency / 100000;
@@ -490,6 +490,10 @@ U8 Rfic_GetTxPAPara(void)
             index = 15;
         }
         bufAPC = TXPWR_V_136[g_CurrentVfo->txPower];
+    }
+    if (bufAPC == NULL)
+    {
+        return 0;
     }
     return bufAPC[index];
 }
@@ -947,7 +951,7 @@ U8  Rfic_GetNoiseVal(void)
 void Rfic_SQLSetup()
 {
     U8 index;
-    U8 i;
+    U8 i = TH_SQL_TAB_MUTE[g_radioInform.sqlLevel];
     U16 FREQ_TEMP;
 
     UINT_BUFF = TH_SQL_TAB[g_radioInform.sqlLevel];

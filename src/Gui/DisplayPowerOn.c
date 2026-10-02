@@ -4,7 +4,6 @@ extern void UI_DisplayPowerOn(void)
 {
     U8 picDisBuf[1024 + 1] = {0};
     U8 disbuf[32];
-    U8 len;
 
     SC5620_SetContpastRatio(g_radioInform.brightness);
 

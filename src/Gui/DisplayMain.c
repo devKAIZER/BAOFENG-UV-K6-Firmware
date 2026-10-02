@@ -9,7 +9,7 @@ extern void DisplayProgrom(void)
 {
     LCD_ClearFullBuf();
     LCD_DisplayPicture(8,48,ICON_PROG_SIZEX,ICON_PROG_SIZEY,iconProgrom,LCD_DIS_NORMAL);
-    LCD_DisplayText(42,24, "Program...", FONTSIZE_16x16,LCD_DIS_NORMAL);
+    LCD_DisplayText(42,24, (U8 *)"Program...", FONTSIZE_16x16,LCD_DIS_NORMAL);
     LCD_UpdateFullScreen();
 
     //�������������
@@ -119,7 +119,7 @@ Boolean FillChannelName2Buf(U8 *src,String *dest)
 
 extern void DisplayChannelNum(U16 currNum,U8 disAB)
 {
-    U8 buf[5] = {0},posY;
+    U8 buf[7] = {0},posY;
 
     if(0XFFFF == currNum)
     {
@@ -127,7 +127,7 @@ extern void DisplayChannelNum(U16 currNum,U8 disAB)
     }
     else
     {
-        sprintf((String *)buf,"M%3d",currNum+1);   
+        sprintf((String *)buf,"M%3u",(unsigned int)currNum+1U);
     }
 
     if(g_radioInform.dualRxFlag == 0)
@@ -154,7 +154,8 @@ extern void DisplayCurFreq(U8 posx,U8 posy,U32 freq)
     String freqBuf[12] = {0};
     U8 fontBuf[3] ={0};
 
-    sprintf(freqBuf,"%03d.%05d",freq/100000,freq%100000);
+        sprintf(freqBuf,"%03lu.%05lu",(unsigned long)(freq/100000U),
+            (unsigned long)(freq%100000U));
 
     memcpy(fontBuf,&freqBuf[7],2);
     freqBuf[7] = 0;
@@ -168,7 +169,8 @@ extern void DisplayCurFreq6X7(U8 posx,U8 posy,U32 freq)
 {
     String freqBuf[12] = {0};
 
-    sprintf(freqBuf,"%03d.%05d",freq/100000,freq%100000);
+        sprintf(freqBuf,"%03lu.%05lu",(unsigned long)(freq/100000U),
+            (unsigned long)(freq%100000U));
     freqBuf[9] = 0;
     
     LCD_DisplayBoldNum6X7(posy,posx,(U8 *)freqBuf);
@@ -590,7 +592,7 @@ static void DisplaySingleWatchHome(U8 tx, U8 signalLevel)
 {
     String line[20] = {0};
     String nameBuf[16] = {0};
-    String freqBuf[9] = {0};
+    String freqBuf[11] = {0};
     U16 channelNum = g_ChannelVfoInfo.channelNum[g_ChannelVfoInfo.switchAB];
     U32 frequency;
 
@@ -620,8 +622,9 @@ static void DisplaySingleWatchHome(U8 tx, U8 signalLevel)
         LCD_DisplayText(18, 16, (U8 *)nameBuf, FONTSIZE_16x16, LCD_DIS_NORMAL);
 
     frequency = tx ? g_CurrentVfo->tx->frequency : g_CurrentVfo->rx->frequency;
-            sprintf(freqBuf, "%03lu.%03lu", (unsigned long)(frequency / 100000),
-                (unsigned long)((frequency % 100000) / 100));
+    snprintf(freqBuf, sizeof(freqBuf), "%03lu.%03lu",
+             (unsigned long)(frequency / 100000U),
+             (unsigned long)((frequency % 100000U) / 100U));
         LCD_DisplayBoldNum12X13(35, 22, (U8 *)freqBuf);
 
             DisplaySingleWatchConfig();
@@ -1083,12 +1086,12 @@ extern void DisplayResetRxFlag(void)
 
 const U8 *modelTypeStr[] = 
 {
-    "BF",
-    "FCC",
-    "IC",
-    "CE",
-    "IND",
-    "CN"   
+    (const U8 *)"BF",
+    (const U8 *)"FCC",
+    (const U8 *)"IC",
+    (const U8 *)"CE",
+    (const U8 *)"IND",
+    (const U8 *)"CN"
 };
 
 extern void DisplaySoftVersion(void)

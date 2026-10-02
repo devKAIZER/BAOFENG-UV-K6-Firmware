@@ -788,10 +788,10 @@ extern void SaveRadioDcs(U8 tx)
 
 void OffectFrequency2Buf(U32 freq, U8 *dest, U8 len)
 {
-    String buf[9];
+    String buf[11];
     U8 i;
 
-    sprintf(buf, "%07d", freq);
+    snprintf(buf, sizeof(buf), "%07lu", (unsigned long)freq);
 
     for (i = 0; i < len; i++)
     { // ��ASCת��Ϊhex
@@ -953,11 +953,11 @@ extern void SaveChDelete(void)
             // ��ʾ��ȴ�
             if (g_radioInform.language == LANG_CN)
             {
-                sprintf(disBuf, "%-*.*s\n\r", 16, 16, "��ȴ�...");
+                snprintf(disBuf, sizeof(disBuf), "%-*.*s\n\r", 16, 16, "��ȴ�...");
             }
             else
             {
-                sprintf(disBuf, "%-*.*s\n\r", 16, 16, "Wait...");
+                snprintf(disBuf, sizeof(disBuf), "%-*.*s\n\r", 16, 16, "Wait...");
             }
             LCD_DisplayText(47, 0, (U8 *)disBuf, FONTSIZE_16x16, LCD_DIS_NORMAL);
             LCD_UpdateWorkAre();
@@ -1012,11 +1012,11 @@ extern void EnterResetMode(void)
     memset(disBuf, 0x00, 17);
     if (g_radioInform.language == LANG_CN)
     {
-        sprintf(disBuf, "%-*.*s\n\r", 16, 16, "ȷ�ϳ�ʼ��?");
+        snprintf(disBuf, sizeof(disBuf), "%-*.*s\n\r", 16, 16, "ȷ�ϳ�ʼ��?");
     }
     else
     {
-        sprintf(disBuf, "%-*.*s\n\r", 16, 16, "Sure to Reset?");
+        snprintf(disBuf, sizeof(disBuf), "%-*.*s\n\r", 16, 16, "Sure to Reset?");
     }
     LCD_DisplayText(47, 0, (U8 *)disBuf, FONTSIZE_16x16, LCD_DIS_NORMAL);
     LCD_UpdateWorkAre();
@@ -1063,11 +1063,11 @@ extern void EnterResetMode(void)
     // ��ʾ��ȴ�
     if (g_radioInform.language == LANG_CN)
     {
-        sprintf(disBuf, "%-*.*s\n\r", 16, 16, "  ��ȴ�...  ");
+        snprintf(disBuf, sizeof(disBuf), "%-*.*s\n\r", 16, 16, "  ��ȴ�...  ");
     }
     else
     {
-        sprintf(disBuf, "%-*.*s\n\r", 16, 16, "Please Wait...");
+        snprintf(disBuf, sizeof(disBuf), "%-*.*s\n\r", 16, 16, "Please Wait...");
     }
     LCD_DisplayText(47, 0, (U8 *)disBuf, FONTSIZE_16x16, LCD_DIS_NORMAL);
     LCD_UpdateWorkAre();

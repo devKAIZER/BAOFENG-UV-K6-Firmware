@@ -41,6 +41,9 @@ extern void TaskRemoteScanQT(void)
 
     switch (g_ScanQTInfo.state)
     {
+    case SCANQT_OFF:
+        break;
+
     case SCANQT_STEPUP:
         if (Rfic_GetSQLinkState() == FALSE)
         {

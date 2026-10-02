@@ -85,13 +85,21 @@ extern void StopWatchDisplayHome(void)
 extern void StopWatchDisplayTime(void)
 {
     String disBuf[16] = {0};
+    U8 minute;
+    U8 second;
+    U8 millisecond;
 
     if (g_sysRunPara.sysRunMode != MODE_STOPWATCH)
     {
         return;
     }
 
-    sprintf(disBuf, " %.2d--%.2d--%.2d   ", g_stopWatch.minute, g_stopWatch.second, g_stopWatch.millisecond);
+    minute = g_stopWatch.minute % 60U;
+    second = g_stopWatch.second % 60U;
+    millisecond = g_stopWatch.millisecond % 100U;
+    snprintf(disBuf, sizeof(disBuf), " %02u--%02u--%02u   ",
+             (unsigned int)minute, (unsigned int)second,
+             (unsigned int)millisecond);
     LCD_DisplayText(35, 16, (U8 *)disBuf, FONTSIZE_16x16, LCD_DIS_NORMAL);
     LCD_UpdateWorkAre();
 }
