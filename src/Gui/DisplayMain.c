@@ -441,7 +441,7 @@ static void DisplaySingleWatchMeter(U8 level, U8 tx, U8 update)
     U8 i;
     U8 filled;
     U8 x;
-    String label[3];
+    String label[4];
 
     if (level > 9)
     {
@@ -459,19 +459,19 @@ static void DisplaySingleWatchMeter(U8 level, U8 tx, U8 update)
         filled = level;
     }
 
-    SC5260_ClearArea(56, 0, 128, 8, 0);
-    LCD_DisplayNumber(57, 2, (U8 *)label, LCD_DIS_NORMAL);
+    SC5260_ClearArea(10, 22, 76, 8, 0);
+    LCD_DisplayNumber(10, 22, (U8 *)label, LCD_DIS_NORMAL);
 
     for (i = 0; i < 10; i++)
     {
-        x = 20 + i * 10;
+        x = 38 + i * 6;
         if (i < filled)
         {
-            SC5260_ClearArea(57, x, 8, 5, 1);
+            SC5260_ClearArea(11, x, 5, 5, 1);
         }
         else
         {
-            LCD_DrawRectangle(57, x, 8, 5, 0);
+            LCD_DrawRectangle(11, x, 5, 5, 0);
         }
     }
 
@@ -479,6 +479,31 @@ static void DisplaySingleWatchMeter(U8 level, U8 tx, U8 update)
     {
         LCD_UpdateWorkAre();
     }
+}
+
+static U8 CopySingleWatchName(const U8 *source, String *dest)
+{
+    U8 i = 0;
+    U8 j = 0;
+    U8 width = 0;
+
+    while (i < 12 && source[i] != 0xFF && source[i] != 0x00)
+    {
+        if (source[i] >= 0xA1 && i + 1 < 12 &&
+            source[i + 1] != 0xFF && source[i + 1] != 0x00)
+        {
+            dest[j++] = source[i++];
+            dest[j++] = source[i++];
+            width += 12;
+        }
+        else
+        {
+            dest[j++] = source[i++];
+            width += 6;
+        }
+    }
+    dest[j] = '\0';
+    return width;
 }
 
 static void FormatSingleWatchCode(const STR_FREQINFO *freq, String *code)
@@ -520,7 +545,7 @@ static void DisplaySingleWatchConfig(void)
 {
     String rxCode[12] = {0};
     String txCode[12] = {0};
-    String codeLine[24] = {0};
+    String codeLine[12] = {0};
     String offsetLine[12] = {0};
     U32 rxFrequency = g_CurrentVfo->rx->frequency;
     U32 txFrequency = g_CurrentVfo->tx->frequency;
@@ -530,30 +555,27 @@ static void DisplaySingleWatchConfig(void)
 
     FormatSingleWatchCode(g_CurrentVfo->rx, rxCode);
     FormatSingleWatchCode(g_CurrentVfo->tx, txCode);
+    if (g_CurrentVfo->rx->dcsCtsType == SUBAUDIO_CTS)
+    {
+        memmove(rxCode, rxCode + 2, strlen(rxCode + 2) + 1);
+    }
+    if (g_CurrentVfo->tx->dcsCtsType == SUBAUDIO_CTS)
+    {
+        memmove(txCode, txCode + 2, strlen(txCode + 2) + 1);
+    }
     sameCode = (g_CurrentVfo->rx->dcsCtsType == g_CurrentVfo->tx->dcsCtsType &&
                 g_CurrentVfo->rx->dcsCtsNum == g_CurrentVfo->tx->dcsCtsNum);
 
+    SC5260_ClearArea(40, 0, 128, 16, 0);
     if (sameCode)
     {
-        if (g_CurrentVfo->rx->dcsCtsType == SUBAUDIO_CTS)
-        {
-            sprintf(codeLine, "CTCSS %s", rxCode + 2);
-        }
-        else if (g_CurrentVfo->rx->dcsCtsType == SUBAUDIO_DCS_N ||
-                 g_CurrentVfo->rx->dcsCtsType == SUBAUDIO_DCS_I)
-        {
-            sprintf(codeLine, "DCS %s", rxCode + 1);
-        }
-        else
-        {
-            sprintf(codeLine, "CODE OFF");
-        }
+        snprintf(txCode, sizeof(txCode), "%s", rxCode);
     }
-    else
-    {
-        sprintf(codeLine, "R%s T%s", rxCode, txCode);
-    }
-    LCD_DisplayNumber(49, 2, (U8 *)codeLine, LCD_DIS_NORMAL);
+    snprintf(codeLine, sizeof(codeLine), "RX: %s", rxCode);
+    LCD_DisplayNumber(40, 2, (U8 *)codeLine, LCD_DIS_NORMAL);
+    snprintf(codeLine, sizeof(codeLine), "TX: %s", txCode);
+    LCD_DisplayNumber(48, 2, (U8 *)codeLine, LCD_DIS_NORMAL);
+    LCD_DisplayNumber(40, 92, (U8 *)"OFFSET", LCD_DIS_NORMAL);
 
     if (txFrequency >= rxFrequency)
     {
@@ -570,14 +592,14 @@ static void DisplaySingleWatchConfig(void)
 
     if (offset == 0)
     {
-        sprintf(offsetLine, "OFF");
-        offsetX = 104;
+        snprintf(offsetLine, sizeof(offsetLine), "SIMPLEX");
+        offsetX = 86;
     }
     else
     {
         offsetX = 86;
     }
-    LCD_DisplayNumber(49, offsetX, (U8 *)offsetLine, LCD_DIS_NORMAL);
+    LCD_DisplayNumber(48, offsetX, (U8 *)offsetLine, LCD_DIS_NORMAL);
 }
 
 extern void DisplaySingleWatchSignal(U8 level)
@@ -593,42 +615,69 @@ static void DisplaySingleWatchHome(U8 tx, U8 signalLevel)
     String line[20] = {0};
     String nameBuf[16] = {0};
     String freqBuf[11] = {0};
+    U8 textWidth;
+    U8 x;
     U16 channelNum = g_ChannelVfoInfo.channelNum[g_ChannelVfoInfo.switchAB];
     U32 frequency;
 
     SC5260_ClearArea(9, 0, 128, 55, 0);
     LCD_DisplayNumber(10, 2, (U8 *)"SW", LCD_DIS_NORMAL);
 
-    if (g_ChannelVfoInfo.chVfoInfo[g_ChannelVfoInfo.switchAB].chVfoMode == VFO_MODE)
-    {
-        sprintf(line, "VFO %c", g_ChannelVfoInfo.switchAB ? 'B' : 'A');
-    }
-    else
-    {
-        sprintf(line, "CH %03u", channelNum + 1);
-    }
-    LCD_DisplayNumber(10, 32, (U8 *)line, LCD_DIS_NORMAL);
-    sprintf(line, "PWR %c", g_CurrentVfo->txPower == 0 ? 'H' : 'L');
-    LCD_DisplayNumber(10, 92, (U8 *)line, LCD_DIS_NORMAL);
+    line[0] = g_CurrentVfo->txPower == 1 ? 'L' :
+              (g_CurrentVfo->txPower == 2 ? 'M' : 'H');
+    line[1] = '\0';
+    LCD_DisplayNumber(10, 116, (U8 *)line, LCD_DIS_NORMAL);
 
     if (g_ChannelVfoInfo.chVfoInfo[g_ChannelVfoInfo.switchAB].chVfoMode == VFO_MODE)
     {
-        TranStrToMiddle(nameBuf, (String *)(g_ChannelVfoInfo.switchAB ? "VFO B" : "VFO A"), 12);
+        snprintf(nameBuf, sizeof(nameBuf), "VFO %c", g_ChannelVfoInfo.switchAB ? 'B' : 'A');
     }
-    else if (FillChannelName2Buf(g_ChannelVfoInfo.chVfoInfo[g_ChannelVfoInfo.switchAB].channelName, nameBuf) == FALSE)
+    else
     {
-        TranStrToMiddle(nameBuf, (String *)"No Name", 12);
+        textWidth = CopySingleWatchName(g_ChannelVfoInfo.chVfoInfo[g_ChannelVfoInfo.switchAB].channelName, nameBuf);
+        if (textWidth == 0)
+        {
+            snprintf(nameBuf, sizeof(nameBuf), "No Name");
+        }
     }
-        LCD_DisplayText(18, 16, (U8 *)nameBuf, FONTSIZE_16x16, LCD_DIS_NORMAL);
+    textWidth = 0;
+    for (U8 i = 0; nameBuf[i] != '\0'; i++)
+    {
+        if ((U8)nameBuf[i] >= 0xA1)
+        {
+            textWidth += 12;
+            i++;
+        }
+        else
+        {
+            textWidth += 6;
+        }
+    }
+    x = (128 - textWidth) / 2;
+    LCD_DisplayText(18, x, (U8 *)nameBuf, FONTSIZE_12x12, LCD_DIS_NORMAL);
 
     frequency = tx ? g_CurrentVfo->tx->frequency : g_CurrentVfo->rx->frequency;
     snprintf(freqBuf, sizeof(freqBuf), "%03lu.%03lu",
              (unsigned long)(frequency / 100000U),
              (unsigned long)((frequency % 100000U) / 100U));
-        LCD_DisplayBoldNum12X13(35, 22, (U8 *)freqBuf);
+    textWidth = strlen(freqBuf) * 7;
+    x = (128 - textWidth) / 2;
+    LCD_DisplayBoldNum6X7(32, x, (U8 *)freqBuf);
 
-            DisplaySingleWatchConfig();
-        DisplaySingleWatchMeter(signalLevel, tx, 0);
+    if (g_ChannelVfoInfo.chVfoInfo[g_ChannelVfoInfo.switchAB].chVfoMode == VFO_MODE)
+    {
+        snprintf(line, sizeof(line), "VFO %c", g_ChannelVfoInfo.switchAB ? 'B' : 'A');
+    }
+    else
+    {
+        snprintf(line, sizeof(line), "CH %03u", channelNum + 1);
+    }
+    textWidth = strlen(line) * 6;
+    x = (128 - textWidth) / 2;
+    LCD_DisplayNumber(56, x, (U8 *)line, LCD_DIS_NORMAL);
+
+    DisplaySingleWatchConfig();
+    DisplaySingleWatchMeter(signalLevel, tx, 0);
 }
 
 
