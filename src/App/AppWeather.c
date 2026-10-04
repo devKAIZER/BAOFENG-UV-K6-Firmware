@@ -55,10 +55,10 @@ void WeatherChannelDown(U8 isScan)
 
 extern void EnterWeatherMode(void)
 {
-    // 进入天气预报时关闭双守
+    // 
     DualStandbyWorkOFF();
 
-    // 如果在菜单模式，则退出菜单
+    // 
     if (g_sysRunPara.sysRunMode == MODE_MENU)
     {
         Menu_ExitMode();
@@ -90,7 +90,7 @@ extern void ExitWeatherMode(void)
     ResetInputBuf();
     DualStandbyWorkOFF();
 
-    // 切换为显示主界面
+    // 
     DisplayRadioHome();
 
     VoiceBroadcastWithBeepLock(vo_OFF, BEEP_EXITMENU);
@@ -143,7 +143,7 @@ extern void WeatherScanTask(void)
     static U8 sqCnt = 0;
 
     if (g_sysRunPara.sysRunMode != MODE_WEATHER)
-    { // 不在扫描模式直接返回
+    { // 
         return;
     }
 
@@ -177,7 +177,7 @@ extern void WeatherScanTask(void)
             }
             return;
         }
-        // 扫描下一个信道
+        // 
         WeatherScanNextChannel();
         sqCnt = 0;
 
@@ -190,7 +190,7 @@ extern void WeatherScanTask(void)
                 g_scanInfo.scanTime = 50;
             }
         }
-        // 扫描下一个信道
+        // 
         WeatherScanNextChannel();
         sqCnt = 0;
 
@@ -209,7 +209,7 @@ extern void WeatherScanTask(void)
         }
         break;
     case WAIT_RECALL:
-        // 扫描下一个信道
+        // 
         WeatherScanNextChannel();
         sqCnt = 0;
 

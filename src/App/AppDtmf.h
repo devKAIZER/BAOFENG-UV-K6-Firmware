@@ -10,7 +10,7 @@ enum
     CALLTYPE_ALL
 };
 
-#define DTMF_ANI_LEN 3 // 定义本机ID长度
+#define DTMF_ANI_LEN 3 // ID
 
 typedef struct
 {
@@ -20,17 +20,17 @@ typedef struct
 
 typedef struct
 {
-    U8 machineId[5];  // 本机设备ID
-    U8 dtmfAlarmWord; // 报警码
-    U8 dtmfFlag;      // BIT1:  PTT松开发送本机ID
-                 // BIT0:  PTT按下发送本机ID
-    U8 onTime;    // DTMF码持续时间  范围：80-2000MS （步进为10MS）,取值:0 1 2 3 .... 195 默认：0
-    U8 offTime;   // DTMF码间断时间  范围：80-2000MS （步进为10MS）,取值:0 1 2 3 .... 195 默认：0
-    U8 separator; // 分隔符
-    U8 groupCall; // 组呼符
+    U8 machineId[5];  // ID
+    U8 dtmfAlarmWord; // 
+    U8 dtmfFlag;      // BIT1:  PTTID
+                 // BIT0:  PTTID
+    U8 onTime;    // DTMF  80-2000MS 10MS,:0 1 2 3 .... 195 0
+    U8 offTime;   // DTMF  80-2000MS 10MS,:0 1 2 3 .... 195 0
+    U8 separator; // 
+    U8 groupCall; // 
 } __attribute__((packed)) STF_DTMFSTORE;
 
-// 发码模式
+// 
 enum
 {
     DTMF_ONLINE = 1,
@@ -41,7 +41,7 @@ enum
     DTMF_ANI = 8
 };
 
-// DTMF工作状态
+// DTMF
 enum
 {
     DTMF_OVER = 0,
@@ -57,38 +57,38 @@ typedef struct
 
 typedef struct
 {
-    U8 code[16];        // DTMF发送的编码
-    U8 cntRxDtmf;       // DTMF解码数量
-    U8 state;           // 工作状态
-    U8 enCodeNum;       // 当前发码序号
-    U8 enCode;          // 当前需要发送的编码
-    U8 sendFlag;        // 正在发码标志
-    U16 timeOut;        // DTMF发码时间或者发码等待时间
-    U16 detTime;        // DTMF检测时间
-    U8 timeRxOut;       // 接收解码超时时间
-    String aniCode[8];  // 呼叫方号码
-    String callCode[8]; // 呼叫信息
-    U8 callType;        // 呼叫类型   个呼\带身份个呼\组呼\群呼
-    U8 matchTime[2];    // 匹配持续时间
-    U8 flagAck;         // 身份识别回传标志
-    U8 timerDlyTxEnd;   // 发码结束延时时间
+    U8 code[16];        // DTMF
+    U8 cntRxDtmf;       // DTMF
+    U8 state;           // 
+    U8 enCodeNum;       // 
+    U8 enCode;          // 
+    U8 sendFlag;        // 
+    U16 timeOut;        // DTMF
+    U16 detTime;        // DTMF
+    U8 timeRxOut;       // 
+    String aniCode[8];  // 
+    String callCode[8]; // 
+    U8 callType;        //    
+    U8 matchTime[2];    // 
+    U8 flagAck;         // 
+    U8 timerDlyTxEnd;   // 
 
-    U8 timerDtmfGroupRst; // DTMF呼叫复位时间   30s内不需要再次检测
-    U8 flagDtmfMatch;     // DTMF呼叫检测标志
+    U8 timerDtmfGroupRst; // DTMF   30s
+    U8 flagDtmfMatch;     // DTMF
 
     STR_CONTACT contact[20];
 
-    U8 onlineCode[16];  // 上线码
-    U8 offlineCode[16]; // 下线码
-    U8 killCode[16];    // 遥毙码
-    U8 reliveCode[16];  // 唤醒码
+    U8 onlineCode[16];  // 
+    U8 offlineCode[16]; // 
+    U8 killCode[16];    // 
+    U8 reliveCode[16];  // 
 
 } STR_DTMFINFO;
 
 extern STF_DTMFSTORE g_dtmfStore;
 extern STR_DTMFINFO dtmfInfo;
 extern const DTMFCODESTRUCT DTMFCODE[21];
-/************************************************************/
+
 extern void EnterDtmfEditMode(void);
 extern void ExitDtmfEditMode(void);
 extern void GetDtmfEditCode(void);

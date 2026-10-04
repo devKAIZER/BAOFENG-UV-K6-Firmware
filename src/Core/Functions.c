@@ -12,7 +12,7 @@ extern void ResetInputBuf(void)
 extern void ExitAllFunction(U8 flag)
 {
     ResetInputBuf(); 
-    
+
     ExitSearchFreqMode(1); 
     ExitWeatherMode();
     ExitStopWatchMode();
@@ -33,21 +33,21 @@ extern void ExitAllFunction(U8 flag)
     }
 
     /*if(g_sysRunPara.sysRunMode != MODE_MAIN)
-    {
-        DisplayHomePage();
-    }*/
+ {
+ DisplayHomePage();
+ }*/
 }
 
 extern void CheckAutoKeyLockTask(void)
 {
     if(g_radioInform.keyAutoLock)
-    {//自动键盘锁开启
+    {//
         if(g_sysRunPara.sysRunMode == MODE_MENU || g_sysRunPara.sysRunMode == MODE_SEARCH || g_sysRunPara.sysRunMode == MODE_STOPWATCH)
         {
-            //菜单模式下，键盘不自动锁定
+            //
             return;
         }
-    
+
         if(g_sysRunPara.keyAutoTime && (g_rfRxState != WAIT_RXEND) && g_rfState == RF_RX && (g_rfRxState != RX_MONI))
         {
             g_sysRunPara.keyAutoTime--;
@@ -76,7 +76,7 @@ extern void KeyLockFunSwitch(void)
         g_radioInform.keyLock = 1;
         Audio_PlayVoice(vo_keylock);
     }
-    
+
     DisplayUpdateLockFlag(1);
 }
 
@@ -96,7 +96,7 @@ extern void ChDisModeFastSwitch(void)
 {
      ResetInputBuf();
      DualStandbyWorkOFF();
-    
+
      if(g_ChannelVfoInfo.chVfoInfo[g_ChannelVfoInfo.switchAB].chVfoMode == VFO_MODE)
      {
          BeepOut(BEEP_NULL);
@@ -126,7 +126,7 @@ extern void VoxSwitchOnOff(void)
     {
         g_radioInform.voxSwitch = 0;
     }
-    //更新系统图标
+    //
     DisplayStateBar();
     BeepOut(BEEP_FMSW1);
 }
@@ -137,12 +137,12 @@ extern void VoxCheckTask(void)
     //String disbuf[16]={0};
 
     if(g_radioInform.voxSwitch == 0)
-    {//声控功能未开启
+    {//
         return;
     }  
 
     if(g_rfRxState == WAIT_RXEND || (g_rfState == RF_RX && g_sysRunPara.rfRxFlag.rxReceived == ON))
-    {//接收状态下不声控
+    {//
         g_sysRunPara.rfTxFlag.voxDetDly = 15;//1.5S
         return;
     }
@@ -154,25 +154,25 @@ extern void VoxCheckTask(void)
     }
 
     if(g_sysRunPara.rfTxFlag.voxDetDly)
-    {//用于延时声控检测，在声音播放完成后消除抖动使用
+    {//
         return;
     }
     voxData = UserADC_GetValOfVox();
     voxLevel = VOX_TH[g_radioInform.voxLevel+1];
 
     if(g_rfState == RF_TX)
-    {//开启声控发射后，停止的值需要小1.2mv左右
+    {//1.2mv
         voxLevel -= VOX_OFF_DIFF;
     }
     if(voxData > voxLevel)
     {	    
-        g_sysRunPara.rfTxFlag.voxWorkDly = 5 + g_radioInform.voxDelay;   //支持0.5S到2S
+        g_sysRunPara.rfTxFlag.voxWorkDly = 5 + g_radioInform.voxDelay;   //0.5S2S
 
         if(g_rfState == RF_RX)
         {
             Radio_EnterTxMode();
             if(g_rfState != RF_TX)
-            {//延时避免禁发出错
+            {//
                 g_sysRunPara.rfTxFlag.voxDetDly = 12; 
                 g_sysRunPara.rfTxFlag.voxWorkDly = 0;
             }
@@ -206,7 +206,7 @@ extern void Radio_TxKeyTone(U8 event, U8 para)
     }
 
     if(g_sysRunPara.dtmfToneFlag == 1 && (para == KEYSTATE_RELEASE))
-    {//有播报过按键侧音同时按键释放时，需要关闭按键侧音
+    {//
         Rfic_SetDtmfFreq(0,0);
         Rfic_ExitDTMFMode();
         Rfic_TxSingleTone_Off();
@@ -225,7 +225,7 @@ extern void Radio_TxKeyTone(U8 event, U8 para)
         {
             return;
         }
-        
+
         switch(event)
         {
             case KEYID_0:
@@ -280,7 +280,7 @@ extern void Radio_TxKeyTone(U8 event, U8 para)
                break; 
             case KEYID_SIDEKEY2:
                if(g_radioInform.rtone > 3)
-                {//限制发送1750信令是超出范围
+                {//1750
                     g_radioInform.rtone = 3;
                 }
                 DtmfSendKeypadCode(g_radioInform.rtone+17);

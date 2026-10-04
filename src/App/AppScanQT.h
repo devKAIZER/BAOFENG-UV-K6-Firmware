@@ -18,9 +18,9 @@ enum
 
 typedef struct
 {
-    ENUM_SCANQT state; // 亚音频扫描状态
-    U16 timeOut;       // 扫描超时时间
-    U8 dcsCtsType;     // 亚音频类型
+    ENUM_SCANQT state; // 
+    U16 timeOut;       // 
+    U8 dcsCtsType;     // 
     U32 dcsCtsDat;
     U8 isStandarDCS;
     U16 dcsIndex;

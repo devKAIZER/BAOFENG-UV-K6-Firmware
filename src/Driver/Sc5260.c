@@ -1,6 +1,6 @@
 #include "includes.h"
 
-/***************************   IO 接口  *****************************/
+/***************************   IO   *****************************/
 #define LCD_CS_H                GPIOB->BSRR = GPIO_Pin_12
 #define LCD_CS_L                GPIOB->BRR  = GPIO_Pin_12
 
@@ -9,9 +9,9 @@
 
 #define LCD_RST_H               GPIOB->BSRR = GPIO_Pin_8
 #define LCD_RST_L               GPIOB->BRR  = GPIO_Pin_8
-/*********************************************************************/
+
 U8 gLcdBuffer[8][128];
-/*********************************************************************/
+
 void SC5260_delay( U8  i )
 {
     while( i-- )
@@ -28,7 +28,7 @@ void SC5260_writeCmd( U8  dat )
     LCD_CS_L;
 	LCD_RS_L;
     SC5260_delay(10);
-    
+
     while(RESET == SPI_I2S_GetFlagStatus(SPI2, SPI_I2S_FLAG_TXE));
     SPI_SendData8(SPI2, dat);
     while(SET == SPI_I2S_GetFlagStatus(SPI2, SPI_I2S_FLAG_BSY)); 
@@ -102,7 +102,7 @@ extern void SC5260_Init(void)
 	SC5260_writeCmd( 0xAF );
 }
 
-//设置液晶对比度
+//
 extern void SC5620_SetContpastRatio(U8 level)
 {
     const U8 setLevel[5] = {37,41,45,48,51};
@@ -113,9 +113,8 @@ extern void SC5620_SetContpastRatio(U8 level)
     }
 
     SC5260_writeCmd( 0x81 );  
-    SC5260_writeCmd( setLevel[level] ); // 对比度细调
+    SC5260_writeCmd( setLevel[level] ); // 
 }
-
 
 void SC5260_DisplaySmallArea( U8 posY, U8 posX, U8 length,U8 wide,const U8 *pdat, U8 flagClear,U8 flagInvert)
 {
@@ -135,7 +134,7 @@ void SC5260_DisplaySmallArea( U8 posY, U8 posX, U8 length,U8 wide,const U8 *pdat
 	{
         return;
 	}
-    
+
     remainRows1 = posY % 8;
 	curPage = posY / 8;
 	maskLowerBits1 =  ( 1 << remainRows1 ) - 1;
@@ -161,7 +160,7 @@ void SC5260_DisplaySmallArea( U8 posY, U8 posX, U8 length,U8 wide,const U8 *pdat
 		{
 		    return;
 		}
-		
+
 	    if(wide <  (8-remainRows1))
 		{
 		    bufDat1 = gLcdBuffer[curPage][posX+i];
@@ -175,16 +174,16 @@ void SC5260_DisplaySmallArea( U8 posY, U8 posX, U8 length,U8 wide,const U8 *pdat
 		{
             bufDat1 = gLcdBuffer[curPage][posX+i] & maskLowerBits1 ;
 		}
-        
+
 		bufDat2 = (bufDat3 & maskHigherBits1);
 		if( wide < (8-remainRows1) )
 		{
            bufDat2 = bufDat2 & ((1 << wide) - 1);
 		}
 		bufDat2 <<= remainRows1;
-		
+
 		gLcdBuffer[curPage][posX+i] = bufDat1 | bufDat2;
-		
+
 		if( wide > (8-remainRows1) && (curPage < 7))
 		{
             remainRows2 = wide - (8-remainRows1);
@@ -200,7 +199,6 @@ void SC5260_DisplaySmallArea( U8 posY, U8 posX, U8 length,U8 wide,const U8 *pdat
 void SC5260_ClearArea( U8 posY, U8 posX, U8 length,U8 wide,U8 fillData)
 {
     U8 i = 0;
-    
 
 	if( wide == 0 || length == 0 )
 	{
@@ -222,12 +220,11 @@ void SC5260_ClearArea( U8 posY, U8 posX, U8 length,U8 wide,U8 fillData)
 	}
 }
 
-
 void SC5260_DisplayArea( U8 posY, U8 posX, U8 length,U8 wide,const U8 *pdat,U8 flagInvert)
 {
     U8 i = 0;
     U16 j = 0;
-    
+
 	if( wide == 0 || length == 0 )
 	{
         return;
@@ -250,7 +247,7 @@ void SC5260_DisplayArea( U8 posY, U8 posX, U8 length,U8 wide,const U8 *pdat,U8 f
 	}
 }
 
-//全屏更新
+//
 extern void LCD_UpdateFullScreen(void)
 {
     U8 i,j;
@@ -278,11 +275,11 @@ extern void LCD_UpdateFullScreen(void)
     LCD_CS_H;
 }
 
-//更新状态栏
+//
 extern void LCD_UpdateStateBar(void)
 {
     U8 j;
-    
+
     SC5260_SetStartPosition(0, 4);
 
     LCD_CS_L;
@@ -303,7 +300,7 @@ extern void LCD_UpdateStateBar(void)
     LCD_CS_H;
 }
 
-//更新工作区域
+//
 extern void LCD_UpdateWorkAre(void)
 {
     U8 i,j;
@@ -341,7 +338,7 @@ extern void LCD_ClearWorkArea(void)
     memset(&gLcdBuffer[1][0],0x00,128*7);
 }
 
-//清除液晶缓存
+//
 extern void LCD_ClearFullBuf(void)
 {
     memset(gLcdBuffer,0x00,sizeof(gLcdBuffer));

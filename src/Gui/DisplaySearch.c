@@ -44,7 +44,7 @@ extern void SearchFreqModeDisplayStepMsg( ENUM_SEARCHFREQ_STEP step )
     {
         LCD_DisplayText(17,108,(U8 *)"200",FONTSIZE_12x12,LCD_DIS_NORMAL);
     }
-    
+
     else if(searchFreqImofs.band == FREQ_BAND_350M)
     {
         LCD_DisplayText(17,108,(U8 *)"350",FONTSIZE_12x12,LCD_DIS_NORMAL);
@@ -57,14 +57,14 @@ extern void SearchFreqModeDisplayStepMsg( ENUM_SEARCHFREQ_STEP step )
 	if( step == STEP_SEEK_FREQ )
 	{
         LCD_DisplayText(33,37,(U8 *)&disBuf,FONTSIZE_12x12,LCD_DIS_NORMAL);
-	
+
 	    memset( disBuf, ' ', 9 );
         LCD_DisplayText(49,37,(U8 *)&disBuf,FONTSIZE_12x12,LCD_DIS_NORMAL);
 	}
 	else 
 	{
         LCD_DisplayText(49,37,(U8 *)&disBuf,FONTSIZE_12x12,LCD_DIS_NORMAL);
-	
+
         sprintf(disBuf, "%3lu.%05lu",
             (unsigned long)(searchFreqImofs.freq / 100000U),
             (unsigned long)(searchFreqImofs.freq % 100000U));
@@ -74,24 +74,11 @@ extern void SearchFreqModeDisplayStepMsg( ENUM_SEARCHFREQ_STEP step )
 	LCD_UpdateWorkAre();
 }
 
-
 extern void SearchFreqDisplayHome(void )
 {
-    U8 posx;
-    
     LCD_ClearWorkArea();
 
-    if(g_radioInform.language == LANG_CN)
-    {
-        posx = 52;
-    }
-    else
-    {
-        posx = 46;
-    }
-    //显示扫频标志
-    LCD_DisplayText(17,posx,(U8 *)((g_radioInform.language == LANG_CN)?"扫频":"SEARCH"),FONTSIZE_12x12, LCD_DIS_NORMAL);	
-    //显示频率
+    LCD_DisplayText(17,46,(U8 *)"SEARCH",FONTSIZE_12x12, LCD_DIS_NORMAL);
     SearchFreqModeDisplayStepMsg(STEP_SEEK_FREQ);
 }
 

@@ -18,7 +18,7 @@ static void DmaUpdateMemery(DMA_Channel_TypeDef* channelx,uint32_t memoryAddr,ui
 extern void VoiceOutput_Interrupt(void)
 {
     U16 length;
-    
+
     g_voiceInform.voicePlay.usedLen += 512;
 
     if((g_voiceInform.voicePlay.usedLen >= g_voiceInform.voiceIndex.length) || (g_voiceInform.voicePlay.finishFlag == 1))
@@ -37,15 +37,15 @@ extern void VoiceOutput_Interrupt(void)
         {
             length = 1024;
         }
-    
+
         if(g_voiceInform.voicePlay.dmaBufUsed == 1)
-        {//使用缓存B
+        {//B
             g_voiceInform.voicePlay.dmaBufUsed = 0;
             g_voiceInform.voicePlay.dmaBufAUseFlag = 1;
             DmaUpdateMemery(DMA1_Channel5,(uint32_t)g_voiceInform.voicePlay.dmaBufB,length);
         }
         else
-        {//使用缓存A
+        {//A
             g_voiceInform.voicePlay.dmaBufUsed = 1;
             g_voiceInform.voicePlay.dmaBufBUseFlag = 1;
             DmaUpdateMemery(DMA1_Channel5,(uint32_t)g_voiceInform.voicePlay.dmaBufA,length);
@@ -53,14 +53,13 @@ extern void VoiceOutput_Interrupt(void)
     }
 }
 
-
 extern void AudioHard_Init(void)
 {
     DMA_InitTypeDef  DMA_InitStructure = {0};
     GPIO_InitTypeDef GPIO_InitStructure = {0};
     TIM_TimeBaseInitTypeDef  TIM_TimeBaseStructure = {0};
     TIM_OCInitTypeDef        TIM_OCInitStructure = {0};
-    
+
     /* enable DMA clock */
     RCC_AHBPeriphClockCmd(RCC_AHBPeriph_DMA1, ENABLE);
     RCC_APB2PeriphClockCmd(RCC_APB2Periph_TIM1, ENABLE);
@@ -78,17 +77,17 @@ extern void AudioHard_Init(void)
     DMA_InitStructure.DMA_Mode = DMA_Mode_Circular;
     DMA_InitStructure.DMA_Priority = DMA_Priority_High;
     DMA_InitStructure.DMA_M2M = DMA_M2M_Disable;
-    
+
     DMA_Init(DMA1_Channel5, &DMA_InitStructure);
 
-    /*DMA 允许数据传输完成中断*/
+    /*DMA */
     DMA_ITConfig(DMA1_Channel5,DMA_IT_TC,ENABLE);
-    
+
     /* DMA1 Channel5 enable */
     DMA_Cmd(DMA1_Channel5, ENABLE);
 
     GPIO_PinAFConfig(GPIOA, GPIO_PinSource11,GPIO_AF_2);
-    
+
     GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_11;
     GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_AF;
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;//GPIO_Speed_10MHz;
@@ -96,15 +95,15 @@ extern void AudioHard_Init(void)
     GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_NOPULL;//GPIO_PuPd_UP;
     GPIO_Init(GPIOA, &GPIO_InitStructure);
 
-    /* TIMER configuration 设置载波频率为48K 
-    配置每4次改变PWM 1次实现输出频率固定为8K*/
+    /* TIMER configuration 48K 
+    4PWM 18K*/
     TIM_TimeBaseStructure.TIM_Prescaler = 0;   
     TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;   
     TIM_TimeBaseStructure.TIM_Period = 2000;          
     TIM_TimeBaseStructure.TIM_ClockDivision = 0x0;    
-    TIM_TimeBaseStructure.TIM_RepetitionCounter = 5; //6 固定为8K
+    TIM_TimeBaseStructure.TIM_RepetitionCounter = 5; //6 8K
     TIM_TimeBaseInit(TIM1, &TIM_TimeBaseStructure);
-        
+
     /* Channel 4 Configuration in PWM mode */
     TIM_OCInitStructure.TIM_OCMode =  TIM_OCMode_PWM2;    
     TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;  
@@ -115,21 +114,20 @@ extern void AudioHard_Init(void)
     TIM_OCInitStructure.TIM_OCNIdleState = TIM_OCIdleState_Reset;
     TIM_OCInitStructure.TIM_Pulse = 0;  
     TIM_OC4Init(TIM1, &TIM_OCInitStructure);  
-    
+
     /* TIM1 DMA Update enable */
     TIM_DMACmd(TIM1, TIM_DMA_Update, ENABLE);
 
     //TIM_SelectCCDMA(TIM1, ENABLE);
     TIM_DMAConfig(TIM1, TIM_DMABase_CCR4, TIM_DMABurstLength_1Transfer);
-    
+
     /* TIM1 enable */
     TIM_Cmd(TIM1, ENABLE);
-    
+
     /* TIM1 PWM Outputs Enable */
     TIM_CtrlPWMOutputs(TIM1, DISABLE);
     //TIM_CtrlPWMOutputs(TIM1, ENABLE);
 }
-
 
 extern void Audio_PlayVoice(U8 Data)	
 {   
@@ -140,47 +138,43 @@ extern void Audio_PlayVoice(U8 Data)
 
     if(g_radioInform.voiceSw == 0) 
     {   
-        //语音关闭
+        //
         if(g_radioInform.beepsSwitch == 1)
         {
             BeepOut(BEEP_ERROR);
         }   
         return;
     }
-    else if(g_radioInform.language != LANG_CN) 
+    else
     {
         Data += vo_switch_en;
     }
-    
+
     if(voice.voiceState)
-    {//打断播报
+    {//
         Audio_PlayStop();
     }
-    
+
     voice.voiceState  = 1;
     voice.voiceBuf[0] = Data;
     voice.voiceCnt    = 1;
     voice.busyFlag = 0;
 }
 
-
 extern void Audio_PlayNumInQueue(U8 Data)
 {
     U8 i;
-    
+
   	if(g_radioInform.voiceSw == 0) 
 	{   
-	    //语音关闭
+	    //
 	    return;
 	}
-	
+
 	Data += vo_0;
 
-	if(g_radioInform.language != LANG_CN) 
-	{
-        Data += vo_switch_en;
-	}
-	
+	Data += vo_switch_en;
+
 	if(voice.voiceCnt)
 	{
 	    for(i=voice.voiceCnt;i>0;i--)
@@ -202,7 +196,7 @@ extern void Audio_PlayChanNum(U8 Data)
 {
     U8 i,j;
     U8 k;
-    
+
     if(g_radioInform.voiceSw == 0)
     {
         return;
@@ -214,180 +208,104 @@ extern void Audio_PlayChanNum(U8 Data)
     j = Data % 100 / 10;
     k = Data % 10;
 
-    if( g_radioInform.language == LANG_CN )
+    if( Data < 20 || (i == 0 && j > 0 && k == 0))
+    {//1
+    if( Data <= 10 )
     {
-        if( i > 0 )
-        {
-            if( k != 0 && j != 0 )
-            {
-                voice.voiceBuf[4] = i + vo_0;
-                voice.voiceBuf[3] = vo_100;
-
-                voice.voiceCnt = 5;
-            }
-            else
-            {
-                if( k == 0 && j == 0 )
-                {
-                    voice.voiceBuf[1] = i + vo_0;
-                    voice.voiceBuf[0] = vo_100;
-
-                    voice.voiceCnt = 2;
-                }
-                else
-                {
-                    voice.voiceBuf[3] = i + vo_0;
-                    voice.voiceBuf[2] = vo_100;
-
-                    voice.voiceCnt = 4;
-                }
-            }
-            
-        }
-
-        if( j > 0 )
-        {
-            if( k != 0 )
-            {
-                voice.voiceBuf[2] = j + vo_0;
-                voice.voiceBuf[1] = vo_10;
-                voice.voiceBuf[0] = k + vo_0;
-
-                if(i == 0)
-                {
-                    voice.voiceCnt = 3;
-                }
-            }
-            else
-            {
-                voice.voiceBuf[1] = j + vo_0;
-                voice.voiceBuf[0] = vo_10;
-
-                if( i == 0 )
-                {
-                    voice.voiceCnt = 2;
-                }
-            }
-        }
-        else
-        {
-            if( i == 0 )
-            {
-                voice.voiceBuf[0] = k + vo_0;
-                voice.voiceCnt = 1;
-            }
-            else
-            {
-                if( k != 0 )
-                {
-                    voice.voiceBuf[1] = vo_0;
-                    voice.voiceBuf[0] = k + vo_0;
-                }
-            }
-        }
-
+        voice.voiceBuf[0] = Data + vo_zero;
+    }
+    else if(Data > 10 && Data < 20)
+    {
+        voice.voiceBuf[0] = k + vo_eleven - 1;
     }
     else
     {
-        if( Data < 20 || (i == 0 && j > 0 && k == 0))
-        {//个数为1
-            if( Data <= 10 )
-            {
-                voice.voiceBuf[0] = Data + vo_zero;
-            }
-            else if(Data > 10 && Data < 20)
-            {
-                voice.voiceBuf[0] = k + vo_eleven - 1;
-            }
-            else
-            {
-                voice.voiceBuf[0] = j + vo_twenty - 3;
-            }
+        voice.voiceBuf[0] = j + vo_twenty - 3;
+    }
 
-            voice.voiceCnt = 1;
-        }
-        else if( Data > 100 && (j < 2 || (k == 0 && j > 0)) )
-        {//个数为4
-            if( j < 2 )
-            {
-        #if vo_and
-               voice.voiceBuf[3] = i + vo_zero;
-               voice.voiceBuf[2] = vo_hundred; // Hundred
-               voice.voiceBuf[1] = vo_and;
-        #else
-               voice.voiceBuf[2] = i + vo_zero;
-               voice.voiceBuf[1] = vo_hundred; // Hundred
-        #endif
-               if(j == 1)
-               {
-                   if( k == 0 )
-                   {
-                       voice.voiceBuf[0] = 10 + vo_zero;;
-                   }
-                   else
-                   {
-                       voice.voiceBuf[0] = k + vo_eleven - 1;
-                   }
-               }
-               else
-               {
-                   voice.voiceBuf[0] = k + vo_zero;
-               }
-            }
-            else
-            {
-        #if vo_and
-               voice.voiceBuf[3] = i + vo_zero;
-               voice.voiceBuf[2] = vo_hundred;
-               voice.voiceBuf[1] = vo_and;
-               voice.voiceBuf[0] = j + vo_twenty - 3;
-        #else
-               voice.voiceBuf[2] = i + vo_zero;
-               voice.voiceBuf[1] = vo_hundred;
-               voice.voiceBuf[0] = j + vo_twenty - 3;
-        #endif
-            }
+    voice.voiceCnt = 1;
+    }
+    else if( Data > 100 && (j < 2 || (k == 0 && j > 0)) )
+    {//4
+    if( j < 2 )
+    {
     #if vo_and
-            voice.voiceCnt = 4;
+       voice.voiceBuf[3] = i + vo_zero;
+       voice.voiceBuf[2] = vo_hundred; // Hundred
+       voice.voiceBuf[1] = vo_and;
     #else
-            voice.voiceCnt = 3;
+       voice.voiceBuf[2] = i + vo_zero;
+       voice.voiceBuf[1] = vo_hundred; // Hundred
     #endif
-        }
-        else if( Data > 100 && (j >= 2 && k != 0) )
-        {//个数为5
+       if(j == 1)
+       {
+           if( k == 0 )
+           {
+               voice.voiceBuf[0] = 10 + vo_zero;;
+           }
+           else
+           {
+               voice.voiceBuf[0] = k + vo_eleven - 1;
+           }
+       }
+       else
+       {
+           voice.voiceBuf[0] = k + vo_zero;
+       }
+    }
+    else
+    {
     #if vo_and
-            voice.voiceBuf[4] = i + vo_zero;
-            voice.voiceBuf[3] = vo_hundred;
-            voice.voiceBuf[2] = vo_and;
-            voice.voiceBuf[1] = j + vo_twenty - 3;
-            voice.voiceBuf[0] = k + vo_zero;
-
-            voice.voiceCnt = 5;
-            
+       voice.voiceBuf[3] = i + vo_zero;
+       voice.voiceBuf[2] = vo_hundred;
+       voice.voiceBuf[1] = vo_and;
+       voice.voiceBuf[0] = j + vo_twenty - 3;
     #else
-            voice.voiceBuf[3] = i + vo_zero;
-            voice.voiceBuf[2] = vo_hundred;
-            voice.voiceBuf[1] = j + vo_twenty - 3;
-            voice.voiceBuf[0] = k + vo_zero;
-
-            voice.voiceCnt = 4;
+       voice.voiceBuf[2] = i + vo_zero;
+       voice.voiceBuf[1] = vo_hundred;
+       voice.voiceBuf[0] = j + vo_twenty - 3;
     #endif
-        }
-        else
-        {//个数为2
-            if( (Data >= 100 && (Data % 100 == 0)))
-            {
-                voice.voiceBuf[1] = i + vo_zero;
-                voice.voiceBuf[0] = vo_hundred;
-            }
-            else
-            {
-                voice.voiceBuf[1] = j + vo_twenty - 3;
-                voice.voiceBuf[0] = k + vo_zero;
-            }
+    }
+    #if vo_and
+    voice.voiceCnt = 4;
+    #else
+    voice.voiceCnt = 3;
+    #endif
+    }
+    else if( Data > 100 && (j >= 2 && k != 0) )
+    {//5
+    #if vo_and
+    voice.voiceBuf[4] = i + vo_zero;
+    voice.voiceBuf[3] = vo_hundred;
+    voice.voiceBuf[2] = vo_and;
+    voice.voiceBuf[1] = j + vo_twenty - 3;
+    voice.voiceBuf[0] = k + vo_zero;
 
-            voice.voiceCnt = 2;
-        }
+    voice.voiceCnt = 5;
+
+    #else
+    voice.voiceBuf[3] = i + vo_zero;
+    voice.voiceBuf[2] = vo_hundred;
+    voice.voiceBuf[1] = j + vo_twenty - 3;
+    voice.voiceBuf[0] = k + vo_zero;
+
+    voice.voiceCnt = 4;
+    #endif
+    }
+    else
+    {//2
+    if( (Data >= 100 && (Data % 100 == 0)))
+    {
+        voice.voiceBuf[1] = i + vo_zero;
+        voice.voiceBuf[0] = vo_hundred;
+    }
+    else
+    {
+        voice.voiceBuf[1] = j + vo_twenty - 3;
+        voice.voiceBuf[0] = k + vo_zero;
+    }
+
+    voice.voiceCnt = 2;
     }
 }
 
@@ -482,21 +400,21 @@ extern void Audio_PlayStart(U8 index)
     U32 indexAddr;
     U16 i,startLen;
     U8  dacBuf[512];
-    
+
     indexAddr = (index - 0x10)* 8 + FLASH_VOICE_BASIC_ADDR;
     SpiFlash_ReadBytes(indexAddr,(U8  *)&g_voiceInform.voiceIndex.length,8);
     g_voiceInform.voiceIndex.dataAddr += FLASH_VOICE_BASIC_ADDR;
 
     if(g_voiceInform.voiceIndex.length > 40960 || g_voiceInform.voiceIndex.length == 0x00)
-    {//无音频数据，直接返回
+    {//
         return;
     }
-    
-    //语音播报时将收发全部关闭
+
+    //
     Rfic_RxTxOnOffSetup(RFIC_IDLE);
     GPIOA->BSRR = GPIO_Pin_11; 
 
-    //读取音频数据
+    //
     g_voiceInform.voicePlay.lastPackage = 0;
     SpiFlash_ReadBytes(g_voiceInform.voiceIndex.dataAddr,dacBuf,512);
     g_voiceInform.voicePlay.logicAddr = g_voiceInform.voiceIndex.dataAddr + 512;
@@ -523,19 +441,19 @@ extern void Audio_PlayStart(U8 index)
     g_voiceInform.voicePlay.dmaBufBUseFlag = 1;
     g_voiceInform.voicePlay.usedLen = 0;
 
-     /*DMA 允许数据传输完成中断*/
+     /*DMA */
     DMA_ITConfig(DMA1_Channel5,DMA_IT_TC,ENABLE);
     DMA_ClearFlag(DMA1_FLAG_GL5);    
 
-    //启动语音播报
+    //
     DmaUpdateMemery(DMA1_Channel5,(uint32_t)g_voiceInform.voicePlay.dmaBufA,1024);
 
     TIM_CtrlPWMOutputs(TIM1, ENABLE);      
     voice.busyFlag = 1;
-    
-    //延时消除开启的破音
+
+    //
     DelayMs(30);
-    //开启喇叭
+    //
     SpeakerSwitch(ON);
 
     g_sysRunPara.rfTxFlag.voxDetDly = 10;
@@ -571,22 +489,20 @@ extern void Audio_PlayContinue(void)
     }
 }
 
-
 extern void Audio_PlayStop(void)
 {
     SpeakerSwitch(OFF);    
 
     DMA_Cmd(DMA1_Channel5, DISABLE);     
     TIM_CtrlPWMOutputs(TIM1, DISABLE); 
-    //清除中断标志
+    //
     DMA_ITConfig(DMA1_Channel5,DMA_IT_TC,DISABLE);
     DMA_ClearFlag(DMA1_FLAG_GL5); 
-    
+
     voice.voiceState = 0;
     voice.voiceCnt = 0;
     voice.busyFlag = 0;  
 }
-
 
 extern U8 Audio_CheckBusy(void)
 {
@@ -601,11 +517,11 @@ extern void Audio_PlayTask(void)
         {
             if(voice.voiceCnt == 0)
             {
-                //语音播报结束
+                //
                 voice.voiceState = 0;
                 g_sysRunPara.rfTxFlag.voxDetDly = 8;
-    
-                //关闭喇叭
+
+                //
                 SpeakerSwitch(OFF);
                 DelayMs(30);
 

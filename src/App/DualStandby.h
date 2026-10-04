@@ -3,12 +3,12 @@
 
 typedef struct
 {
-    U8 dualRxFlag;     // 双守接收标志,守候信道接收到信号时置位
-    U8 dualOnFlag;     // 双守开启标志
-    U8 dualRxTime;     // 双守切换时间
-    U8 UpdateFalg;     // 更新显示标志，用于在守候信道接收到信号时更新标志使用
-    U8 dualResumeFlag; // 双守信道标志
-    U8 dualResumeTime; // N秒后自动回到主信道
+    U8 dualRxFlag;     // ,
+    U8 dualOnFlag;     // 
+    U8 dualRxTime;     // 
+    U8 UpdateFalg;     // 
+    U8 dualResumeFlag; // 
+    U8 dualResumeTime; // N
 } STR_DUAL;
 
 extern STR_DUAL dualStandby;

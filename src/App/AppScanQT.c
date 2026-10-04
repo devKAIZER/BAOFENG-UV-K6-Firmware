@@ -4,10 +4,10 @@ STR_REMOTESCANQT g_ScanQTInfo;
 
 extern void EnterRemoteScanQTMode(void)
 {
-    // 进入收音机时关闭双守
+    // 
     DualStandbyWorkOFF();
 
-    // 如果在菜单模式，则退出菜单
+    // 
     if (g_sysRunPara.sysRunMode == MODE_MENU)
     {
         Menu_ExitMode();
@@ -26,7 +26,7 @@ extern void ExitRemoteScanQTMode(void)
     ResetInputBuf();
     DualStandbyWorkOFF();
 
-    // 切换为显示主界面
+    // 
     DisplayRadioHome();
 }
 
@@ -157,16 +157,16 @@ extern void SaveQTScanResult(void)
             if (g_ChannelVfoInfo.chVfoInfo[g_ChannelVfoInfo.switchAB].chVfoMode == VFO_MODE)
             {
                 if (g_ScanQTInfo.dcsIndex < 211)
-                {                                                                             // 选择了跳频以外的数字亚音频
-                    g_ChannelVfoInfo.vfoInfo[g_ChannelVfoInfo.switchAB].vfoFlag.Byte &= 0xFE; // 清除学习跳频标志
+                {                                                                             // 
+                    g_ChannelVfoInfo.vfoInfo[g_ChannelVfoInfo.switchAB].vfoFlag.Byte &= 0xFE; // 
                     g_ChannelVfoInfo.vfoInfo[g_ChannelVfoInfo.switchAB].rxDCSCTSNum = g_ScanQTInfo.dcsIndex;
                 }
             }
             else
             {
                 if (g_ScanQTInfo.dcsIndex < 211)
-                {                                                                                 // 选择了跳频以外的数字亚音频
-                    g_ChannelVfoInfo.channelInfo[g_ChannelVfoInfo.switchAB].chFlag3.Byte &= 0xFE; // 清除学习跳频标志
+                {                                                                                 // 
+                    g_ChannelVfoInfo.channelInfo[g_ChannelVfoInfo.switchAB].chFlag3.Byte &= 0xFE; // 
                     g_ChannelVfoInfo.channelInfo[g_ChannelVfoInfo.switchAB].rxDCSCTSNum = g_ScanQTInfo.dcsIndex;
                 }
             }
@@ -177,15 +177,15 @@ extern void SaveQTScanResult(void)
             {
                 g_ChannelVfoInfo.channelInfo[g_ChannelVfoInfo.switchAB].decoderCode = g_ScanQTInfo.dcsCtsDat;
                 g_ChannelVfoInfo.channelInfo[g_ChannelVfoInfo.switchAB].decoderCode &= 0X007FFFFF;
-                g_ChannelVfoInfo.channelInfo[g_ChannelVfoInfo.switchAB].decoderCode |= 0xA0000000; // 表示学习跳频
-                g_ChannelVfoInfo.channelInfo[g_ChannelVfoInfo.switchAB].chFlag3.Byte |= 0X01;      // 破码标志
+                g_ChannelVfoInfo.channelInfo[g_ChannelVfoInfo.switchAB].decoderCode |= 0xA0000000; // 
+                g_ChannelVfoInfo.channelInfo[g_ChannelVfoInfo.switchAB].chFlag3.Byte |= 0X01;      // 
             }
             else
             {
                 g_ChannelVfoInfo.vfoInfo[g_ChannelVfoInfo.switchAB].decoderCode = g_ScanQTInfo.dcsCtsDat;
                 g_ChannelVfoInfo.vfoInfo[g_ChannelVfoInfo.switchAB].decoderCode &= 0X007FFFFF;
-                g_ChannelVfoInfo.vfoInfo[g_ChannelVfoInfo.switchAB].decoderCode |= 0xA0000000; // 表示学习跳频
-                g_ChannelVfoInfo.vfoInfo[g_ChannelVfoInfo.switchAB].vfoFlag.Byte |= 0X01;      // 破码标志
+                g_ChannelVfoInfo.vfoInfo[g_ChannelVfoInfo.switchAB].decoderCode |= 0xA0000000; // 
+                g_ChannelVfoInfo.vfoInfo[g_ChannelVfoInfo.switchAB].vfoFlag.Byte |= 0X01;      // 
             }
         }
     }

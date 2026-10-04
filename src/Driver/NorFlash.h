@@ -1,12 +1,11 @@
 #ifndef _INC_NORFLASH_H
     #define _INC_NORFLASH_H
-    
-//定义flash使用相关参数
-#define SPIFLASH_PAGESIZE              256      //定义flash每页的数据大小
-#define SPIFLASH_SECTORSIZE           4096      //一块4KByte
 
-/*************************************************************************/
-//定义Flsh使用相关命令
+//flash
+#define SPIFLASH_PAGESIZE              256      //flash
+#define SPIFLASH_SECTORSIZE           4096      //4KByte
+
+//Flsh
 #define SPIFLASH_WRITE_ENABLE          0x06
 #define SPIFLASH_WRITE_DISABLE         0x04
 #define SPIFLASH_READSTATUS_REG1       0x05
@@ -30,7 +29,6 @@
 #define SPIFLASH_4BYTEALIGN_ENABLE     0XB7
 #define SPIFLASH_4BYTEALIGN_DISABLE    0XE9
 
-/*************************************************************************/
 extern void SpiFlash_Init(void);
 extern void SpiFlash_ReadBytes(uint32_t addr,uint8_t *buf_p,uint16_t length);
 extern void SpiFlash_WriteBytes(uint32_t addr,const uint8_t *buf_p,uint32_t length);

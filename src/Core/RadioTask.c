@@ -113,12 +113,12 @@ extern void GetHardWorkBand(U16 freq)
 }
 const U16 TxCheckFreq[][6] =
     {
-        {1360, 1740, 4000, 4800, 2200, 2550}, // 宝锋内部
-        {1440, 1480, 2220, 2250, 4200, 4500}, // 美国 FCC 业余无线电
-        {1440, 1480, 4300, 4500, 4300, 4500}, // 加拿大 IC 业余无线电 02
-        {1440, 1460, 4300, 4400, 4300, 4400}, // 欧盟 CE 业余无线电    03
-        {1360, 1740, 4000, 4800, 4000, 4800}, // 印尼业余04 IAN Amateur
-        {1440, 1480, 4300, 4400, 4300, 4400}, // 中国 05
+        {1360, 1740, 4000, 4800, 2200, 2550}, // 
+        {1440, 1480, 2220, 2250, 4200, 4500}, //  FCC 
+        {1440, 1480, 4300, 4500, 4300, 4500}, //  IC  02
+        {1440, 1460, 4300, 4400, 4300, 4400}, //  CE     03
+        {1360, 1740, 4000, 4800, 4000, 4800}, // 04 IAN Amateur
+        {1440, 1480, 4300, 4400, 4300, 4400}, //  05
 };
 
 Boolean CheckCanTxOverRange(U32 freq)
@@ -148,7 +148,7 @@ Boolean CheckFreqInTxFreqRange(U32 freq)
 
     tempFreq = freq / 10000;
 
-    // 获取当前工作频段
+    // 
     GetHardWorkBand(tempFreq);
 
     if (CheckCanTxOverRange(freq) == TRUE)
@@ -159,12 +159,12 @@ Boolean CheckFreqInTxFreqRange(U32 freq)
     if (g_sysRunPara.moduleType <= 1)
     {
         if ((g_rfMoudel.txEn220M == 0) && (tempFreq >= TxCheckFreq[g_sysRunPara.moduleType][4] && tempFreq < TxCheckFreq[g_sysRunPara.moduleType][5]))
-        { // 强制关闭220M发射
+        { // 220M
             return FALSE;
         }
     }
 
-    // 通过机型码判断频段信息
+    // 
     if (((tempFreq >= TxCheckFreq[g_sysRunPara.moduleType][0]) && (tempFreq < TxCheckFreq[g_sysRunPara.moduleType][1])) || ((tempFreq >= TxCheckFreq[g_sysRunPara.moduleType][2]) && (tempFreq < TxCheckFreq[g_sysRunPara.moduleType][3])) || ((tempFreq >= TxCheckFreq[g_sysRunPara.moduleType][4]) && (tempFreq < TxCheckFreq[g_sysRunPara.moduleType][5])))
     {
         return TRUE;
@@ -253,7 +253,7 @@ extern void Radio_EnterTxMode(void)
     txFlag = CheckFreqInTxFreqRange(g_CurrentVfo->freqTx.frequency);
 
     if ((g_CurrentVfo->busyLock && g_sysRunPara.rfRxFlag.rxReceiveOn == ON) || g_radioInform.txForbid)
-    { // 遇忙禁发
+    { // 
         beepFlag = 1;
     }
     else if (CheckBatteryCanTx() == TRUE && txFlag == TRUE && g_sysRunPara.rfTxFlag.txEnable[g_ChannelVfoInfo.BandFlag] == 1)
@@ -571,13 +571,13 @@ void TotTimeWarning(void)
     static U8 flashFlag = 0;
 
     if (g_radioInform.totLevel == 0)
-    { // 发射超时功能关闭
+    { // 
         return;
     }
     if (g_sysRunPara.rfTxFlag.totTime < (g_radioInform.toa * 10))
     {
         if (g_sysRunPara.rfTxFlag.totTime % 3 == 0)
-        { // 发射LED闪烁,0.3S闪烁一次
+        { // LED,0.3S
             if (flashFlag == 0)
             {
                 LedTxSwitch(LED_FLASH);
@@ -591,9 +591,9 @@ void TotTimeWarning(void)
     }
 
     if (g_sysRunPara.rfTxFlag.totTime == 0)
-    { // 发射结束
+    { // 
         if (g_sysRunPara.dtmfToneFlag == 1)
-        { // 防止一直按按键到发射超时
+        { // 
             Rfic_SetDtmfFreq(0, 0);
             Rfic_EnterDTMFMode(0);
             Rfic_TxSingleTone_Off();
@@ -695,8 +695,8 @@ extern void RF_TxTask(void)
 
 const U8 RssiLevel[5][4] =
     {
-        {135, 128, 124, 120}, // V段 ,116
-        {101, 94, 90, 86},    // U段, 82
+        {135, 128, 124, 120}, // V ,116
+        {101, 94, 90, 86},    // U, 82
         {108, 101, 97, 93},   // 220-260, 89
         {85, 78, 74, 71},     // 350-390, 67
         {132, 128, 124, 120}  // AM ,116
@@ -742,7 +742,7 @@ extern void CalculateSqlLevel(void)
             return;
         }
 
-        // 计算SQL信号强度等级
+        // SQL
         if (rssi < RssiLevel[g_ChannelVfoInfo.BandFlag][3])
         {
             rssi = 0;
@@ -925,7 +925,7 @@ extern void RF_RxTask(void)
 
             sqCnt = 0;
             if (g_radioInform.fmInterrupt == 0 && g_sysRunPara.sysRunMode == MODE_FM)
-            { // 收音机开启不允许打断
+            { // 
                 return;
             }
             FmEnterSleepMode();
@@ -989,7 +989,7 @@ extern void RF_RxTask(void)
             if (g_CurrentVfo->rx->dcsCtsType)
             {
                 if (Rfic_GetTail())
-                { // 判断是否是尾音消除
+                { // 
                     ctcsDetFlag = 1;
                     if (tailDetFlag == 0)
                     {
@@ -1007,10 +1007,10 @@ extern void RF_RxTask(void)
                     if (Rfic_CheckCtsState() == TRUE && dtmfInfo.matchTime[g_ChannelVfoInfo.dualAB] == 0)
                     {
                         if (g_sysRunPara.rfRxFlag.relayTailDetTime == 0 && ctcsDetFlag == 0)
-                        { // 延时检测亚音，避免亚音频干扰
+                        { // 
 
                             ctcsDetFlag = 1;
-                            // 亚音检测不对时，需要结束接收流程
+                            // 
                             g_sysRunPara.rfRxFlag.relayTailDetTime = 8;
                             if (g_sysRunPara.rfTxFlag.relayTailSetTime == 0)
                             {
@@ -1021,7 +1021,7 @@ extern void RF_RxTask(void)
                     else
                     {
                         ctcsDetFlag = 0;
-                        // 判断亚音频延时使用
+                        // 
                         g_sysRunPara.rfRxFlag.relayTailDetTime = 20;
                     }
                 }

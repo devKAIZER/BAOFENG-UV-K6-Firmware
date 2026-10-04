@@ -50,7 +50,7 @@ extern void Menu_GetSubItemPara(U8 menuIndex)
         g_inputbuf.isFirstInput = 0xaa;
 
         if (g_ChannelVfoInfo.chVfoInfo[g_ChannelVfoInfo.switchAB].chVfoMode == VFO_MODE)
-        { // Ƶ��ģʽ����Ҫ�����ŵ�����
+        { // ƵģʽҪŵ
             g_menuInfo.selectedItem = 0xFFFF;
             break;
         }
@@ -80,7 +80,7 @@ extern void Menu_GetSubItemPara(U8 menuIndex)
         g_menuInfo.subMaxItem = 212;
 
         if ((g_CurrentVfo->rx->dcsCtsNum & 0xA0000000) == 0XA0000000)
-        { // ������̶�Ϊ211
+        { // ̶Ϊ211
             g_menuInfo.selectedItem = 211;
             g_sysRunPara.decoderCode = g_CurrentVfo->rx->dcsCtsNum;
         }
@@ -102,7 +102,7 @@ extern void Menu_GetSubItemPara(U8 menuIndex)
         g_menuInfo.inputMode = MENU_ONE_DECODE;
         g_menuInfo.subMaxItem = 212;
         if ((g_CurrentVfo->tx->dcsCtsNum & 0xA0000000) == 0XA0000000)
-        { // ������̶�Ϊ211
+        { // ̶Ϊ211
             g_menuInfo.selectedItem = 211;
             g_sysRunPara.decoderCode = g_CurrentVfo->rx->dcsCtsNum;
         }
@@ -191,10 +191,6 @@ extern void Menu_GetSubItemPara(U8 menuIndex)
         g_menuInfo.subMaxItem = 13;
         g_menuInfo.selectedItem = g_radioInform.totLevel;
         break;
-    case S_LAN:
-        g_menuInfo.subMaxItem = 2;
-        g_menuInfo.selectedItem = g_radioInform.language;
-        break;
     case S_VOIC:
         g_menuInfo.subMaxItem = 2;
         g_menuInfo.selectedItem = g_radioInform.voiceSw;
@@ -228,7 +224,7 @@ extern void Menu_GetSubItemPara(U8 menuIndex)
         g_inputbuf.maxLen = 16;
         g_inputbuf.isFirstInput = 0xaa;
 
-        // ����δ����
+        // δ
         if (!(powerOnMsg[0] == 0xFF || powerOnMsg[0] == 0x00))
         {
             g_inputbuf.len = sprintf(g_inputbuf.buf, "%s", powerOnMsg);
@@ -338,7 +334,7 @@ extern void Menu_GetFmSubItemPara(U8 menuIndex)
     default:
         g_menuInfo.subMaxItem = 2;
         if (g_FMInform.fmChVfo == CHAN_MODE)
-        { // �ŵ�ģʽ
+        { // ŵģʽ
             g_menuInfo.selectedItem = 0xFFFF;
         }
         else
@@ -354,7 +350,7 @@ extern void Menu_EnterMode(void)
     ResetInputBuf();
 
     LCD_ClearWorkArea();
-    // �ر�˫�ع���
+    // ر˫ع
     DualStandbyWorkOFF();
     g_menuInfo.menuMaxItem = MENU_MAX_CNT;
     g_menuInfo.isSubMenu = 0;
@@ -377,16 +373,16 @@ extern void Menu_ExitMode(void)
         return;
     }
 
-    // �������õ�����
+    // õ
     Flash_SaveRadioImfosData();
     if (g_ChannelVfoInfo.chVfoInfo[g_ChannelVfoInfo.switchAB].chVfoMode == CHAN_MODE)
     {
-        // �����ŵ�����/�ŵ�����
+        // ŵ/ŵ
         Flash_SaveChannelData(g_ChannelVfoInfo.channelNum[g_ChannelVfoInfo.switchAB], (U8 *)&g_ChannelVfoInfo.channelInfo[g_ChannelVfoInfo.switchAB].rxFreq, g_ChannelVfoInfo.chVfoInfo[g_ChannelVfoInfo.switchAB].channelName);
     }
     else
     {
-        // ����Ƶ��ģʽ����
+        // Ƶģʽ
         Flash_SaveVfoData(g_ChannelVfoInfo.switchAB);
     }
     g_menuInfo.preIndex = g_menuInfo.menuIndex;
@@ -396,7 +392,7 @@ extern void Menu_ExitMode(void)
     g_menuInfo.menuExitTime = 0;
 
     ResetInputBuf();
-    // �л�Ϊ��ʾ������
+    // лΪʾ
     DisplayHomePage();
 }
 
@@ -554,7 +550,7 @@ void FreqTypeIn(U8 input)
         g_menuInfo.inputVal = 0;
     }
 
-    // ��������
+    // 
     temp = g_inputbuf.buf[g_inputbuf.len - 1] - '0';
     if (g_radioInform.voiceSw == 0)
     {
@@ -595,7 +591,7 @@ void ChanlFreqTypeIn(U8 input)
         g_menuInfo.inputVal = 0;
     }
 
-    // ��������
+    // 
     temp = g_inputbuf.buf[g_inputbuf.len - 1] - '0';
     if (g_radioInform.voiceSw == 0)
     {
@@ -635,7 +631,7 @@ void ScanRangeTypeIn(U8 input)
         g_menuInfo.inputVal = 0;
     }
 
-    // ��������
+    // 
     temp = g_inputbuf.buf[g_inputbuf.len - 1] - '0';
     if (g_radioInform.voiceSw == 0)
     {
@@ -674,7 +670,7 @@ extern void SaveRadioFreq(U8 tx)
         freq = g_menuInfo.inputVal;
 
         if (CheckFreqInRange(freq) == TRUE)
-        { // �ж�Ƶ���Ƿ��ڷ�Χ��
+        { // жƵǷڷΧ
             if (g_ChannelVfoInfo.chVfoInfo[g_ChannelVfoInfo.switchAB].chVfoMode == CHAN_MODE)
             {
                 if (tx)
@@ -794,7 +790,7 @@ void OffectFrequency2Buf(U32 freq, U8 *dest, U8 len)
     snprintf(buf, sizeof(buf), "%07lu", (unsigned long)freq);
 
     for (i = 0; i < len; i++)
-    { // ��ASCת��Ϊhex
+    { // ASCתΪhex
         dest[i] = buf[i] - 0x30;
     }
 }
@@ -832,8 +828,8 @@ extern void SaveChMemory(void)
             {
                 tempCh.decoderCode = searchFreqImofs.CtsResult;
                 tempCh.decoderCode &= 0X007FFFFF;
-                tempCh.decoderCode |= 0xA0000000; // ��ʾѧϰ��Ƶ
-                tempCh.chFlag3.Byte |= 0X01;      // �����־
+                tempCh.decoderCode |= 0xA0000000; // ʾѧϰƵ
+                tempCh.chFlag3.Byte |= 0X01;      // ־
             }
         }
         tempCh.dtmfgroup = 0;
@@ -880,13 +876,13 @@ extern void SaveChMemory(void)
                 VoiceBroadcastWithBeepLock(vo_Rxmemory, BEEP_FMDOWN);
             }
 
-            tempCh.chFlag3.Bit.b6 = g_ChannelVfoInfo.chVfoInfo[g_ChannelVfoInfo.switchAB].wideNarrow; // ��խ��
+            tempCh.chFlag3.Bit.b6 = g_ChannelVfoInfo.chVfoInfo[g_ChannelVfoInfo.switchAB].wideNarrow; // խ
             tempCh.chFlag3.Bit.b0 = g_ChannelVfoInfo.vfoInfo[g_ChannelVfoInfo.switchAB].vfoFlag.Bit.b0;
-            tempCh.txPower = g_ChannelVfoInfo.chVfoInfo[g_ChannelVfoInfo.switchAB].txPower;   // ���书��
-            tempCh.chFlag3.Bit.b3 = g_radioInform.txBusyLock;                                 // ��æ����
-            tempCh.dtmfgroup = g_ChannelVfoInfo.vfoInfo[g_ChannelVfoInfo.switchAB].dtmfgroup; // ������
+            tempCh.txPower = g_ChannelVfoInfo.chVfoInfo[g_ChannelVfoInfo.switchAB].txPower;   // 
+            tempCh.chFlag3.Bit.b3 = g_radioInform.txBusyLock;                                 // æ
+            tempCh.dtmfgroup = g_ChannelVfoInfo.vfoInfo[g_ChannelVfoInfo.switchAB].dtmfgroup; // 
             tempCh.pttID = g_radioInform.pttIdMode;                                           // PTT_ID
-            tempCh.chFlag3.Bit.b2 = 1;                                                        // ɨ������Ĭ��ON
+            tempCh.chFlag3.Bit.b2 = 1;                                                        // ɨĬON
             tempCh.chFlag3.Byte |= 0x02;
         }
     }
@@ -896,7 +892,7 @@ extern void SaveChMemory(void)
     g_ChannelVfoInfo.channelNum[g_ChannelVfoInfo.switchAB] = g_ChannelVfoInfo.currentChannelNum;
     Flash_SaveSystemRunData();
 
-    // ʹ�ܵ�ǰ�ŵ�
+    // ʹܵǰŵ
     g_ChannelVfoInfo.haveChannel = 1;
     ListFlagSet(g_ChannelVfoInfo.chanActiveList, chNum, 1);
 
@@ -933,7 +929,7 @@ extern void SaveChDelete(void)
     {
         Flash_DeleteChannelData(chNum);
 
-        // �����ǰ�ŵ�
+        // ǰŵ
         ListFlagSet(g_ChannelVfoInfo.chanActiveList, chNum, 0);
         ListFlagSet(g_ChannelVfoInfo.scanList, chNum, 0);
 
@@ -950,25 +946,18 @@ extern void SaveChDelete(void)
 
         if (g_ChannelVfoInfo.haveChannel == 0)
         {
-            // ��ʾ��ȴ�
-            if (g_radioInform.language == LANG_CN)
-            {
-                snprintf(disBuf, sizeof(disBuf), "%-*.*s\n\r", 16, 16, "��ȴ�...");
-            }
-            else
-            {
+            // ʾȴ
                 snprintf(disBuf, sizeof(disBuf), "%-*.*s\n\r", 16, 16, "Wait...");
-            }
             LCD_DisplayText(47, 0, (U8 *)disBuf, FONTSIZE_16x16, LCD_DIS_NORMAL);
             LCD_UpdateWorkAre();
 
-            // ��ʼ��ΪĬ���ŵ���Ϣ
+            // ʼΪĬŵϢ
             ResetChannelData();
-            NVIC_SystemReset(); // ��λϵͳ
+            NVIC_SystemReset(); // λϵͳ
         }
         else
         {
-            // �ŵ�ɾ������Ҫ���¼�����Ч�ŵ�������AB����Ϊ��ͬ�ŵ���ʱ�����
+            // ŵɾҪ¼ЧŵABΪͬŵʱ
             if (CheckChannelActive(g_ChannelVfoInfo.channelNum[0], 0) == CHAN_DISABLE)
             {
                 g_ChannelVfoInfo.channelNum[0] = SeekActiveChannel_Up(g_ChannelVfoInfo.channelNum[0], 0);
@@ -1010,14 +999,7 @@ extern void EnterResetMode(void)
 {
     // LCD_ClearWorkArea();
     memset(disBuf, 0x00, 17);
-    if (g_radioInform.language == LANG_CN)
-    {
-        snprintf(disBuf, sizeof(disBuf), "%-*.*s\n\r", 16, 16, "ȷ�ϳ�ʼ��?");
-    }
-    else
-    {
-        snprintf(disBuf, sizeof(disBuf), "%-*.*s\n\r", 16, 16, "Sure to Reset?");
-    }
+    snprintf(disBuf, sizeof(disBuf), "%-*.*s\n\r", 16, 16, "Sure to Reset?");
     LCD_DisplayText(47, 0, (U8 *)disBuf, FONTSIZE_16x16, LCD_DIS_NORMAL);
     LCD_UpdateWorkAre();
 
@@ -1028,13 +1010,13 @@ extern void EnterResetMode(void)
             App_10msTask();
         }
 
-        // 100ms����һ��
+        // 100msһ
         if (g_100msFlag)
         {
             App_100msTask();
         }
 
-        // 500ms����һ��
+        // 500msһ
         if (g_500msFlag)
         {
             App_500msTask();
@@ -1054,21 +1036,14 @@ extern void EnterResetMode(void)
         }
 
         if (g_sysRunPara.sysRunMode != MODE_MENU)
-        { // ��PTTֱ���˳��˵�
+        { // PTTֱ˳˵
             return;
         }
         Audio_PlayTask();
     }
 
-    // ��ʾ��ȴ�
-    if (g_radioInform.language == LANG_CN)
-    {
-        snprintf(disBuf, sizeof(disBuf), "%-*.*s\n\r", 16, 16, "  ��ȴ�...  ");
-    }
-    else
-    {
-        snprintf(disBuf, sizeof(disBuf), "%-*.*s\n\r", 16, 16, "Please Wait...");
-    }
+    // ʾȴ
+    snprintf(disBuf, sizeof(disBuf), "%-*.*s\n\r", 16, 16, "Please Wait...");
     LCD_DisplayText(47, 0, (U8 *)disBuf, FONTSIZE_16x16, LCD_DIS_NORMAL);
     LCD_UpdateWorkAre();
 
@@ -1084,9 +1059,9 @@ extern void EnterResetMode(void)
         ResetRadioFunData();
     }
 
-    // ��ʱ500ms������
+    // ʱ500ms
     DelayMs(500);
-    // ��λϵͳ
+    // λϵͳ
     NVIC_SystemReset();
 }
 
@@ -1243,9 +1218,6 @@ extern void Menu_SaveSelectItem(U8 menuIndex)
         break;
     case S_TOT:
         g_radioInform.totLevel = g_menuInfo.selectedItem;
-        break;
-    case S_LAN:
-        g_radioInform.language = g_menuInfo.selectedItem;
         break;
     case S_VOIC:
         g_radioInform.voiceSw = g_menuInfo.selectedItem;
@@ -1417,7 +1389,7 @@ extern void Menu_EnterNextLevel(void)
     ResetMenuExitTime();
 
     if (g_menuInfo.isSubMenu)
-    { // ѡ��˵�ѡ��ģʽ
+    { // ѡ˵ѡģʽ
         if (g_menuInfo.inputMode == MENU_ONE_FREQ && (g_inputbuf.len != 0 && g_inputbuf.len != 6))
         {
             BeepOut(BEEP_NULL);
@@ -1425,13 +1397,13 @@ extern void Menu_EnterNextLevel(void)
         }
 
         if ((g_menuInfo.inputMode == MENU_CH_FREQ || g_menuInfo.inputMode == MENU_ONE_VFOSCAN) && (g_inputbuf.len != 0 && g_inputbuf.len != 6))
-        { // ����Ƶ��ʱ���⴦��
+        { // Ƶʱ⴦
             BeepOut(BEEP_NULL);
             return;
         }
         VoiceBroadcastWithBeepLock(vo_Confirm, BEEP_FASTSW);
 
-        // ִ�в˵����溯��
+        // ִв˵
         if (g_menuInfo.menuType == 1)
         {
             Menu_SaveFmSelectItem(g_menuInfo.menuIndex);
@@ -1442,7 +1414,7 @@ extern void Menu_EnterNextLevel(void)
         }
 
         if (g_sysRunPara.sysRunMode != MODE_MENU)
-        { // ִ�в˵��󣬲��ڲ˵�ģʽ��ֱ���˳��˵�
+        { // ִв˵󣬲ڲ˵ģʽֱ˳˵
             return;
         }
         g_rfRxState = RX_READY;
@@ -1461,10 +1433,10 @@ extern void Menu_EnterNextLevel(void)
         Menu_Display();
     }
     else
-    { // ѡ��˵�ģʽ
+    { // ѡ˵ģʽ
         ResetInputBuf();
         if (g_menuInfo.inputMode == MENU_ONE_NULL)
-        { // ��ǰ�˵�ֻ������ʾ���ݣ���������ʱ��ֱ�ӷ���
+        { // ǰ˵ֻʾݣʱֱӷ
             VoiceBroadcastWithBeepLock(vo_Cancel, BEEP_EXITMENU);
             return;
         }
@@ -1481,7 +1453,7 @@ extern void Menu_EnterNextLevel(void)
                 VoiceBroadcastWithBeepLock(vo_Cancel, BEEP_ERROR);
                 return;
             }
-            // ���������Ļ��ʾ
+            // Ļʾ
             LCD_UpdateWorkAre();
         }
         else
@@ -1539,7 +1511,7 @@ extern void Menu_KeyDigitalInput(U8 input)
 
     switch (g_menuInfo.inputMode)
     {
-    case MENU_ONE_CHAR: // ������ĸ����ƴ��
+    case MENU_ONE_CHAR: // ĸƴ
         if (g_menuInfo.isSubMenu)
         {
             if (NumToChar(input) != OK)
@@ -1548,13 +1520,13 @@ extern void Menu_KeyDigitalInput(U8 input)
             }
             break;
         }
-    case MENU_ONE_CTCSS: // ģ������Ƶѡ�������
+    case MENU_ONE_CTCSS: // ģƵѡ
         if (g_menuInfo.isSubMenu)
         {
             CtcssTypeIn(input);
             break;
         }
-    case MENU_ONE_FREQ: // Ƶ������
+    case MENU_ONE_FREQ: // Ƶ
         if (g_menuInfo.isSubMenu)
         {
             FreqTypeIn(input);
@@ -1580,7 +1552,7 @@ extern void Menu_KeyDigitalInput(U8 input)
         }
     case MENU_ONE_DECODE:
         if ((g_menuInfo.isSubMenu) && (flag == 0) && (g_sysRunPara.decoderCode == 0))
-        { // flag�����ж��Ƿ���codeģʽʱ��û������ʱ�����������Ҫ��1
+        { // flagжǷcodeģʽʱûʱҪ1
             maxItem -= 1;
         }
     case MENU_ONE_SELECT:
@@ -1589,7 +1561,7 @@ extern void Menu_KeyDigitalInput(U8 input)
         {
             g_menuInfo.fastSelect = 0;
         }
-        // ���ڲ˵��ı�ʱ����ѡ��˵�����
+        // ڲ˵ıʱѡ˵
         if (flag)
         {
             if ((selectVal + 1) != g_menuInfo.fastSelect)
@@ -1636,7 +1608,7 @@ extern void Menu_KeyDigitalInput(U8 input)
         }
 
         if (g_menuInfo.isSubMenu == 0)
-        { // ѡ��˵�ģʽ
+        { // ѡ˵ģʽ
             g_menuInfo.menuIndex = selectVal;
 
             if (g_menuInfo.menuType == 1)
@@ -1665,17 +1637,17 @@ extern void DcsSwitchPolarity(void)
     g_menuInfo.fastSelect = 0;
 
     if (g_menuInfo.selectedItem == 0 || g_menuInfo.selectedItem == 211)
-    { // ����ǹر�״̬��������״̬���л�
+    { // ǹر״̬״̬л
         return;
     }
 
     if (g_menuInfo.selectedItem <= 105)
-    { // �����л�Ϊ����
+    { // лΪ
         g_menuInfo.selectedItem += 105;
         BeepOut(BEEP_FMDOWN);
     }
     else
-    { // �����л�Ϊ����
+    { // лΪ
         g_menuInfo.selectedItem -= 105;
         BeepOut(BEEP_FMUP);
     }
@@ -1751,22 +1723,10 @@ extern void KeyProcess_Menu(U8 keyEvent)
         Menu_KeyDigitalInput(numEvent);
         break;
     case KEYID_MENU:
-        if ((g_menuInfo.inputMode == MENU_ONE_CHAR) && (pyBuf.pos != 0))
-        {
-            EnterSelectMode();
-        }
-        else
-        {
-            Menu_EnterNextLevel();
-        }
+        Menu_EnterNextLevel();
         break;
     case KEYID_UP:
-        if (checkInputCharMode() == 1)
-        {
-            T9Select(1);
-            MenuShowInputChar();
-        }
-        else
+        if (checkInputCharMode() == 0)
         {
             Menu_Up();
         }
@@ -1778,23 +1738,13 @@ extern void KeyProcess_Menu(U8 keyEvent)
             FastChangeVoice = 1;
             BeepOut(BEEP_FMUP);
         }
-        if (checkInputCharMode() == 1)
-        {
-            T9Select(1);
-            MenuShowInputChar();
-        }
-        else
+        if (checkInputCharMode() == 0)
         {
             Menu_Up();
         }
         break;
     case KEYID_DOWN:
-        if (checkInputCharMode() == 1)
-        {
-            T9Select(0);
-            MenuShowInputChar();
-        }
-        else
+        if (checkInputCharMode() == 0)
         {
             Menu_Down();
         }
@@ -1806,18 +1756,13 @@ extern void KeyProcess_Menu(U8 keyEvent)
             FastChangeVoice = 1;
             BeepOut(BEEP_FMDOWN);
         }
-        if (checkInputCharMode() == 1)
-        {
-            T9Select(0);
-            MenuShowInputChar();
-        }
-        else
+        if (checkInputCharMode() == 0)
         {
             Menu_Down();
         }
         break;
     case KEYID_EXIT:
-        if (g_menuInfo.inputMode == MENU_ONE_CHAR && (BackSpace() == OK))
+        if (g_menuInfo.inputMode == MENU_ONE_CHAR && (BackSpaceChar() == OK))
         {
             MenuShowInputChar();
             BeepOut(BEEP_FMDOWN);
@@ -1832,7 +1777,7 @@ extern void KeyProcess_Menu(U8 keyEvent)
         break;
     case KEYID_WELL:
         if (g_menuInfo.inputMode == MENU_ONE_DECODE)
-        { // ������������ģʽ�л�������ʹ��
+        { // ģʽлʹ
             DcsSwitchPolarity();
         }
         else

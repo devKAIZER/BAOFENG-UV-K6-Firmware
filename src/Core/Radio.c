@@ -1,7 +1,7 @@
 #include "includes.h"
 
 const U16 stepList[9] = {250,500,625,1000,1250,2000,2500,5000,10000};
-//定义频率修正补偿值
+//
 const U8 MOD_LIST[10] = {0,25,50,75,100,0,25,50,75,25};
 
 extern void RadioConfig_Init(void)
@@ -52,13 +52,13 @@ U8 GetCTSDCSType(U16 CTSDCSNum)
 Boolean CheckFreqInRange(U32 freq)
 {
     U32 tempFreq;
-    
+
     tempFreq = freq / 10000;
-    
+
     if((tempFreq >= 1080) && (tempFreq < 1360))
     {
         if(g_rfMoudel.amRxEn == 0)
-        {//不允许航空接收
+        {//
             return FALSE;
         }
         return TRUE;
@@ -191,7 +191,7 @@ extern void ChannelCheckActiveAll(void)
         }
         addr += CHAN_SIZE;
     }
-    
+
     if( g_ChannelVfoInfo.haveChannel == 1 )
     {
         if(g_ChannelVfoInfo.channelNum[0] > 999)
@@ -203,7 +203,7 @@ extern void ChannelCheckActiveAll(void)
             g_ChannelVfoInfo.channelNum[1] = 0;
         }
 
-        //检查信道是否有效
+        //
         if( CheckChannelActive(g_ChannelVfoInfo.channelNum[0], 0) == CHAN_DISABLE )
         {
             g_ChannelVfoInfo.channelNum[0] = SeekActiveChannel_Up(g_ChannelVfoInfo.channelNum[0], 0);
@@ -221,7 +221,7 @@ void ChannelNumChangeRead(U8  isScan,U8  isTypeIn)
     g_ChannelVfoInfo.channelNum[g_ChannelVfoInfo.switchAB] = g_ChannelVfoInfo.currentChannelNum;
 
     if(isTypeIn)
-    {//复位输入的buf
+    {//buf
         ResetInputBuf();
     }
 
@@ -232,7 +232,7 @@ void ChannelNumChangeRead(U8  isScan,U8  isTypeIn)
         {
             Audio_PlayChanNum(g_ChannelVfoInfo.currentChannelNum+1);
         }
-        
+
         Flash_SaveSystemRunData();
     }
     RxReset();
@@ -241,9 +241,9 @@ void ChannelNumChangeRead(U8  isScan,U8  isTypeIn)
 extern void ChannelUp(U8  isScan, U8  brocast)
 {
     g_ChannelVfoInfo.currentChannelNum = SeekActiveChannel_Up(g_ChannelVfoInfo.currentChannelNum, isScan);
-    
+
     if(g_ChannelVfoInfo.currentChannelNum == 0xFFFF)
-    {//没有信道时默认退出信道模式
+    {//
         g_ChannelVfoInfo.haveChannel =  0;
         return;
     }
@@ -257,7 +257,7 @@ extern void ChannelDown(U8  isScan, U8  brocast)
     g_ChannelVfoInfo.currentChannelNum = SeekActiveChannel_Down(g_ChannelVfoInfo.currentChannelNum, isScan);
 
     if(g_ChannelVfoInfo.currentChannelNum == 0xFFFF)
-    {//没有信道时默认退出信道模式
+    {//
         g_ChannelVfoInfo.haveChannel =  0;
         return;
     }
@@ -273,7 +273,7 @@ extern void ChannelNumTypeIn(STR_INPUTBOX *input)
 
     DisplayInputChNum();
 
-    //播报数字
+    //
     temp = input->buf[input->len-1] - 0x30;
     if(g_radioInform.voiceSw == 0)
 	{
@@ -287,7 +287,7 @@ extern void ChannelNumTypeIn(STR_INPUTBOX *input)
     if(input->len == 3)
     {
         DualStandbyWorkOFF();
-        
+
         input->buf[input->len] = 0;
         tempNum = atoi(input->buf);
 
@@ -310,11 +310,11 @@ extern void VfoFrequency2Buf(U32 freq,U8  *dest,U8  len)
 {   
     String buf[11];
     U8  i;
-    
+
     snprintf(buf, sizeof(buf), "%06lu", (unsigned long)freq);
 
     for(i=0;i<len;i++)
-    {//将ASC转换为hex
+    {//ASChex
         dest[i] = buf[i] - 0x30;
     }
 }
@@ -366,10 +366,9 @@ extern void VfoFreqSave(void)
     }
 
     VfoFrequency2Buf(tempFreq,buf,8);
-    
+
     Flash_SaveVfoData(g_ChannelVfoInfo.switchAB);
 }
-
 
 extern void VfoFreqUp(U8  isScan)
 {
@@ -377,13 +376,13 @@ extern void VfoFreqUp(U8  isScan)
     U8  workBand;
     U32 lastFreq;
 
-    //切换频率时需要先关闭倒频，才能切换会主状态
+    //
     Radio_ReverseOff();
 
     lastFreq = g_ChannelVfoInfo.chVfoInfo[g_ChannelVfoInfo.switchAB].freqRx.frequency / 10000;
 
     g_ChannelVfoInfo.chVfoInfo[g_ChannelVfoInfo.switchAB].freqRx.frequency += stepList[g_ChannelVfoInfo.chVfoInfo[g_ChannelVfoInfo.switchAB].freqStep];
-    
+
     tempFreq = g_ChannelVfoInfo.chVfoInfo[g_ChannelVfoInfo.switchAB].freqRx.frequency / 10000;
 
     if(isScan)
@@ -398,15 +397,15 @@ extern void VfoFreqUp(U8  isScan)
         if(g_rfMoudel.amRxEn == 1 && lastFreq < 1360)
         {
             if(tempFreq >= 1360)
-            {//AM模式
+            {//AM
                 g_ChannelVfoInfo.chVfoInfo[g_ChannelVfoInfo.switchAB].freqRx.frequency = 10800000;
             }
         }
         else
         {
-            //获取当前工作频段
+            //
             workBand = GetCurWorkBand(lastFreq);
-    
+
             if(tempFreq >= bandRang.bandbuf.freq[workBand*2+1]) 
             {
                 g_ChannelVfoInfo.chVfoInfo[g_ChannelVfoInfo.switchAB].freqRx.frequency = bandRang.bandbuf.freq32[workBand*2];
@@ -414,13 +413,13 @@ extern void VfoFreqUp(U8  isScan)
         }
     }
 
-    //计算发射频率
+    //
     CalculateVfoTxFreq();
 
     VfoFreqSave();
     RxReset();
-    
-    //显示当前频率信息
+
+    //
     DisplayRadioHome();
 
     DtmfClrMatchTimer();
@@ -432,12 +431,12 @@ extern void VfoFreqDown(U8  isScan)
     U32 lastFreq;
     U8  workBand;
 
-    //切换频率时需要先关闭倒频，才能切换会主状态
+    //
     Radio_ReverseOff();
 
     lastFreq = g_ChannelVfoInfo.chVfoInfo[g_ChannelVfoInfo.switchAB].freqRx.frequency / 10000;
     g_ChannelVfoInfo.chVfoInfo[g_ChannelVfoInfo.switchAB].freqRx.frequency -= stepList[g_ChannelVfoInfo.chVfoInfo[g_ChannelVfoInfo.switchAB].freqStep];
-    
+
     tempFreq = g_ChannelVfoInfo.chVfoInfo[g_ChannelVfoInfo.switchAB].freqRx.frequency / 10000;
 
     if(isScan)
@@ -452,15 +451,15 @@ extern void VfoFreqDown(U8  isScan)
         if((g_rfMoudel.amRxEn == 1) && (lastFreq < 1080 && lastFreq >= 1360))
         {
             if(tempFreq < 10800000)
-            {//AM模式
+            {//AM
                 g_ChannelVfoInfo.chVfoInfo[g_ChannelVfoInfo.switchAB].freqRx.frequency = 13600000 - stepList[g_ChannelVfoInfo.chVfoInfo[g_ChannelVfoInfo.switchAB].freqStep];
             }
         }
         else
         {
-            //获取当前工作频段
+            //
             workBand = GetCurWorkBand(lastFreq);
-    
+
             if(tempFreq < bandRang.bandbuf.freq[workBand*2]) 
             {
                 g_ChannelVfoInfo.chVfoInfo[g_ChannelVfoInfo.switchAB].freqRx.frequency = bandRang.bandbuf.freq32[workBand*2+1] - bandRang.bandbuf.freq32[workBand*2] + g_ChannelVfoInfo.chVfoInfo[g_ChannelVfoInfo.switchAB].freqRx.frequency;
@@ -468,13 +467,13 @@ extern void VfoFreqDown(U8  isScan)
         }
     }
 
-    //计算发射频率
+    //
     CalculateVfoTxFreq();
-    
+
     VfoFreqSave();
     RxReset(); 
-    
-    //显示当前频率信息
+
+    //
     DisplayRadioHome();
 
     DtmfClrMatchTimer();
@@ -485,7 +484,7 @@ extern void VfoFreqTypeIn(STR_INPUTBOX *input)
     U32 tempFreq;
     U8  temp;
     U8  i;
-    
+
     Radio_ReverseOff();  
 
     if(input->len == 1)
@@ -498,10 +497,10 @@ extern void VfoFreqTypeIn(STR_INPUTBOX *input)
         }
     }
 
-    //显示输入模式
+    //
     DisplayInputVfoFreq();
 
-    //播报数字
+    //
     temp = input->buf[input->len-1] - 0x30;
 
     if(g_radioInform.voiceSw == 0)
@@ -515,9 +514,9 @@ extern void VfoFreqTypeIn(STR_INPUTBOX *input)
 
     if(input->len == 6)
     {
-        //双守开启时需要关闭，才能切换回主信道
+        //
         DualStandbyWorkOFF();
-        
+
         input->buf[input->len] = 0;
         //tempFreq = atol(input->buf);
         tempFreq = 0;
@@ -526,11 +525,11 @@ extern void VfoFreqTypeIn(STR_INPUTBOX *input)
             tempFreq *= 10;
             tempFreq += (input->buf[i] - 0x30);
         }
-        
+
         input->len = 0;
 
         tempFreq = tempFreq * 100; 
-        
+
         if(temp == 9)
         {
             tempFreq -= MOD_LIST[temp];
@@ -543,7 +542,7 @@ extern void VfoFreqTypeIn(STR_INPUTBOX *input)
         if(CheckFreqInRange(tempFreq))
         {
             g_ChannelVfoInfo.chVfoInfo[g_ChannelVfoInfo.switchAB].freqRx.frequency = tempFreq;
-            //计算发射频率
+            //
             CalculateVfoTxFreq();
 
             VfoFreqSave();
@@ -554,7 +553,7 @@ extern void VfoFreqTypeIn(STR_INPUTBOX *input)
         }
         RxReset();
 
-        //更新显示信息
+        //
         DisplayRadioHome();
 
         DtmfClrMatchTimer();
@@ -614,7 +613,7 @@ extern void Radio_SwitchAOrB(void)
 extern void Radio_ReverseSwitch(void)
 {
     U8 reverse;
-    
+
     ResetInputBuf();
     DualStandbyWorkOFF();
 
@@ -629,7 +628,7 @@ extern void Radio_ReverseSwitch(void)
     {
         reverse = (reverse + 1)%3;
         BeepOut(BEEP_FASTSW);
-    
+
         g_ChannelVfoInfo.chVfoInfo[g_ChannelVfoInfo.switchAB].reverseFlag = reverse;   
 
         if(reverse == 1)
@@ -687,7 +686,7 @@ U32 VfoOffsetCalculate(U8 *buf)
 {
     U8 i;
     U32 freq;
-    
+
     freq = 0;
     for(i = 0; i < 7; i++)
     {
@@ -696,14 +695,14 @@ U32 VfoOffsetCalculate(U8 *buf)
     return freq *10;
 }
 
-//初始化信道数据
+//
 extern void ChannleVfoDataInit(U8 flagAB,U8 readFlag)
 {
     U16 chNum = 0;
     U8 *buf;
     U8 calcBuf[8];
     U8 i;
-    
+
     g_ChannelVfoInfo.chVfoInfo[flagAB].reverseFlag = 0;
 
     if(g_ChannelVfoInfo.haveChannel == 0)
@@ -733,7 +732,7 @@ extern void ChannleVfoDataInit(U8 flagAB,U8 readFlag)
         }
 
         buf = (U8 *)&g_ChannelVfoInfo.channelInfo[flagAB].rxFreq;
-    
+
         for(i = 0; i < 8; i++)
         {
             calcBuf[i] = changeHexToInt(buf[i]);

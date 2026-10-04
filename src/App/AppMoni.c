@@ -7,8 +7,8 @@ extern void EnterMoniMode(void)
     g_sysRunPara.sysRunMode = MODE_MONI;
 
     if (g_sysRunPara.rfRxFlag.rxReceiveOn == ON)
-    { // 如果在接收状态，直接监听当前信道
-        // 开启接收相关外设
+    { // 
+        // 
         LedRxSwitch(LED_ON);
         Rfic_SetAfout(ON);
         SpeakerSwitch(ON);
@@ -16,9 +16,9 @@ extern void EnterMoniMode(void)
     }
     else
     {
-        // 退出睡眠状态
+        // 
         Rfic_WakeUp();
-        Rfic_TxSingleTone_Off(); // 关闭本地单音通道
+        Rfic_TxSingleTone_Off(); // 
         DualStandbyWorkOFF();
     }
     DisplaySingalFlag(4, 1);

@@ -1,8 +1,7 @@
 #ifndef __BITMAP_H__
     #define __BITMAP_H__
 
-/**************************************************************************/
-//定义状态标志图标以及图标大小
+//
 #define ICON_BATT_SIZEX           17
 #define ICON_BATT_SIZEY           7
 extern const U8 iconBattEmpty[];
@@ -32,7 +31,6 @@ extern const U8 iconDTMF[];
 #define ICON_RIGHT_SIZEX           5
 #define ICON_RIGHT_SIZEY           9
 extern const U8 iconRight[];
-
 
 #define ICON_DCS_SIZEX            17
 #define ICON_DCS_SIZEY            7
@@ -117,7 +115,6 @@ extern const U8 iconArrowA[];
 #define ICON_ARROWB_SIZEX         7
 #define ICON_ARROWB_SIZEY         7
 extern const U8 iconArrowB[];
-
 
 #define ICON_SAVEOK_SIZEX         27
 #define ICON_SAVEOK_SIZEY         27

@@ -24,7 +24,7 @@ extern void EnterSearchFreqMode(void)
 
     Rfic_SwitchFM_AM(ModeFM);
 
-    RF_PowerSet(FREQ_BAND_UHF, PWR_RXON); // 关闭所有电源
+    RF_PowerSet(FREQ_BAND_UHF, PWR_RXON); // 
     SearchFreqDisplayHome();
 }
 
@@ -72,7 +72,7 @@ extern void ExitSearchFreqMode(U8 disHome)
 
     Rfic_FreqScan_Disable();
 
-    // 切换为显示主界面
+    // 
     if (disHome)
     {
         searchSaveFlag = 0;
@@ -146,7 +146,7 @@ extern void SearchFreqTask(void)
     U32 tempFreq;
 
     if (g_sysRunPara.sysRunMode != MODE_SEARCH)
-    { // 不在扫频模式直接返回
+    { // 
         return;
     }
 
@@ -282,10 +282,10 @@ extern void SearchFreqTask(void)
     case SF_Check:
         if (XTAL_ADJUST > 16)
         {
-            XTAL_ADJUST = 8; // 零点
+            XTAL_ADJUST = 8; // 
         }
         tempFreq = searchFreqImofs.freq * xtal26MAdjust[XTAL_ADJUST] / 10000000L;
-        if (XTAL_ADJUST > 8) // 8为0点的索引
+        if (XTAL_ADJUST > 8) // 80
         {
             searchFreqImofs.freq -= tempFreq;
         }
@@ -293,9 +293,9 @@ extern void SearchFreqTask(void)
         {
             searchFreqImofs.freq += tempFreq;
         }
-        // 按250Hz取整
+        // 250Hz
         searchFreqImofs.freq = (searchFreqImofs.freq + 13) / 25 * 25;
-        // 限制频率超过范围问题
+        // 
         switch (searchFreqImofs.band)
         {
         case FREQ_BAND_VHF:
@@ -498,7 +498,7 @@ extern void SearchFreqTask(void)
         break;
 
     default:
-        // 退出扫频模式
+        // 
         ExitSearchFreqMode(1);
         break;
     }

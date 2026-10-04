@@ -99,7 +99,7 @@ extern void ScanStart(void)
     LCD_BackLightSetOn();
 
     if (g_ChannelVfoInfo.chVfoInfo[g_ChannelVfoInfo.switchAB].chVfoMode == CHAN_MODE)
-    { // 信道模式下，没有信道开启扫描直接返回
+    { // 
         if (g_ChannelVfoInfo.haveScan == 0)
         {
             BeepOut(BEEP_ERROR);
@@ -107,9 +107,9 @@ extern void ScanStart(void)
         }
     }
     else
-    { // 带扫描范围设置功能的，未设置不让进入扫描
+    { // 
         if (g_radioInform.vfoScanRangeL == g_radioInform.vfoScanRangeH || CheckInputScanRange(g_radioInform.vfoScanRangeL * 10, g_radioInform.vfoScanRangeH * 10) == FERROR)
-        { // 频率范围错误不让进入扫描功能
+        { // 
             BeepOut(BEEP_ERROR);
             return;
         }
@@ -143,7 +143,7 @@ extern void ScanTask(void)
     static U8 sqCnt = 0;
 
     if (g_sysRunPara.sysRunMode != MODE_SCAN)
-    { // 不在扫描模式直接返回
+    { // 
         return;
     }
 
@@ -197,7 +197,7 @@ extern void ScanTask(void)
                 g_scanInfo.scanTime = 50;
             }
         }
-        // 扫描下一个信道
+        // 
         ScanNextChannel();
         sqCnt = 0;
 
@@ -216,7 +216,7 @@ extern void ScanTask(void)
         }
         break;
     case WAIT_RECALL:
-        // 扫描下一个信道
+        // 
         ScanNextChannel();
         sqCnt = 0;
 

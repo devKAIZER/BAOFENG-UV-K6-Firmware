@@ -12,39 +12,39 @@ extern void CheckPowerOff(void)
         {
             RfOff();
             Rfic_Sleep();
-            //显示关机界面
+            //
             if(g_rfState == RF_TX)
             {
                 DelayMs(200);
             }
 
-            //关闭双守才能切回主信道
+            //
             DualStandbyWorkOFF();
-        
-            //保存设置的数据
+
+            //
             Flash_SaveRadioImfosData();
 
             if(g_ChannelVfoInfo.chVfoInfo[g_ChannelVfoInfo.switchAB].chVfoMode == CHAN_MODE)
             {
-                //保存信道数据/信道名称
+                ///
                 Flash_SaveChannelData(g_ChannelVfoInfo.channelNum[g_ChannelVfoInfo.switchAB],(U8 *)&g_ChannelVfoInfo.channelInfo[g_ChannelVfoInfo.switchAB].rxFreq,g_ChannelVfoInfo.chVfoInfo[g_ChannelVfoInfo.switchAB].channelName);
             }
             else
             {
-                //保存频率模式数据
+                //
                 Flash_SaveVfoData(g_ChannelVfoInfo.switchAB);
             }
-            
-            //保存系统运行数据
+
+            //
             Flash_SaveSystemRunData();
-        
-            //延时100ms等待数据写完
+
+            //100ms
             DelayMs(100);
             POWER_OFF;
 
-            //延时后确保关机
+            //
             DelayMs(500);
-            //复位系统,避免关机后立马开机
+            //,
             NVIC_SystemReset();
         }
     }
@@ -67,7 +67,7 @@ extern void LcdBackLightSwitch(ENUM_LED flag)
 extern void LedTxSwitch(ENUM_LED flag)
 {
     static U8 state;
-    
+
     if(flag == LED_OFF)
     {
         Rfic_GpioSetBit( RF_GPIO5, GPIOx_RFIC_L );
@@ -96,7 +96,7 @@ extern void LedTxSwitch(ENUM_LED flag)
 extern void LedRxSwitch(ENUM_LED flag)
 {
     static U8 state;
-    
+
     if(flag == LED_OFF)
     {
         GPIOA->BRR = GPIO_Pin_3;
@@ -159,12 +159,11 @@ extern void LightFlashTask(void)
     }
 
     if(alarmDat.alarmStates == ON)
-    {//报警模式下LED也会闪烁
+    {//LED
         return;
     }
     LightSwitch(LED_FLASH);
 }
-
 
 extern void LCD_BackLightSetOn(void)
 {
@@ -186,7 +185,7 @@ extern void LCD_BackLightSetOn(void)
 extern void LCD_CheckBackLight(void)
 {
     if(g_radioInform.autoBack == 0)
-    {//常亮
+    {//
         return;
     }
 
@@ -195,7 +194,6 @@ extern void LCD_CheckBackLight(void)
         LcdBackLightSwitch(LED_OFF);
     }
 }
-
 
 void RF_PowerSet(U8 band,ENUM_RFPWR flag)
 {
@@ -241,7 +239,7 @@ void RF_PowerSet(U8 band,ENUM_RFPWR flag)
     }
     else
     {
-        //关闭所有电源
+        //
         Rfic_GpioSetBit( RF_GPIO2, GPIOx_RFIC_L );
 		Rfic_GpioSetBit( RF_GPIO3, GPIOx_RFIC_L );
 		GPIOA->BRR = GPIO_Pin_14;

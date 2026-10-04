@@ -28,13 +28,13 @@ typedef enum
 
 typedef struct
 {
-    ENUM_SCANSTATE state; // 扫描状态
-    U8 direction;         // 扫描方向
+    ENUM_SCANSTATE state; // 
+    U8 direction;         // 
     U16 scanTime;
 } STR_SCAN;
 
 extern STR_SCAN g_scanInfo;
-/******************************************************************/
+
 extern U8 CheckInputScanRange(U16 freqL, U16 freqH);
 extern void EnterScanMode(void);
 extern void ScanStart(void);

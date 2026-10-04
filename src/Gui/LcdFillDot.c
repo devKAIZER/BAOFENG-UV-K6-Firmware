@@ -15,38 +15,17 @@ void LCD_DisplayText(U8 posY, U8 posX,  U8 *pString,U8 fontSize,U8 flagInvert)
         {
             return;
 		}
-		
-        if(pString[i] >= 0xA1)
-        {
-            if( fontSize == FONTSIZE_16x16 )
-            {
-				Font_Read_16x16_CN(pString+i, bufDat);
-			}
-			else if( fontSize == FONTSIZE_12x12 )
-			{
-                Font_Read_12x12_CN(pString+i, bufDat);
-			}
-            SC5260_DisplayArea( posY, posX, fontSize, fontSize, bufDat, flagInvert);
-            
-			posX += fontSize;
-			i += 2;
-            if(changeFlag == 1)
-            {
-                flagInvert = revBackFlag;
-                changeFlag = 0;
-            }
-		}
-	    else if(pString[i] == 0x08)
+		else if(pString[i] == 0x08)
 	    {
 	        if(i != 0)
 	        {
                 SC5260_ClearArea( posY, posX, fontSize>>1, fontSize, 0);
                 posX += (fontSize>>1);
             }
-	        
+
 	        changeFlag = 1;
 	        flagInvert = 1;
-            
+
 	        i += 1;
 	    }
 		else
@@ -62,7 +41,7 @@ void LCD_DisplayText(U8 posY, U8 posX,  U8 *pString,U8 fontSize,U8 flagInvert)
 				{
                     Font_Read_6x12_ASCII(pString+i, bufDat);
 				}
-			    
+
                 SC5260_DisplayArea( posY, posX, fontSize>>1, fontSize, bufDat, flagInvert);
 
 				posX += (fontSize>>1);	
@@ -89,10 +68,10 @@ void LCD_DisplayNumber( U8 posY, U8 posX, U8 *pString,U8 flagInvert)
         {
             return;
 		}
-		
+
         Font_Read_5x7_ASCII(pString+i, bufDat);
         SC5260_DisplayArea( posY, posX, 5, 8, bufDat ,flagInvert);
-        
+
 		posX += 6;
 		i += 1;
 	}
@@ -119,7 +98,6 @@ void LCD_DisplayPicture( U8  posY,
 {
     U8  i = 0;
     U16 j = 0;
-    
 
 	if( wide == 0 || length == 0 )
 	{
@@ -143,7 +121,6 @@ void LCD_DisplayPicture( U8  posY,
 	}
 }
 
-
 void LCD_DisplayBoldNum6X7( U8 posY, U8 posX, U8 *pString)
 {
     U8 bufDat[7] = {0};
@@ -155,7 +132,7 @@ void LCD_DisplayBoldNum6X7( U8 posY, U8 posX, U8 *pString)
         {
             return;
         }
-        
+
         wide = 6;
         if( pString[i] >= '0' && pString[i] <= '9' )
         {
@@ -192,14 +169,14 @@ void LCD_DisplayBoldNum6X7( U8 posY, U8 posX, U8 *pString)
   			wide = 6;
         }
         else
-        {//清除显示
+        {//
             memcpy( bufDat, iconNumTable_6X7[0], 6);
             wide = 6;
         }
-        
+
         SC5260_DisplayArea( posY, posX, wide, 7, bufDat, 0);
         posX += wide;
-        
+
         LCD_ClearArea( posY, posX, 1, 7);
         posX += 1;
         i++;
@@ -241,18 +218,16 @@ void LCD_DisplayBoldNum12X13( U8 posY, U8 posX, U8 *pString)
             memcpy( bufDat, iconNumTable_12X13[13], 24);
         }
     	else
-    	{//清除显示
+    	{//
     	    memset(bufDat,0x00,24);
     	}
 
         SC5260_DisplayArea( posY, posX, wide, 13, bufDat, 0);
 		posX += wide;
-	
+
         LCD_ClearArea( posY, posX, 1, 13);
         posX += 1;
         i++;
 	}
 }
-
-
 

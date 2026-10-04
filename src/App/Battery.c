@@ -169,12 +169,12 @@ extern Boolean CheckPowerBusy(void)
 extern void PowerSaveTask(void)
 {
     if (alarmDat.alarmStates || g_sysRunPara.sysRunMode == MODE_SCAN)
-    { // 在报警模式或者是在扫描模式不省电
+    { // 
         return;
     }
 
     if (g_radioInform.saveLevel == 0)
-    { // 不支持省电模式
+    { // 
         return;
     }
 

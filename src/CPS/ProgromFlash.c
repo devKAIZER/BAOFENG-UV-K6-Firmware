@@ -8,16 +8,15 @@ const U8 updateFlag[]   = {"UPDATE"};
 const U8 strModelType[] = {"UVK6"};
 
 #define CONNECT_START          linkHead[3]
-#define PRG_CMD_FREQ           'F'              //发送对讲机支持的频率范围命令
+#define PRG_CMD_FREQ           'F'              //
 #define PRG_CMD_ACK            0x06
 #define PRG_CMD_MODEL          'M'
-#define PRG_CMD_FLASH          'D'               //更新开机界面
-#define PRG_CMD_WRITE          'W'               //写频命令
-#define PRG_CMD_READ           'R'               //读频命令
-#define PRG_CMD_END            'E'               //结束命令
+#define PRG_CMD_FLASH          'D'               //
+#define PRG_CMD_WRITE          'W'               //
+#define PRG_CMD_READ           'R'               //
+#define PRG_CMD_END            'E'               //
 
-/*********************************************************************/
-//定义命令标志位
+//
 #define progromCmd             progrom.rxBuf[0]
 #define progromAdr0            progrom.rxBuf[1]
 #define progromAdr1            progrom.rxBuf[2]
@@ -25,50 +24,50 @@ const U8 strModelType[] = {"UVK6"};
 #define progromData0           progrom.rxBuf[4]
 
 /*********************************************************************
-* 函 数 名: ProgromInit
-* 功能描述: 初始化写频模式参数
-* 全局变量: 
-* 输入参数：
-* 输出参数:
-* 返　　回:
-* 说    明：
+*   : ProgromInit
+* : 
+* : 
+* 
+* :
+* :
+*     
 ***********************************************************************/
 extern void ProgromInit(void)
 {
     memset(&progrom,0x00,sizeof(STR_PROGROM));
 }
 /*********************************************************************
-* 函 数 名: UartSendBuf
-* 功能描述: 串口发送数据包
-* 全局变量: 
-* 输入参数：*buf:数据指针   len:数据长度
-* 输出参数:
-* 返　　回:
-* 说    明：
+*   : UartSendBuf
+* : 
+* : 
+* *buf:   len:
+* :
+* :
+*     
 ***********************************************************************/
 extern void UartSendBuf(U8 *buf,U16 len)
 {
     U16 i;
-    
+
     for(i=0;i<len;i++)
     {
         uartSendChar(buf[i]);
     }
-    
+
 }
 /*********************************************************************
-* 函 数 名: CheckProgromMode
-* 功能描述: 读写频模式检测是否进入该模式，以及检测是否接收到数据
-* 全局变量: 
-* 输入参数：rxData:串口接收到的数据
-* 输出参数:
-* 返　　回:
-* 说    明：
+*   : CheckProgromMode
+* : 
+* : 
+* rxData:
+* :
+* :
+*     
 ***********************************************************************/
 extern void CheckProgromMode(U8 rxData)
 {
     static U8 rxPreData;
-    
+
     progrom.timeOut = UART_TIMEOUT;
     if(g_sysRunPara.sysRunMode == MODE_FLASH_PROGRAM)
     {
@@ -81,7 +80,7 @@ extern void CheckProgromMode(U8 rxData)
     {
         if(!progrom.enterMode)
         {
-        //采用比较严格的方式判断是否进入写频模式
+        //
             if((rxData == linkHead[1] && rxPreData == linkHead[0]) || (rxData == linkHead[2] && rxPreData == linkHead[1]))
             {
                 progrom.enterMode = 1;
@@ -100,13 +99,13 @@ extern void CheckProgromMode(U8 rxData)
     }
 }
 /*********************************************************************
-* 函 数 名: CheckProgromTimeout
-* 功能描述: 写频模式延时函数，用于精确计算时间
-* 全局变量: 
-* 输入参数：
-* 输出参数:
-* 返　　回:
-* 说    明：
+*   : CheckProgromTimeout
+* : 
+* : 
+* 
+* :
+* :
+*     
 ***********************************************************************/
 extern void CheckProgromTimeout(void)
 {
@@ -115,19 +114,19 @@ extern void CheckProgromTimeout(void)
         progrom.timeOut--;
 
         if(progrom.timeOut == 0)
-        {//超时复位设备
+        {//
             progrom.states = PRG_END;
         }
     }
 }
 /*********************************************************************
-* 函 数 名: ProgromSendAck
-* 功能描述: 发送回复信息
-* 全局变量: 
-* 输入参数：
-* 输出参数:
-* 返　　回:
-* 说    明：
+*   : ProgromSendAck
+* : 
+* : 
+* 
+* :
+* :
+*     
 ***********************************************************************/
 void ProgromSendAck(void)
 {
@@ -136,13 +135,13 @@ void ProgromSendAck(void)
 }
 
 /*********************************************************************
-* 函 数 名: ProgromSendFreqRange
-* 功能描述: 发送频段信息到PC端
-* 全局变量: 
-* 输入参数：
-* 输出参数:
-* 返　　回:
-* 说    明：
+*   : ProgromSendFreqRange
+* : PC
+* : 
+* 
+* :
+* :
+*     
 ***********************************************************************/
 void ProgromSendFreqRange(void)
 {
@@ -163,17 +162,17 @@ void ProgromSendFreqRange(void)
 
     progrom.dataNum = 16;
 
-    //发送数据
+    //
     UartSendBuf(progrom.rxBuf,progrom.dataNum);
 }
 /*********************************************************************
-* 函 数 名: CheckLinkHead
-* 功能描述: 校验握手码是否正确
-* 全局变量: 
-* 输入参数：
-* 输出参数:
-* 返　　回: 是否校验成功
-* 说    明：
+*   : CheckLinkHead
+* : 
+* : 
+* 
+* :
+* : 
+*     
 ***********************************************************************/
 Boolean CheckLinkHead(void)
 {
@@ -199,13 +198,13 @@ Boolean CheckLinkHead(void)
     return FALSE;
 }
 /*********************************************************************
-* 函 数 名: CheckLinkHead
-* 功能描述: 校验握手码是否正确
-* 全局变量: progrom
-* 输入参数：flag: 0:读频  1:写频
-* 输出参数:
-* 返　　回:
-* 说    明：
+*   : CheckLinkHead
+* : 
+* : progrom
+* flag: 0:  1:
+* :
+* :
+*     
 ***********************************************************************/
 void ProgromWriteReadData(U8 flag)
 {
@@ -245,7 +244,7 @@ void ProgromWriteReadData(U8 flag)
                     SpiFlash_EraseSector(address);
                 }
                 SpiFlash_WriteBytes(address, buf, PROGROMLEN);
-                
+
                 if(address == BAND2_ADDR)
                 {
                     g_rfMoudel.moduleType = buf[21];
@@ -287,34 +286,34 @@ void ProgromWriteReadData(U8 flag)
     }
 }
 /*********************************************************************
-* 函 数 名: EnterProgromMode
-* 功能描述: 进入写频模式
-* 全局变量: 
-* 输入参数：
-* 输出参数:
-* 返　　回:
-* 说    明：
+*   : EnterProgromMode
+* : 
+* : 
+* 
+* :
+* :
+*     
 ***********************************************************************/
 extern void EnterProgromMode(void)
 {
 
     RfOff();
-    //显示写频模式界面
+    //
     DisplayProgrom();
 
     progrom.states = PRG_CHECKHEAD;
     while(1)
     {
         if(g_msFlag)
-        {//延时函数
+        {//
             g_msFlag = 0;
             CheckProgromTimeout();
         }
-        
+
         if(progrom.recFlag)
         {
             progrom.recFlag = 0;
-            
+
             switch(progrom.states)
             {
                 case PRG_FRQRANGE:
@@ -345,7 +344,7 @@ extern void EnterProgromMode(void)
                         {
                             ProgromWriteReadData(0);
                             progrom.dataNum = 4 + progromLen;
-                            //发送数据
+                            //
                             UartSendBuf(progrom.rxBuf,progrom.dataNum);
                             progrom.dataNum = 0;
 
@@ -392,7 +391,7 @@ extern void EnterProgromMode(void)
                 progrom.errCnt++;
 
                 if(progrom.errCnt >= 3)
-                {//错误次数超过三次
+                {//
                     progrom.states = PRG_END;
                 }
             }
@@ -402,7 +401,7 @@ extern void EnterProgromMode(void)
                 LedTxSwitch(LED_OFF);
                 LedRxSwitch(LED_OFF);
                 progrom.dataNum = 0;
-			    //复位系统
+			    //
                 NVIC_SystemReset();
             }
         }
@@ -411,17 +410,17 @@ extern void EnterProgromMode(void)
 void StatusAck(U8 cmd, U8 status)
 {
     U16 crcTemp;
-    
+
     flashProgrom.txLength = 0;
     flashProgrom.txBuf[flashProgrom.txLength++] = FLASH_PRO_HEAD;
     flashProgrom.txBuf[flashProgrom.txLength++] = cmd;
-    //数据包
+    //
     flashProgrom.txBuf[flashProgrom.txLength++] = 0x00;
     flashProgrom.txBuf[flashProgrom.txLength++] = 0x00;
-    //数据长度
+    //
     flashProgrom.txBuf[flashProgrom.txLength++] = 0x00;
     flashProgrom.txBuf[flashProgrom.txLength++] = 0x01;
-    //错误代码
+    //
     flashProgrom.txBuf[flashProgrom.txLength++] = status;
 
     crcTemp = CRC_ValidationCalc(&flashProgrom.txBuf[FLASH_PRO_CMD_ADDR], flashProgrom.txLength-1);
@@ -438,7 +437,7 @@ void StatusAck(U8 cmd, U8 status)
 U8 CheckRxDataOk(void)
 {
     U16 crcTemp,crcTemp2;
-    
+
     if(progrom.rxBuf[0] != FLASH_PRO_HEAD)
     {
         StatusAck(PRO_CMD_ERROR, ERROR_CODE_HEAD);
@@ -446,7 +445,7 @@ U8 CheckRxDataOk(void)
     }
 
     flashProgrom.length = (progrom.rxBuf[FLASH_PRO_LEN_ADDR]<<8) + progrom.rxBuf[FLASH_PRO_LEN_ADDR+1];
-    
+
     crcTemp = (progrom.rxBuf[FLASH_PRO_DATA_ADDR + flashProgrom.length]<<8) + progrom.rxBuf[FLASH_PRO_DATA_ADDR + flashProgrom.length + 1];
 
     crcTemp2 = CRC_ValidationCalc(&progrom.rxBuf[FLASH_PRO_CMD_ADDR], flashProgrom.length + 5);
@@ -457,7 +456,7 @@ U8 CheckRxDataOk(void)
     }
 
     flashProgrom.cmd = progrom.rxBuf[FLASH_PRO_CMD_ADDR];
-    
+
     return OK;
 }
 void HandleProgromCmd(void)
@@ -477,7 +476,7 @@ void HandleProgromCmd(void)
         case PRO_CMD_EARSE:
             temp = progrom.rxBuf[FLASH_PRO_PACKED_ADDR + 1];
 
-            //获取数据长度
+            //
             if(flashProgrom.length)
             {
                 memcpy((U8 *)&addr,&progrom.rxBuf[FLASH_PRO_DATA_ADDR],4); 
@@ -515,7 +514,7 @@ void HandleProgromCmd(void)
             break;
         case PRO_CMD_WRITE:
             packedNum = (progrom.rxBuf[FLASH_PRO_PACKED_ADDR]<<8) + progrom.rxBuf[FLASH_PRO_PACKED_ADDR+1]; 
-            
+
             if(flashProgrom.packageNum != packedNum)
             {
                 StatusAck(PRO_CMD_ERROR, ERROR_CODE_ADDR);
@@ -535,7 +534,7 @@ void HandleProgromCmd(void)
             break;
     }
 
-    //返回当前命令
+    //
     if(flashProgrom.txLength == 4)
     {
         flashProgrom.txBuf[flashProgrom.txLength++] = 0x00;
@@ -543,7 +542,7 @@ void HandleProgromCmd(void)
         flashProgrom.txBuf[flashProgrom.txLength++] = 0x59;
     }
 
-    //计算CRC校验码
+    //CRC
     packedNum = CRC_ValidationCalc(&flashProgrom.txBuf[FLASH_PRO_CMD_ADDR], flashProgrom.txLength-1);
 
     flashProgrom.txBuf[flashProgrom.txLength++] = packedNum>>8;
@@ -552,7 +551,7 @@ void HandleProgromCmd(void)
     UartSendBuf(flashProgrom.txBuf, flashProgrom.txLength);
     flashProgrom.txLength = 0;
 
-    //发送完成后清除超时时间，一包数据结束，说明协议完整结束
+    //
     progrom.timeOut = 0;
 }
 
@@ -562,20 +561,20 @@ extern void EnterFlashProgromMode(void)
     g_sysRunPara.sysRunMode = MODE_FLASH_PROGRAM;
     progrom.packageTime = 0;
     progrom.timeOut = 0;
-    //默认设置起始地址为0
+    //0
     flashProgrom.StartAddr = 0;
 
     while(1)
     {
         if(g_msFlag)
-        {//延时函数
+        {//
             g_msFlag = 0;
             if(progrom.timeOut)
             {
                 progrom.timeOut--;
-        
+
                 if(progrom.timeOut == 0)
-                {//超时复位设备
+                {//
                     progrom.states = FLASH_PRG_END;
                 }
             }
@@ -592,7 +591,7 @@ extern void EnterFlashProgromMode(void)
         }
 
         if(progrom.recFlag)
-        {//接收到1包数据
+        {//1
             progrom.recFlag = 0;
 
             if(CheckRxDataOk() == OK)
@@ -617,14 +616,14 @@ extern void EnterFlashProgromMode(void)
         }
         else
         {
-        
+
             if(progrom.states == FLASH_PRG_ERROR)
             {
                 progrom.states = FLASH_PRG_CHECKHEAD;
                 progrom.errCnt++;
 
                 if(progrom.errCnt >= 3)
-                {//错误次数超过三次
+                {//
                     progrom.states = FLASH_PRG_END;
                 }
             }
@@ -635,11 +634,10 @@ extern void EnterFlashProgromMode(void)
                 LedRxSwitch(LED_OFF);
                 progrom.dataNum = 0;
 
-                //复位系统
+                //
                 NVIC_SystemReset();
             }
         }
     }   
 }
-
 

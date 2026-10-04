@@ -2,7 +2,6 @@
 
 STR_ALARM alarmDat;
 
-/*********************************************************************************************************************/
 extern void CheckAlarmDelay(void)
 {
     if (alarmDat.freqSwTime)
@@ -37,7 +36,7 @@ void AlarmOut(ENUM_ONOFF flag)
     else
     {
         alarmDat.alarmFreq = 0;
-        // 关闭报警音
+        // 
         Rfic_TxSingleTone_Off();
     }
 }
@@ -62,7 +61,7 @@ Boolean SetAlarmCode(void)
 
 extern void AlarmTask(void)
 {
-    // 开启报警模式
+    // 
     if (alarmDat.alarmStates == ON)
     {
         if (alarmDat.freqSwTime == 0)
@@ -76,7 +75,7 @@ extern void AlarmTask(void)
                 if (alarmDat.alarmFreq > 250)
                 {
                     alarmDat.toneFlag = 0;
-                    // 显示报警信息
+                    // 
                 }
             }
             else
@@ -85,12 +84,12 @@ extern void AlarmTask(void)
                 if (alarmDat.alarmFreq < 70)
                 {
                     alarmDat.toneFlag = 1;
-                    // 显示报警信息
+                    // 
                 }
             }
 
             if (!(g_rfState == RF_TX && g_radioInform.alarmMode == ALARM_CODE))
-            { // 不发送报警音
+            { // 
                 if (alarmDat.ledFlashTime == 0)
                 {
                     alarmDat.ledFlashTime = 100;
@@ -99,7 +98,7 @@ extern void AlarmTask(void)
                 }
                 Rfic_SetToneFreq(alarmDat.alarmFreq);
 
-                // 允许本地发出报警音
+                // 
                 if ((g_radioInform.alarmMode == 0) || g_radioInform.alarmLocal)
                 {
                     SpeakerSwitch(ON);
@@ -107,7 +106,7 @@ extern void AlarmTask(void)
             }
         }
 
-        // 发送报警音和发送报警码模式
+        // 
         if (g_radioInform.alarmMode)
         {
             if (alarmDat.alarmTime == 0)
@@ -143,7 +142,7 @@ extern void AlarmFuncSwitch(ENUM_ONOFF flag)
 
     if (flag == ON)
     {
-        /*显示AM标志*/
+        /*AM*/
         if (g_ChannelVfoInfo.chVfoInfo[g_ChannelVfoInfo.switchAB].freqRx.frequency >= 10800000 && g_ChannelVfoInfo.chVfoInfo[g_ChannelVfoInfo.switchAB].freqRx.frequency < 13600000)
         {
             if (g_radioInform.alarmMode != ALARM_LOCAL)
@@ -155,13 +154,13 @@ extern void AlarmFuncSwitch(ENUM_ONOFF flag)
 
         ExitAllFunction(1);
 
-        // 关闭发射超时
+        // 
         g_sysRunPara.rfTxFlag.totTime = 500;
 
         alarmDat.freqSwTime = 12;
         alarmDat.ledFlashTime = 100;
         alarmDat.alarmTime = 3000;
-        Rfic_TxSingleTone_Off(); // 关闭报警音输出   预防发送报警码等待的时候本机出现杂音
+        Rfic_TxSingleTone_Off(); //    
 
         if (g_radioInform.alarmMode)
         {

@@ -4,7 +4,7 @@ extern void FmDisplayInputFreq(void)
 {
     U8 i,j,poin,xpos=36;
     String buf[9] = {0};
-    
+
     if(g_inputbuf.maxLen == 3)
     {
         xpos += 4;
@@ -37,7 +37,7 @@ extern void FmDisplayInputChNum(void)
 {
     U8 i;
     String buf[3] = {0};
-    
+
     memset(buf,'-',2);
     for(i=0;i<g_inputbuf.len;i++)
     {
@@ -60,10 +60,10 @@ extern void FmDisplaySeek(void)
 extern void FmDisplayChNum(void)
 {
     U8 buf[4] = {0};
-    
+
     if(g_FMInform.fmChVfo == CHAN_MODE)
     {
-    
+
         sprintf((String *)buf,"%02d",g_FMInform.fmChNum+1);
     }
     else
@@ -74,12 +74,11 @@ extern void FmDisplayChNum(void)
     LCD_DisplayNumber(42,112,(U8 *)buf,2);
 }
 
-
 extern void FmDisplayFreq(void)
 {
     String disBuf[10] = {0};
     U8 len = 0,xpos=36;
-    
+
     len = snprintf(disBuf, sizeof(disBuf), "%u.%u00",
                    (unsigned int)(fmInfo.freq / 10U),
                    (unsigned int)(fmInfo.freq % 10U));
@@ -90,7 +89,7 @@ extern void FmDisplayFreq(void)
     LCD_ClearArea(35,0,128,16);
     LCD_DisplayText(35,xpos,(U8 *)disBuf,FONTSIZE_16x16,LCD_DIS_NORMAL);
 
-    //显示信道号
+    //
     FmDisplayChNum();
 
     LCD_UpdateWorkAre();

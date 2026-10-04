@@ -3,11 +3,11 @@
 
 typedef struct
 {
-    U8 minute;      // 分
-    U8 second;      // 秒
-    U8 millisecond; // 10毫秒
+    U8 minute;      // 
+    U8 second;      // 
+    U8 millisecond; // 10
 
-    U8 flagStart; // 开关
+    U8 flagStart; // 
 } STU_STOPWATCH;
 
 extern void StopWatchDisplayHome(void);

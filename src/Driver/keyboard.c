@@ -7,16 +7,16 @@ static U8 SubmitKey = 0;
 
 #define KeyReadDelay()                  DelayUs(5)
 
-const U16 keyscanTab1[] = { 0x0E11, 0x0E10, 0x0E01, 0x0A11, 0x0611, 0x0C11};  // 扫描列表_输出高电平
-const U16 keyscanTab2[] = { 0x0000, 0x0001, 0x0010, 0x0400, 0x0800, 0x0200};  // 扫描列表_输出低电平
+const U16 keyscanTab1[] = { 0x0E11, 0x0E10, 0x0E01, 0x0A11, 0x0611, 0x0C11};  // _
+const U16 keyscanTab2[] = { 0x0000, 0x0001, 0x0010, 0x0400, 0x0800, 0x0200};  // _
 
 #define MASK_MATRIX_LINE           0x6003
 #define MASK_MATRIX_LINE_1         0x4003
 #define MASK_MATRIX_LINE_2         0x2003
 #define MASK_MATRIX_LINE_3         0x6001
 #define MASK_MATRIX_LINE_4         0x6002
-        
-// 矩阵键值
+
+// 
 const KeyID_Enum KEYBOARD_TABLE[][4] =
 {
     { KEYID_NONE,KEYID_SIDEKEY1,   KEYID_NONE,      KEYID_SIDEKEY2},
@@ -50,7 +50,7 @@ KeyID_Enum GetKeyCode(void)
     {
         GPIO_SetBits( GPIOB, keyscanTab1[i]  );
         GPIO_ResetBits( GPIOB, keyscanTab2[i] );
-        
+
         KeyReadDelay();
         switch( KEY_ReadGpioInput(GPIOB) & MASK_MATRIX_LINE )
         {
@@ -60,7 +60,7 @@ KeyID_Enum GetKeyCode(void)
             case MASK_MATRIX_LINE_4:  return KEYBOARD_TABLE[i][3];
         }
     }
-    
+
     return KEYID_NONE;
 }
 
@@ -91,7 +91,7 @@ extern Boolean KEY_GetKeyEvent(void)
             KeyPressCount = 0;
             return FALSE;
         }
-        
+
         if(SubmitKey == 0 || g_rfState == RF_TX)
         {
             KeyPressCount = 0;
@@ -105,9 +105,9 @@ extern Boolean KEY_GetKeyEvent(void)
         SubmitKey = 0;
         return FALSE;
     }
-    
+
     if(PressedKey == KEYID_NONE)
-    {//判断是否支持长按键
+    {//
         PressedKey = key;
         KeyPressCount = 1;
 
@@ -119,14 +119,13 @@ extern Boolean KEY_GetKeyEvent(void)
             return TRUE; 
         }
     }
-    
 
     if(PressedKey == key)
     {
         KeyPressCount++;
 
         if(KeyPressCount == 100) 
-        {//支持长按键
+        {//
             if(PressedKey == KEYID_UP || PressedKey == KEYID_DOWN  || PressedKey == KEYID_VM || PressedKey == KEYID_BAND
                || PressedKey == KEYID_STAR || PressedKey == KEYID_WELL  || PressedKey == KEYID_0 || PressedKey == KEYID_8
                || PressedKey == KEYID_EXIT || PressedKey == KEYID_SIDEKEY1 || PressedKey == KEYID_SIDEKEY2)
@@ -155,7 +154,7 @@ extern Boolean KEY_GetKeyEvent(void)
         }
     }
     else
-    {//新按键按下
+    {//
         if(SubmitKey == 0 || g_rfState == RF_TX)
         {
             g_keyScan.keyEvent = PressedKey;
@@ -170,7 +169,6 @@ extern Boolean KEY_GetKeyEvent(void)
     }
     return FALSE; 
 }
-
 
 extern void KEY_ScanTask(void)
 {
@@ -187,7 +185,7 @@ extern void KEY_ScanTask(void)
        g_keyScan.longPress = 0;
        BeepOut(BEEP_NULL);
     }
-    
+
     LCD_BackLightSetOn();
     ResetTimeKeyLockAndPowerSave();
 }
@@ -195,7 +193,7 @@ extern void KEY_ScanTask(void)
 extern U8 Key_GetRealEvent(void)
 {
     U8 keyEvent;
-    
+
     if(g_keyScan.longPress == KEY_LONG)
     {
         switch(g_keyScan.keyEvent)

@@ -41,7 +41,7 @@ extern void SysTickHandler(void)
             {
                 dtmfInfo.matchTime[0]--;
             }
-    
+
             if(dtmfInfo.matchTime[1] > 0)
             {
                 dtmfInfo.matchTime[1]--;
@@ -61,25 +61,25 @@ extern void SysTickHandler(void)
                 g_sysRunPara.lcdAutoLight--;
             }
 
-            //过中继尾音消除检测时间
+            //
             if(g_sysRunPara.rfRxFlag.relayTailDetTime)
             {
                 g_sysRunPara.rfRxFlag.relayTailDetTime--;
             }
-    
-            //发射过中继尾音消除时间
+
+            //
             if(g_sysRunPara.rfTxFlag.relayTailSetTime)
             {
                 g_sysRunPara.rfTxFlag.relayTailSetTime--;
             }
-    
-            //接收显示闪烁
+
+            //
             if(g_sysRunPara.rfRxFlag.rxFlashTime)
             {
                 g_sysRunPara.rfRxFlag.rxFlashTime--;
             }
-    
-            //扫描切换时间,接收时候时间才递减
+
+            //,
             if(g_scanInfo.scanTime && g_rfState == RF_RX)
             {
                 g_scanInfo.scanTime--;

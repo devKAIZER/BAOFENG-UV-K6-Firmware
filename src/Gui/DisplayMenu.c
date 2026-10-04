@@ -3,77 +3,75 @@
 #define EnS "abc"
 #define EnL "ABC"
 #define Num "123"
-#define Pinyin " PY"
 
 String disBuf[19];
 
 const STR_MENU_ITEM MenuList[] =
     {
-        {vo_Null, "CHL Name", "�ŵ�����"},
-        {vo_Null, "RX Frequency", "����Ƶ��"},
-        {vo_Null, "TX Frequency", "����Ƶ��"},
-        {vo_CTCSS, "R-CTCSS", "����ģ������"},
-        {vo_DCS, "R-DCS", "������������"},
-        {vo_CTCSS, "T-CTCSS", "����ģ������"},
-        {vo_DCS, "T-DCS", "������������"},
-        {vo_Chlbandwidth, "BandWidth", "�ŵ�����"},
-        {vo_power, "TXP", "���书��"},
-        {vo_Null, "Silence Mode", "����ģʽ"},
-        {vo_Null, "TX Forbid", "�����ֹ"},
-        {vo_Freqdir, "Shift DIR", "Ƶ���"},
-        {vo_Offsetfreq, "OFFSET", "Ƶ��Ƶ��"},
-        {vo_Memorychl, "MEMCH", "�ŵ��洢"},
-        {vo_Deletechl, "DELCH", "�ŵ�ɾ��"},
-        {vo_Null, "VFO FreqRang", "VFOɨ�跶Χ"},
-        {vo_Null, "Scan Mode", "ɨ��ģʽ"},
-        {vo_Null, "DTMFST", "��������"},
-        {vo_Null, "PTT ID", "DTMF����"},
-        {vo_Null, "PTT-LT", "���븽���ӳ�"},
-        {vo_Squelch, "Squelch", "����ȼ�"},
-        {vo_savemode, "RX Save", "ʡ��ģʽ"},
-        {vo_VOX, "VOX Switch", "���ؿ���"},
-        {vo_Null, "VOX Level", "���صȼ�"},
-        {vo_Null, "VOX Delay", "������ʱ"},
-        {vo_Txovertime, "TX OVer Time", "���䳬ʱ"},
-        {vo_Voicepromrt, "Language", "�˵�����"},
-        {vo_Null, "VOICE", "������ʾ����"},
-        {vo_Null, "Menu HangTime", "�˵�����ʱ��"},
-        {vo_Beepprompt, "BEEP PROMPT", "����������"},
-        {vo_Null, "Roger Beep", "ͨ��������ʾ��"},
-        {vo_Null, "POWER ON TYPE", "��������ѡ��"},
-        {vo_Null, "Power On Tone", "������ʾ��"},
-        {vo_Null, "Power on MSG", "������Ϣ"},
-        {vo_Null, "POWER ON PWD", "��������"},
-        {vo_Dualstandby, "Dual Watch", "˫Ƶ�غ�"},
-        {vo_Null, "MDF-A", "A����ʾģʽ"},
-        {vo_Null, "MDF-B", "B����ʾģʽ"},
-        {vo_Null, "RP-STE", "�м�β������"},
-        {vo_Null, "RPT-RL", "�м�β����ʱ"},
-        {vo_Null, "ALERT", "�м̼�����Ƶ"},
-        {vo_Step, "Freq Step", "����Ƶ��"},
-        {vo_Busylockout, "Busy Lockout", "��æ����"},
-        {vo_Null, "Side Tone", "β������"},
-        {vo_Null, "Alarm Mode", "����ģʽ"},
-        {vo_Null, "PF1", "���1�̰�"},
-        {vo_Null, "PF1 LONG PRESS", "���1����"},
-        {vo_Null, "PF2", "���2�̰�"},
-        {vo_Null, "ABR", "�Զ������"},
-        {vo_Null, "Brightness", "LCD�Աȶ�"},
-        {vo_Null, "LCD Reflex", "������Ļ"},
-        {vo_Null, "AUTOLOCK", "�Զ�������"},
-        {vo_Null, "Radio Interrupt", "�������"},
-        {vo_initialization, "Reset", "�ָ���������"},
-        {vo_Null, "STOP WATCH", "�������"},
-        {vo_Null, "VERSION", "�汾��Ϣ"},
+        {vo_Null, "CHL Name"},
+        {vo_Null, "RX Frequency"},
+        {vo_Null, "TX Frequency"},
+        {vo_CTCSS, "R-CTCSS"},
+        {vo_DCS, "R-DCS"},
+        {vo_CTCSS, "T-CTCSS"},
+        {vo_DCS, "T-DCS"},
+        {vo_Chlbandwidth, "BandWidth"},
+        {vo_power, "TXP"},
+        {vo_Null, "Silence Mode"},
+        {vo_Null, "TX Forbid"},
+        {vo_Freqdir, "Shift DIR"},
+        {vo_Offsetfreq, "OFFSET"},
+        {vo_Memorychl, "MEMCH"},
+        {vo_Deletechl, "DELCH"},
+        {vo_Null, "VFO FreqRang"},
+        {vo_Null, "Scan Mode"},
+        {vo_Null, "DTMFST"},
+        {vo_Null, "PTT ID"},
+        {vo_Null, "PTT-LT"},
+        {vo_Squelch, "Squelch"},
+        {vo_savemode, "RX Save"},
+        {vo_VOX, "VOX Switch"},
+        {vo_Null, "VOX Level"},
+        {vo_Null, "VOX Delay"},
+        {vo_Txovertime, "TX OVer Time"},
+        {vo_Null, "VOICE"},
+        {vo_Null, "Menu HangTime"},
+        {vo_Beepprompt, "BEEP PROMPT"},
+        {vo_Null, "Roger Beep"},
+        {vo_Null, "POWER ON TYPE"},
+        {vo_Null, "Power On Tone"},
+        {vo_Null, "Power on MSG"},
+        {vo_Null, "POWER ON PWD"},
+        {vo_Dualstandby, "Dual Watch"},
+        {vo_Null, "MDF-A"},
+        {vo_Null, "MDF-B"},
+        {vo_Null, "RP-STE"},
+        {vo_Null, "RPT-RL"},
+        {vo_Null, "ALERT"},
+        {vo_Step, "Freq Step"},
+        {vo_Busylockout, "Busy Lockout"},
+        {vo_Null, "Side Tone"},
+        {vo_Null, "Alarm Mode"},
+        {vo_Null, "PF1"},
+        {vo_Null, "PF1 LONG PRESS"},
+        {vo_Null, "PF2"},
+        {vo_Null, "ABR"},
+        {vo_Null, "Brightness"},
+        {vo_Null, "LCD Reflex"},
+        {vo_Null, "AUTOLOCK"},
+        {vo_Null, "Radio Interrupt"},
+        {vo_initialization, "Reset"},
+        {vo_Null, "STOP WATCH"},
+        {vo_Null, "VERSION"},
 };
 
 const STR_MENU_ITEM MenuFmList[] =
     {
-        {vo_Null, "FM MEMCH", "FM�ŵ��洢"},
-        {vo_Null, "FM BAND", "FM����Ƶ��"},
+        {vo_Null, "FM MEMCH"},
+        {vo_Null, "FM BAND"},
 };
 
-const String *VoxCnStr[] =
+const String *VoxStr[] =
     {
         "1",
         "2",
@@ -86,13 +84,6 @@ const String *VoxCnStr[] =
         "9",
         "10"};
 
-const String *BatSaveCnStr[] =
-    {
-        "�ر�",
-        "1:1",
-        "1:2",
-        "1:4",
-};
 const String *BatSaveEnStr[] =
     {
         "OFF",
@@ -101,50 +92,27 @@ const String *BatSaveEnStr[] =
         "1:4",
 };
 
-const String *OnOffCnStr[] =
-    {
-        "�ر�",
-        "����"};
 const String *OnOffEnStr[] =
     {
         "OFF",
         "ON"};
 
-const String *OnSelCnStr[] =
-    {
-        "����"};
 const String *OnSelEnStr[] =
     {
         "ON"};
 
-const String *AlmodCnStr[] =
-    {
-        "�ֳ�����",
-        "���ͱ�����",
-        "���ͱ�����"};
 const String *AlmodEnStr[] =
     {
         "ON SITE",
         "SEND SOUND",
         "SEND CODE"};
 
-const String *ScanmodCnStr[] =
-    {
-        "ʱ��",
-        "�ز�",
-        "����"};
 const String *ScanmodEnStr[] =
     {
         "TO",
         "CO",
         "SE"};
 
-const String *PttIdSelCnStr[] =
-    {
-        "�ر�",
-        "����PTT����",
-        "�ɿ�PTT����",
-        "ͬʱ����"};
 const String *PttIdSelEnStr[] =
     {
         "OFF",
@@ -152,21 +120,12 @@ const String *PttIdSelEnStr[] =
         "EOT",
         "BOTH"};
 
-const String *BandCnStr[] =
-    {
-        "խ��",
-        "����",
-};
 const String *BandEnStr[] =
     {
         "WIDE",
         "NARROW",
 };
 
-const String *TxPowerCnStr[] =
-    {
-        "�߹���",
-        "�͹���"};
 const String *TxPowerEnStr[] =
     {
         "HIGH",
@@ -184,24 +143,11 @@ const String *VfoStepStr[] =
         "50.0 K",
 };
 
-const String *VfoDirCnStr[] =
-    {
-        "�ر�",
-        "+",
-        "-"};
-
 const String *VfoDirEnStr[] =
     {
         "OFF",
         "+",
         "-"};
-
-const String *ChDisCnStr[] =
-    {
-        "�ŵ�����",
-        "�ŵ�Ƶ��",
-        "�ŵ���",
-        "����+Ƶ��"};
 
 const String *ChDisEnStr[] =
     {
@@ -210,28 +156,12 @@ const String *ChDisEnStr[] =
         "CH",
         "NAME+FREQ"};
 
-const String *LanStr[] =
-    {
-        "ENGLISH",
-        "����"};
-
-const String *DtmfSetSelCnStr[] =
-    {
-        "�ر�",
-        "��������",
-        "������",
-        "����+������"};
 const String *DtmfSetSelEnStr[] =
     {
         "OFF",
         "DT-ST",
         "ANI-ST",
         "DT+ANI"};
-
-const String *DevResetCnStr[] =
-    {
-        "Ƶ��ģʽ",
-        "ȫ��"};
 
 const String *DevResetEnStr[] =
     {
@@ -246,11 +176,6 @@ const String *ToneEnStr[] =
         " 2100hz", // 3
 };
 
-const String *PwrOnCnStr[] =
-    {
-        "Ԥ��ͼ��",
-        "Ԥ����Ϣ",
-        "��ص�ѹ"};
 const String *PwrOnEnStr[] =
     {
         "OFF",
@@ -260,16 +185,6 @@ const String *PwrOnEnStr[] =
         "BUILD",
     };
 
-const String *SideKeyCnStr[] =
-    {
-        "��",
-        "�ֵ�Ͳ����",
-        "����ѡ��",
-        "ɨ�迪��",
-        "���ؿ���",
-        "��������",
-        "����������",
-};
 const String *SideKeyEnStr[] =
     {
         "None",
@@ -281,32 +196,10 @@ const String *SideKeyEnStr[] =
         "Radio on/off",
 };
 
-const String *RxEndTailSelCnStr[] =
-    {
-        "�ر�",
-        "MDC1200"};
-
 const String *RxEndTailSelEnStr[] =
     {
         "OFF",
         "MDC1200"};
-
-const String *TxEndToneCnStr[] =
-    {
-        "OFF",
-        "STANDARD",
-        "CLASSIC",
-        "DOUBLE",
-        "DESCEND",
-        "ASCEND",
-        "2-TONE",
-        "TRIPLE",
-        "M-RADIO",
-        "ECHO",
-        "CHIRP",
-        "REVERSE CHIRP",
-        "ROGER RADIO",
-        "SIGNATURE"};
 
 const String *TxEndToneEnStr[] =
     {
@@ -325,11 +218,6 @@ const String *TxEndToneEnStr[] =
         "ROGER",
         "SIGNATURE"};
 
-const String *ReflexCnStr[] =
-    {
-        "����",
-        "����"};
-
 const String *ReflexEnStr[] =
     {
         "Normal",
@@ -341,29 +229,10 @@ const String *PwrOnToneSelEnStr[] =
         "Tone",
         "Voice"};
 
-const String *PwrOnToneSelCnStr[] =
-    {
-        "��",
-        "����",
-        "����"};
-
-const String *SpMuteSelCnStr[] =
-    {
-        "����",
-        "����+��ѡ����",
-};
-
 const String *SpMuteSelEnStr[] =
     {
         "CTDCS",
         "CTDCS+Signaling",
-};
-
-const String *DualSelCnStr[] =
-    {
-        "�ر�",
-        "˫��˫��",
-        "˫�ε���",
 };
 
 const String *DualSelEnStr[] =
@@ -431,66 +300,31 @@ extern void Menu_GetSubItemString(U8 menuIndex)
             }
             else if (g_menuInfo.selectedItem == 0 || g_menuInfo.selectedItem > 210)
             {
-                if (g_radioInform.language == LANG_CN)
-                {
-                    sprintf(disBuf, "%s", "�ر�");
-                }
-                else
-                {
-                    sprintf(disBuf, "%s", "OFF");
-                }
+            sprintf(disBuf, "%s", "OFF");
             }
             else
             {
                 if (g_menuInfo.selectedItem > 105)
-                { // ����
+                { // 
                     sprintf(disBuf, "D%03oI", DCS_TAB[g_menuInfo.selectedItem - 106]);
                 }
                 else
-                { // ����
+                { // 
                     sprintf(disBuf, "D%03oN", DCS_TAB[g_menuInfo.selectedItem - 1]);
                 }
             }
             break;
         case S_WN:
-            if (g_radioInform.language == LANG_CN)
-            {
-                sprintf(disBuf, "%s", BandCnStr[g_menuInfo.selectedItem]);
-            }
-            else
-            {
-                sprintf(disBuf, "%s", BandEnStr[g_menuInfo.selectedItem]);
-            }
+            sprintf(disBuf, "%s", BandEnStr[g_menuInfo.selectedItem]);
             break;
         case S_TXPR:
-            if (g_radioInform.language == LANG_CN)
-            {
-                sprintf(disBuf, "%s", TxPowerCnStr[g_menuInfo.selectedItem]);
-            }
-            else
-            {
-                sprintf(disBuf, "%s", TxPowerEnStr[g_menuInfo.selectedItem]);
-            }
+            sprintf(disBuf, "%s", TxPowerEnStr[g_menuInfo.selectedItem]);
             break;
         case S_SPMUTE:
-            if (g_radioInform.language == LANG_CN)
-            {
-                sprintf(disBuf, "%s", SpMuteSelCnStr[g_menuInfo.selectedItem]);
-            }
-            else
-            {
-                sprintf(disBuf, "%s", SpMuteSelEnStr[g_menuInfo.selectedItem]);
-            }
+            sprintf(disBuf, "%s", SpMuteSelEnStr[g_menuInfo.selectedItem]);
             break;
         case S_SFTD:
-            if (g_radioInform.language == LANG_CN)
-            {
-                sprintf(disBuf, "%s", VfoDirCnStr[g_menuInfo.selectedItem]);
-            }
-            else
-            {
-                sprintf(disBuf, "%s", VfoDirEnStr[g_menuInfo.selectedItem]);
-            }
+            sprintf(disBuf, "%s", VfoDirEnStr[g_menuInfo.selectedItem]);
             break;
         case S_MEMCH:
         case S_DELCH:
@@ -504,34 +338,13 @@ extern void Menu_GetSubItemString(U8 menuIndex)
             }
             break;
         case S_SCREV:
-            if (g_radioInform.language == LANG_CN)
-            {
-                sprintf(disBuf, "%s", ScanmodCnStr[g_menuInfo.selectedItem]);
-            }
-            else
-            {
-                sprintf(disBuf, "%s", ScanmodEnStr[g_menuInfo.selectedItem]);
-            }
+            sprintf(disBuf, "%s", ScanmodEnStr[g_menuInfo.selectedItem]);
             break;
         case S_DTST:
-            if (g_radioInform.language == LANG_CN)
-            {
-                sprintf(disBuf, "%s", DtmfSetSelCnStr[g_menuInfo.selectedItem]);
-            }
-            else
-            {
-                sprintf(disBuf, "%s", DtmfSetSelEnStr[g_menuInfo.selectedItem]);
-            }
+            sprintf(disBuf, "%s", DtmfSetSelEnStr[g_menuInfo.selectedItem]);
             break;
         case S_PTTID:
-            if (g_radioInform.language == LANG_CN)
-            {
-                sprintf(disBuf, "%s", PttIdSelCnStr[g_menuInfo.selectedItem]);
-            }
-            else
-            {
-                sprintf(disBuf, "%s", PttIdSelEnStr[g_menuInfo.selectedItem]);
-            }
+            sprintf(disBuf, "%s", PttIdSelEnStr[g_menuInfo.selectedItem]);
             break;
         case S_PTTLT:
             sprintf(disBuf, "%dMs", PttIDDelay[g_menuInfo.selectedItem] * 100);
@@ -540,17 +353,10 @@ extern void Menu_GetSubItemString(U8 menuIndex)
             sprintf(disBuf, "%lu", (unsigned long)g_menuInfo.selectedItem);
             break;
         case S_SAVE:
-            if (g_radioInform.language == LANG_CN)
-            {
-                sprintf(disBuf, "%s", BatSaveCnStr[g_menuInfo.selectedItem]);
-            }
-            else
-            {
-                sprintf(disBuf, "%s", BatSaveEnStr[g_menuInfo.selectedItem]);
-            }
+            sprintf(disBuf, "%s", BatSaveEnStr[g_menuInfo.selectedItem]);
             break;
         case S_VOXLV:
-            sprintf(disBuf, "%s", VoxCnStr[g_menuInfo.selectedItem]);
+            sprintf(disBuf, "%s", VoxStr[g_menuInfo.selectedItem]);
             break;
         case S_VOXDLY:
         {
@@ -562,22 +368,12 @@ extern void Menu_GetSubItemString(U8 menuIndex)
         case S_TOT:
             if (g_menuInfo.selectedItem == 0)
             {
-                if (g_radioInform.language == LANG_CN)
-                {
-                    sprintf(disBuf, "%s", "�ر�");
-                }
-                else
-                {
-                    sprintf(disBuf, "%s", "OFF");
-                }
+            sprintf(disBuf, "%s", "OFF");
             }
             else
             {
                 sprintf(disBuf, "%luS", (unsigned long)(g_menuInfo.selectedItem * 15U));
             }
-            break;
-        case S_LAN:
-            sprintf(disBuf, "%s", LanStr[g_menuInfo.selectedItem]);
             break;
         case S_MENUEXIT:
             if (g_menuInfo.selectedItem == 10)
@@ -591,34 +387,13 @@ extern void Menu_GetSubItemString(U8 menuIndex)
             break;
 
         case S_ROGE:
-            if (g_radioInform.language == LANG_CN)
-            {
-                sprintf(disBuf, "%s", TxEndToneCnStr[g_menuInfo.selectedItem]);
-            }
-            else
-            {
-                sprintf(disBuf, "%s", TxEndToneEnStr[g_menuInfo.selectedItem]);
-            }
+            sprintf(disBuf, "%s", TxEndToneEnStr[g_menuInfo.selectedItem]);
             break;
         case S_PONTYPE:
-            if (g_radioInform.language == LANG_CN)
-            {
-                sprintf(disBuf, "%s", PwrOnCnStr[g_menuInfo.selectedItem]);
-            }
-            else
-            {
-                sprintf(disBuf, "%s", PwrOnEnStr[g_menuInfo.selectedItem]);
-            }
+            sprintf(disBuf, "%s", PwrOnEnStr[g_menuInfo.selectedItem]);
             break;
         case S_PONTONE:
-            if (g_radioInform.language == LANG_CN)
-            {
-                sprintf(disBuf, "%s", PwrOnToneSelCnStr[g_menuInfo.selectedItem]);
-            }
-            else
-            {
-                sprintf(disBuf, "%s", PwrOnToneSelEnStr[g_menuInfo.selectedItem]);
-            }
+            sprintf(disBuf, "%s", PwrOnToneSelEnStr[g_menuInfo.selectedItem]);
             break;
         case S_PONMSG:
         {
@@ -635,38 +410,17 @@ extern void Menu_GetSubItemString(U8 menuIndex)
         }
         break;
         case S_TDR:
-            if (g_radioInform.language == LANG_CN)
-            {
-                sprintf(disBuf, "%s", DualSelCnStr[g_menuInfo.selectedItem]);
-            }
-            else
-            {
-                sprintf(disBuf, "%s", DualSelEnStr[g_menuInfo.selectedItem]);
-            }
+            sprintf(disBuf, "%s", DualSelEnStr[g_menuInfo.selectedItem]);
             break;
         case S_MDF1:
         case S_MDF2:
-            if (g_radioInform.language == LANG_CN)
-            {
-                sprintf(disBuf, "%s", ChDisCnStr[g_menuInfo.selectedItem]);
-            }
-            else
-            {
-                sprintf(disBuf, "%s", ChDisEnStr[g_menuInfo.selectedItem]);
-            }
+            sprintf(disBuf, "%s", ChDisEnStr[g_menuInfo.selectedItem]);
             break;
         case S_RPSTE:
         case S_RPTRL:
             if (g_menuInfo.selectedItem == 0)
             {
-                if (g_radioInform.language == LANG_CN)
-                {
-                    sprintf(disBuf, "%s", "�ر�");
-                }
-                else
-                {
-                    sprintf(disBuf, "%s", "OFF");
-                }
+            sprintf(disBuf, "%s", "OFF");
             }
             else
             {
@@ -680,38 +434,17 @@ extern void Menu_GetSubItemString(U8 menuIndex)
             sprintf(disBuf, "%s", VfoStepStr[g_menuInfo.selectedItem]);
             break;
         case S_ALMOD:
-            if (g_radioInform.language == LANG_CN)
-            {
-                sprintf(disBuf, "%s", AlmodCnStr[g_menuInfo.selectedItem]);
-            }
-            else
-            {
-                sprintf(disBuf, "%s", AlmodEnStr[g_menuInfo.selectedItem]);
-            }
+            sprintf(disBuf, "%s", AlmodEnStr[g_menuInfo.selectedItem]);
             break;
         case S_SK1:
         case S_SKL1:
         case S_SK2:
-            if (g_radioInform.language == LANG_CN)
-            {
-                sprintf(disBuf, "%s", SideKeyCnStr[g_menuInfo.selectedItem]);
-            }
-            else
-            {
-                sprintf(disBuf, "%s", SideKeyEnStr[g_menuInfo.selectedItem]);
-            }
+            sprintf(disBuf, "%s", SideKeyEnStr[g_menuInfo.selectedItem]);
             break;
         case S_ABR:
             if (g_menuInfo.selectedItem == 0)
             {
-                if (g_radioInform.language == LANG_CN)
-                {
-                    sprintf(disBuf, "%s", "�ر�");
-                }
-                else
-                {
-                    sprintf(disBuf, "%s", "OFF");
-                }
+            sprintf(disBuf, "%s", "OFF");
             }
             else
             {
@@ -733,26 +466,12 @@ extern void Menu_GetSubItemString(U8 menuIndex)
             sprintf(disBuf, "%lu", (unsigned long)(g_menuInfo.selectedItem + 1U));
             break;
         case S_REFLEX:
-            if (g_radioInform.language == LANG_CN)
-            {
-                sprintf(disBuf, "%s", ReflexCnStr[g_menuInfo.selectedItem]);
-            }
-            else
-            {
-                sprintf(disBuf, "%s", ReflexEnStr[g_menuInfo.selectedItem]);
-            }
+            sprintf(disBuf, "%s", ReflexEnStr[g_menuInfo.selectedItem]);
             break;
         case S_AUTOLK:
             if (g_menuInfo.selectedItem == 0)
             {
-                if (g_radioInform.language == LANG_CN)
-                {
-                    sprintf(disBuf, "%s", "�ر�");
-                }
-                else
-                {
-                    sprintf(disBuf, "%s", "OFF");
-                }
+            sprintf(disBuf, "%s", "OFF");
             }
             else
             {
@@ -760,14 +479,7 @@ extern void Menu_GetSubItemString(U8 menuIndex)
             }
             break;
         case S_RESET:
-            if (g_radioInform.language == LANG_CN)
-            {
-                sprintf(disBuf, "%s", DevResetCnStr[g_menuInfo.selectedItem]);
-            }
-            else
-            {
-                sprintf(disBuf, "%s", DevResetEnStr[g_menuInfo.selectedItem]);
-            }
+            sprintf(disBuf, "%s", DevResetEnStr[g_menuInfo.selectedItem]);
             break;
         case S_TXFORBID:
         case S_VOX:
@@ -777,24 +489,10 @@ extern void Menu_GetSubItemString(U8 menuIndex)
         case S_BUSYLOCK:
         case S_TAIL:
         case S_FMINT:
-            if (g_radioInform.language == LANG_CN)
-            {
-                sprintf(disBuf, "%s", OnOffCnStr[g_menuInfo.selectedItem]);
-            }
-            else
-            {
-                sprintf(disBuf, "%s", OnOffEnStr[g_menuInfo.selectedItem]);
-            }
+            sprintf(disBuf, "%s", OnOffEnStr[g_menuInfo.selectedItem]);
             break;
         case S_WATCH:
-            if (g_radioInform.language == LANG_CN)
-            {
-                sprintf(disBuf, "%s", OnSelCnStr[g_menuInfo.selectedItem]);
-            }
-            else
-            {
-                sprintf(disBuf, "%s", OnSelEnStr[g_menuInfo.selectedItem]);
-            }
+            sprintf(disBuf, "%s", OnSelEnStr[g_menuInfo.selectedItem]);
             break;
         case S_INFO:
             sprintf(disBuf, "KAI: %s", BUILD_NUMBER);
@@ -809,18 +507,11 @@ extern void Menu_DisplayFreqError(void)
 {
     String disBuf[17];
 
-    if (g_radioInform.language == LANG_CN)
-    {
-        TranStrToMiddle(disBuf, (String *)"Ƶ�ʳ�����Χ!", 16);
-    }
-    else
-    {
-        TranStrToMiddle(disBuf, (String *)"out of range!", 16);
-    }
+    TranStrToMiddle(disBuf, (String *)"out of range!", 16);
     LCD_DisplayText(47, 0, (U8 *)disBuf, FONTSIZE_16x16, 0);
     LCD_UpdateWorkAre();
 
-    // ��ʱ1S��ʾ����ɹ�����
+    // ʱ1Sʾɹ
     DelaySysMs(500);
 }
 
@@ -938,7 +629,7 @@ static U8 CheckCtcssInList(U16 ctcssDat)
         return 0;
     }
 
-    // �ж�����Ƶ�Ƿ���������
+    // жƵǷ
     for (i = 0; i < 51; i++)
     {
         if (CTCS_TAB[i] == ctcssDat)
@@ -954,14 +645,7 @@ void GetCtcssDisBuf(U16 Index)
 {
     if (Index == 0)
     {
-        if (g_radioInform.language == LANG_CN)
-        {
-            sprintf(disBuf, "�ر�");
-        }
-        else
-        {
-            sprintf(disBuf, "OFF");
-        }
+        sprintf(disBuf, "OFF");
     }
     else if (Index == 0xFF)
     {
@@ -978,7 +662,7 @@ static void ShowCtcssList(void)
     U8 selecteId;
 
     if (g_menuInfo.isSubMenu == 0)
-    { // �ڵ�һ��ѡ��˵�ѡ��
+    { // ڵһѡ˵ѡ
 
         if (g_menuInfo.inputVal == 0)
         {
@@ -1004,25 +688,11 @@ extern void UpdateMenuDisplay(void)
 
     if (g_menuInfo.menuType == 1)
     {
-        if (g_radioInform.language == LANG_CN)
-        {
-            snprintf(headbuf, sizeof(headbuf), "%s", MenuFmList[g_menuInfo.menuIndex].nameCn);
-        }
-        else
-        {
-            snprintf(headbuf, sizeof(headbuf), "%s", MenuFmList[g_menuInfo.menuIndex].nameEn);
-        }
+        snprintf(headbuf, sizeof(headbuf), "%s", MenuFmList[g_menuInfo.menuIndex].nameEn);
     }
     else
     {
-        if (g_radioInform.language == LANG_CN)
-        {
-            snprintf(headbuf, sizeof(headbuf), "%s", MenuList[g_menuInfo.menuIndex].nameCn);
-        }
-        else
-        {
-            snprintf(headbuf, sizeof(headbuf), "%s", MenuList[g_menuInfo.menuIndex].nameEn);
-        }
+        snprintf(headbuf, sizeof(headbuf), "%s", MenuList[g_menuInfo.menuIndex].nameEn);
     }
     TranStrToMiddle(lcdDisBuf, headbuf, 12);
     LCD_DisplayText(20, 16, (U8 *)lcdDisBuf, FONTSIZE_16x16, LCD_DIS_NORMAL);
@@ -1071,9 +741,6 @@ extern void DisplayInputType(void)
         case IN_EN_U:
             str = EnL;
             break;
-        case IN_PINYIN:
-            str = Pinyin;
-            break;
         case IN_NUMBER:
         default:
             str = Num;
@@ -1081,33 +748,8 @@ extern void DisplayInputType(void)
         }
         sprintf(buf, "%s", str);
         SC5260_ClearArea(10, 107, 20, 9, 1);
-        // ��ʾ��������
         LCD_DisplayNumber(11, 108, (U8 *)buf, 1);
         LCD_UpdateWorkAre();
-    }
-}
-
-const U8 InputPosY[] = {13, 32};
-
-void DisplaySelectHz(void)
-{
-    U8 i;
-    String displayBuf[19];
-
-    for (i = 0; i < 2; i++)
-    {
-        if (lcdDispBuf[i][0] == 0x08)
-        { // ��һת���ַ�ʱ����ʾ���ᵼ���ܳ���+1
-            sprintf(displayBuf, "%-*.*s", 17, 17, lcdDispBuf[i]);
-            displayBuf[16 + 1] = 0;
-        }
-        else
-        {
-            sprintf(displayBuf, "%-*.*s", 16, 16, lcdDispBuf[i]);
-            displayBuf[16] = 0;
-        }
-        SC5260_ClearArea(30, 2, 124, 1, 1);
-        LCD_DisplayText(InputPosY[i], 4, (U8 *)displayBuf, FONTSIZE_16x16, 0);
     }
 }
 
@@ -1117,17 +759,9 @@ extern void MenuShowInputChar(void)
 
     DisplayInputType();
 
-    // ��ʾ������ַ���
     sprintf((String *)disBuf, "%*.*s", 16, 16, g_inputbuf.buf);
-    // ��ʾ���������½�
     LCD_DisplayText(47, 0, (U8 *)disBuf, FONTSIZE_16x16, 0);
     uartSendChar(disBuf[0]);
-
-    /*���ƺ��������*/
-    if (pyBuf.pos != 0)
-    {
-        DisplaySelectHz();
-    }
 
     inputTypeBack = 0xFF;
     DisplayInputType();
@@ -1141,7 +775,7 @@ extern void Menu_Display(void)
 
     if (!(g_menuInfo.inputMode == MENU_ONE_CHAR && g_menuInfo.isSubMenu))
     {
-        // �����м�����
+        // м
         SC5260_ClearArea(41, 5, 121, 2, 1);
         posx = 5;
         for (i = 0; i < 13; i++)
@@ -1154,7 +788,7 @@ extern void Menu_Display(void)
     {
     case MENU_ONE_CHAR:
         if (g_menuInfo.isSubMenu)
-        { // ��ʾ�ŵ����Ʊ༭����
+        { // ʾŵƱ༭
             LCD_ClearWorkArea();
             MenuShowInputChar();
             return;
@@ -1164,7 +798,7 @@ extern void Menu_Display(void)
             Menu_GetSubItemString(g_menuInfo.menuIndex);
         }
         break;
-    case MENU_ONE_FREQ: // Ƶ������
+    case MENU_ONE_FREQ: // Ƶ
         if (g_menuInfo.isSubMenu == 0)
         {
             g_menuInfo.inputVal = g_menuInfo.selectedItem;
@@ -1172,7 +806,7 @@ extern void Menu_Display(void)
         DisplayInputOffect(g_menuInfo.inputVal);
 
         break;
-    case MENU_CH_FREQ: // Ƶ������
+    case MENU_CH_FREQ: // Ƶ
         if (g_menuInfo.isSubMenu == 0)
         {
             g_menuInfo.inputVal = g_menuInfo.selectedItem;
@@ -1180,7 +814,7 @@ extern void Menu_Display(void)
         DisplayInputChFreq(g_menuInfo.inputVal);
 
         break;
-    case MENU_ONE_VFOSCAN: // Ƶ��ɨ�跶Χ
+    case MENU_ONE_VFOSCAN: // ƵɨΧ
         if (g_menuInfo.isSubMenu == 0)
         {
             g_menuInfo.inputVal = g_menuInfo.selectedItem;
@@ -1188,7 +822,7 @@ extern void Menu_Display(void)
         DisplayInputVfoScan(g_menuInfo.inputVal);
         break;
 
-    case MENU_ONE_CTCSS: // ģ������Ƶѡ�������
+    case MENU_ONE_CTCSS: // ģƵѡ
         ShowCtcssList();
         break;
     case MENU_ONE_DIGIT:

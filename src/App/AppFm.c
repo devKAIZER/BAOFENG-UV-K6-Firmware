@@ -30,18 +30,18 @@ extern void FmBandConfig(void)
 extern void ResumeFmMode(void)
 {
     if (g_radioInform.fmEnale || g_rfRxState == WAIT_RXEND)
-    { // 收音机功能禁用
+    { // 
         BeepOut(BEEP_ERROR);
         return;
     }
-    // 进入收音机时关闭双守
+    // 
     DualStandbyWorkOFF();
     ResetInputBuf();
 
     g_sysRunPara.sysRunMode = MODE_FM;
     fmInfo.mode = FM_READY;
 
-    // 现在收音机频率范围
+    // 
     if ((fmInfo.freq < 650) || (fmInfo.freq > 1080))
     {
         if (fmInfo.band)
@@ -139,7 +139,7 @@ extern void FmCheckChannelActive(void)
     }
 
     if (fmInfo.fmChActive == 0)
-    { // 无信道时强制转换为频率模式
+    { // 
         g_FMInform.fmChVfo = VFO_MODE;
     }
     else
@@ -158,7 +158,7 @@ extern void FmSwitchChVfo(void)
     if (fmInfo.fmChActive)
     {
         if (g_FMInform.fmChVfo == CHAN_MODE)
-        { // 频率模式
+        { // 
             g_FMInform.fmChVfo = VFO_MODE;
             fmInfo.freq = g_FMInform.FmCurFreq;
         }
@@ -180,7 +180,7 @@ extern void FmSwitchChVfo(void)
 
     Audio_PlayVoice(temp);
 
-    // 保存信道和频率模式
+    // 
     Flash_SaveFmData();
 
     fmInfo.mode = FM_READY;
@@ -210,7 +210,7 @@ void FmChNumTypeIn(U8 input)
         }
     }
 
-    // 播报数字
+    // 
     temp = input - '0';
     if (g_radioInform.voiceSw == 0)
     {
@@ -228,7 +228,7 @@ void FmChNumTypeIn(U8 input)
         ResetInputBuf();
 
         if (temp > 0 && temp <= 32)
-        { // 实际信道号0到31
+        { // 031
             temp -= 1;
             if (g_FMInform.FmCHs[temp] >= 650 && g_FMInform.FmCHs[temp] <= 1080)
             {
@@ -239,7 +239,7 @@ void FmChNumTypeIn(U8 input)
             }
         }
         else
-        { // 无效播报取消
+        { // 
             Audio_PlayVoice(vo_Cancel);
         }
 
@@ -252,7 +252,7 @@ void FmChNumTypeIn(U8 input)
 void FmFreqAdd(void)
 {
     if (g_FMInform.fmChVfo == CHAN_MODE)
-    { // 信道模式
+    { // 
         g_FMInform.fmChNum = SeekActiveFmChUp(g_FMInform.fmChNum);
 
         if (g_FMInform.fmChNum == 0xFF)
@@ -284,7 +284,7 @@ void FmFreqAdd(void)
 void FmFreqSub(void)
 {
     if (g_FMInform.fmChVfo == CHAN_MODE)
-    { // 信道模式
+    { // 
         g_FMInform.fmChNum = SeekActiveFmChDown(g_FMInform.fmChNum);
 
         if (g_FMInform.fmChNum == 0xFF)
@@ -368,7 +368,7 @@ void FmFreqTypeIn(U8 input)
         g_inputbuf.maxLen = 3;
     }
 
-    // 播报数字
+    // 
     temp = g_inputbuf.buf[g_inputbuf.len - 1] - '0';
     if (g_radioInform.voiceSw == 0)
     {
@@ -404,7 +404,7 @@ extern void FmCheckTimeOut(void)
     if (fmInfo.mode == FM_SLEEP)
     {
         if (g_rfState == RF_RX && g_rfRxState <= GET_CALL && g_sysRunPara.sysRunMode == MODE_MAIN)
-        { // 收发都在空闲状态时进入递减函数
+        { // 
             if (fmInfo.timeOut)
             {
                 fmInfo.timeOut--;
@@ -426,7 +426,7 @@ extern void FmCheckTimeOut(void)
     else
     {
         if (g_sysRunPara.sysRunMode != MODE_FM)
-        { // 不在菜单模式，直接退出
+        { // 
             return;
         }
         if (fmInfo.timeOut)
@@ -439,15 +439,15 @@ extern void FmCheckTimeOut(void)
 extern void EnterFmMode(void)
 {
     if (g_radioInform.fmEnale || g_rfRxState == WAIT_RXEND)
-    { // 收音机功能禁用
+    { // 
         BeepOut(BEEP_NULL);
         return;
     }
 
-    // 进入收音机时关闭双守
+    // 
     DualStandbyWorkOFF();
 
-    // 如果在菜单模式，则退出菜单
+    // 
     if (g_sysRunPara.sysRunMode == MODE_MENU)
     {
         Menu_ExitMode();
@@ -465,7 +465,7 @@ extern void EnterFmMode(void)
     {
         fmInfo.freq = g_FMInform.FmCurFreq;
     }
-    // 现在收音机频率范围
+    // 
     if ((fmInfo.freq < 650) || (fmInfo.freq > 1080))
     {
         if (fmInfo.band)
@@ -497,7 +497,7 @@ extern void ExitFmMode(void)
 
     SpeakerSwitch(OFF);
 
-    // 切换为显示主界面
+    // 
     DisplayHomePage();
 
     if (fmInfo.mode != FM_SLEEP)
@@ -513,7 +513,7 @@ extern void ExitFmMode(void)
 extern void FmEnterSleepMode(void)
 {
     if (g_sysRunPara.sysRunMode != MODE_FM)
-    { // 如果不在收音机模式，直接返回
+    { // 
         return;
     }
 
@@ -535,7 +535,7 @@ extern void FmTaskFunc(void)
     FmCheckTimeOut();
 
     if (g_sysRunPara.sysRunMode != MODE_FM)
-    { // 不在收音机模式，直接返回
+    { // 
         return;
     }
 
@@ -553,7 +553,7 @@ extern void FmTaskFunc(void)
             state = RDA5807_STC();
 
             if (state == 2 || fmInfo.timeOut == 0)
-            { // 搜索到信号或者超时退出
+            { // 
                 fmInfo.mode = FM_READY;
                 if (g_FMInform.fmChVfo == VFO_MODE)
                 {
@@ -577,7 +577,7 @@ extern void FmTaskFunc(void)
         break;
     case FM_STOP:
     default:
-        // 退出收音机模式
+        // 
         ExitFmMode();
         break;
     }
@@ -652,7 +652,7 @@ extern void KeyProcess_Fm(U8 keyEvent)
             if (g_inputbuf.len)
             {
                 g_inputbuf.time = INPUT_TIME_OUT;
-                // 显示输入模式
+                // 
                 FmDisplayInputFreq();
                 BeepOut(BEEP_NULL);
             }
