@@ -31,6 +31,7 @@ extern void DisplayRxMode(void);
 extern void DisplaySingleWatchSignal(U8 level);
 extern void DisplayDualWatchSignal(U8 level);
 extern void DisplayDualWatchResetMeter(void);
+extern void DisplayDualWatchRxIndicator(void);
 extern void DisplayChannelNum(U16 currNum,U8 disAB);
 extern void DisplaySingalFlag(U8 level,U8 UpdateF);
 

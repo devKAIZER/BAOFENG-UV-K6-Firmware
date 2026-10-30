@@ -104,17 +104,9 @@ extern const U8 iconLock[];
 #define ICON_SF_SIZEY             15
 extern const U8 iconSearchFreq[];
 
-#define ICON_CHARROW_SIZEX        5
-#define ICON_CHARROW_SIZEY        3
-extern const U8 iconChArrow[];
-
-#define ICON_ARROWA_SIZEX         7
-#define ICON_ARROWA_SIZEY         7
-extern const U8 iconArrowA[];
-
-#define ICON_ARROWB_SIZEX         7
-#define ICON_ARROWB_SIZEY         7
-extern const U8 iconArrowB[];
+#define ICON_TX_ARROW_SIZEX       7
+#define ICON_TX_ARROW_SIZEY       7
+extern const U8 iconTxArrow[];
 
 #define ICON_SAVEOK_SIZEX         27
 #define ICON_SAVEOK_SIZEY         27
@@ -136,4 +128,3 @@ extern const U8 *iconNumTable_12X13[];
 extern const U8 *iconNumTable_6X7[];
 
 #endif
-

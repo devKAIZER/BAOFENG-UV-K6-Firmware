@@ -20,6 +20,7 @@ const U8 *SignalLevelStr[] =
 #define DW_VFO_FREQ_X           43
 #define DW_MEM_FREQ_X           46
 #define DW_META_X               112
+#define DW_RX_LABEL_X           112
 
 static void DisplayDualWatchStatus(void)
 {
@@ -677,6 +678,7 @@ extern void DisplayDualWatchSignal(U8 level)
 {
     if (g_radioInform.dualRxFlag == 1 && g_sysRunPara.sysRunMode == MODE_MAIN)
     {
+        DisplayDualWatchRxIndicator();
         DisplaySingleWatchMeter(level, 0, 1);
     }
 }
@@ -689,7 +691,7 @@ extern void DisplayDualWatchResetMeter(void)
     }
 }
 
-static void DisplayDualWatchChannel(U8 channel, U8 row, U8 selected, U8 tx)
+static void DisplayDualWatchChannel(U8 channel, U8 row, U8 tx)
 {
     String channelBuf[8] = {0};
     String frequencyBuf[12] = {0};
@@ -706,13 +708,16 @@ static void DisplayDualWatchChannel(U8 channel, U8 row, U8 selected, U8 tx)
         sprintf(channelBuf, "CH%03u",
                 (unsigned int)g_ChannelVfoInfo.channelNum[channel] + 1U);
     }
-    LCD_ClearArea(row, 0, ICON_ARROWA_SIZEX, ICON_ARROWA_SIZEY);
-    if (selected)
+    LCD_ClearArea(row, 0, 8, 7);
+    /*
+     * switchAB is the channel PTT will use.  The selector must remain
+     * visible on the receive/home screen; tx only selects the frequency
+     * source used while rendering an active transmission.
+     */
+    if (channel == g_ChannelVfoInfo.switchAB)
     {
-        LCD_DisplayPicture(row, 0,
-                           channel ? ICON_ARROWB_SIZEX : ICON_ARROWA_SIZEX,
-                           channel ? ICON_ARROWB_SIZEY : ICON_ARROWA_SIZEY,
-                           channel ? iconArrowB : iconArrowA, LCD_DIS_NORMAL);
+        LCD_DisplayPicture(row, 0, ICON_TX_ARROW_SIZEX, ICON_TX_ARROW_SIZEY,
+                           iconTxArrow, LCD_DIS_NORMAL);
     }
     LCD_ClearArea(row, DW_TEXT_AREA_X, DW_TEXT_AREA_WIDTH, 8);
     textWidth = vfo->chVfoMode == VFO_MODE ? 24 : 30;
@@ -732,18 +737,18 @@ static void DisplayDualWatchChannel(U8 channel, U8 row, U8 selected, U8 tx)
                           (U8 *)frequencyBuf);
 
     LCD_ClearArea(row, DW_META_X, 16, 7);
-    if (tx)
+    if (!tx && g_ChannelVfoInfo.dualAB == channel &&
+        g_sysRunPara.rfRxFlag.rxReceived == ON)
     {
-        LCD_DisplayPicture(row, DW_META_X, ICON_SINGALTX_SIZEX,
-                           ICON_SINGALTX_SIZEY, iconSingalTx, LCD_DIS_NORMAL);
+        LCD_DisplayNumber(row, DW_RX_LABEL_X, (U8 *)"RX", LCD_DIS_NORMAL);
     }
-    else if (vfo->rx->frequency >= 10800000U &&
+    else if (!tx && vfo->rx->frequency >= 10800000U &&
         vfo->rx->frequency < 13600000U)
     {
         LCD_DisplayPicture(row, DW_META_X, ICON_AM_SIZEX, ICON_AM_SIZEY,
                            iconAM, LCD_DIS_NORMAL);
     }
-    else if (vfo->wideNarrow)
+    else if (!tx && vfo->wideNarrow)
     {
         LCD_DisplayPicture(row, DW_META_X, ICON_NARROW_SIZEX,
                            ICON_NARROW_SIZEY, iconNarrow, LCD_DIS_NORMAL);
@@ -801,20 +806,51 @@ static void DisplayDualWatchHome(U8 tx)
     if (g_ChannelVfoInfo.chVfoInfo[0].chVfoMode == VFO_MODE &&
         g_ChannelVfoInfo.chVfoInfo[1].chVfoMode == VFO_MODE)
     {
-        DisplayDualWatchChannel(0, DW_VFO_A_Y, g_ChannelVfoInfo.switchAB == 0,
-                                tx && g_ChannelVfoInfo.switchAB == 0);
-        DisplayDualWatchChannel(1, DW_VFO_B_Y, g_ChannelVfoInfo.switchAB == 1,
-                                tx && g_ChannelVfoInfo.switchAB == 1);
+        DisplayDualWatchChannel(0, DW_VFO_A_Y, tx);
+        DisplayDualWatchChannel(1, DW_VFO_B_Y, tx);
     }
     else
     {
-        DisplayDualWatchChannel(0, DW_MEM_A_Y, g_ChannelVfoInfo.switchAB == 0,
-                                tx && g_ChannelVfoInfo.switchAB == 0);
+        DisplayDualWatchChannel(0, DW_MEM_A_Y, tx);
         DisplayDualWatchName(0, DW_MEM_A_NAME_Y);
-        DisplayDualWatchChannel(1, DW_MEM_B_Y, g_ChannelVfoInfo.switchAB == 1,
-                                tx && g_ChannelVfoInfo.switchAB == 1);
+        DisplayDualWatchChannel(1, DW_MEM_B_Y, tx);
         DisplayDualWatchName(1, DW_MEM_B_NAME_Y);
     }
+}
+
+extern void DisplayDualWatchRxIndicator(void)
+{
+    U8 activeChannel;
+    U8 rowA;
+    U8 rowB;
+
+    if (g_radioInform.dualRxFlag != 1 ||
+        g_sysRunPara.sysRunMode != MODE_MAIN)
+    {
+        return;
+    }
+
+    rowA = DW_VFO_A_Y;
+    rowB = DW_VFO_B_Y;
+    if (g_ChannelVfoInfo.chVfoInfo[0].chVfoMode != VFO_MODE ||
+        g_ChannelVfoInfo.chVfoInfo[1].chVfoMode != VFO_MODE)
+    {
+        rowA = DW_MEM_A_Y;
+        rowB = DW_MEM_B_Y;
+    }
+
+    LCD_ClearArea(rowA, DW_RX_LABEL_X, 16, 7);
+    LCD_ClearArea(rowB, DW_RX_LABEL_X, 16, 7);
+
+    if (g_rfState == RF_TX ||
+        g_sysRunPara.rfRxFlag.rxReceived != ON)
+    {
+        return;
+    }
+
+    activeChannel = g_ChannelVfoInfo.dualAB;
+    LCD_DisplayNumber(activeChannel ? rowB : rowA, DW_RX_LABEL_X,
+                      (U8 *)"RX", LCD_DIS_NORMAL);
 }
 
 static void DisplaySingleWatchHome(U8 tx, U8 signalLevel)
