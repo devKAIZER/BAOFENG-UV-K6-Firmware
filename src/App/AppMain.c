@@ -59,8 +59,15 @@ extern void SideKey_Process(U8 realEvent)
     switch (realEvent)
     {
     case KEYID_LIGHT:
-        g_sysRunPara.ledState = (g_sysRunPara.ledState + 1) % 3;
-        LightSwitch(g_sysRunPara.ledState);
+        g_sysRunPara.ledState = (g_sysRunPara.ledState + 1) % 4;
+        if (g_sysRunPara.ledState == FLASHLIGHT_STROBE)
+        {
+            LightSwitch(LED_ON);
+        }
+        else
+        {
+            LightSwitch(g_sysRunPara.ledState);
+        }
         BeepOut(BEEP_FASTSW);
         break;
     case KEYID_PWRSW:

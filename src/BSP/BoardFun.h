@@ -6,6 +6,8 @@ typedef enum
     LED_OFF=0,LED_ON,LED_FLASH
 }ENUM_LED;
 
+#define FLASHLIGHT_STROBE 3
+
 typedef enum 
 {
     PWR_OFF=0, PWR_RXON,PWR_TXON

@@ -153,15 +153,51 @@ extern void LightSwitch(U8 flag)
 
 extern void LightFlashTask(void)
 {
+    static U8 strobeTicks = 0;
+    static U8 strobeOn = 0;
+    static U8 strobeStarted = 0;
+
+    if(alarmDat.alarmStates == ON)
+    {
+        return;
+    }
+
+    if(g_sysRunPara.ledState == FLASHLIGHT_STROBE)
+    {
+        if(!strobeStarted)
+        {
+            LightSwitch(LED_ON);
+            strobeStarted = 1;
+            strobeOn = 1;
+            strobeTicks = 0;
+            return;
+        }
+
+        if(strobeOn)
+        {
+            if(++strobeTicks >= 10)
+            {
+                LightSwitch(LED_OFF);
+                strobeTicks = 0;
+                strobeOn = 0;
+            }
+        }
+        else if(++strobeTicks >= 30)
+        {
+            LightSwitch(LED_ON);
+            strobeTicks = 0;
+            strobeOn = 1;
+        }
+        return;
+    }
+
+    strobeTicks = 0;
+    strobeOn = 0;
     if(g_sysRunPara.ledState != 2)
     {
         return;
     }
 
-    if(alarmDat.alarmStates == ON)
-    {//LED
-        return;
-    }
     LightSwitch(LED_FLASH);
 }
 
@@ -258,4 +294,3 @@ extern void SpeakerSwitch(ENUM_ONOFF flag)
         GPIOB->BRR = GPIO_Pin_2;
     }
 }
-
