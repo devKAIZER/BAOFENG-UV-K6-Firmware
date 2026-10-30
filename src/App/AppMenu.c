@@ -64,11 +64,13 @@ extern void Menu_GetSubItemPara(U8 menuIndex)
         break;
     case S_RXFREQ:
         g_menuInfo.inputMode = MENU_CH_FREQ;
-        g_menuInfo.selectedItem = g_CurrentVfo->rx->frequency;
+        g_menuInfo.selectedItem =
+            g_ChannelVfoInfo.chVfoInfo[g_ChannelVfoInfo.switchAB].freqRx.frequency;
         break;
     case S_TXFREQ:
         g_menuInfo.inputMode = MENU_CH_FREQ;
-        g_menuInfo.selectedItem = g_CurrentVfo->tx->frequency;
+        g_menuInfo.selectedItem =
+            g_ChannelVfoInfo.chVfoInfo[g_ChannelVfoInfo.switchAB].freqTx.frequency;
         break;
     case S_RXCTS:
         g_menuInfo.inputMode = MENU_ONE_CTCSS;
@@ -664,6 +666,7 @@ void LongIntoI2C(U8 *Ibuf, U32 f_Data)
 extern void SaveRadioFreq(U8 tx)
 {
     U32 freq;
+    STR_CH_VFO_INFO *chVfo;
 
     if (g_inputbuf.len != 0)
     {
@@ -671,6 +674,7 @@ extern void SaveRadioFreq(U8 tx)
 
         if (CheckFreqInRange(freq) == TRUE)
         { // жƵǷڷΧ
+            chVfo = &g_ChannelVfoInfo.chVfoInfo[g_ChannelVfoInfo.switchAB];
             if (g_ChannelVfoInfo.chVfoInfo[g_ChannelVfoInfo.switchAB].chVfoMode == CHAN_MODE)
             {
                 if (tx)
@@ -684,9 +688,16 @@ extern void SaveRadioFreq(U8 tx)
             }
             else
             {
-                VfoFrequency2Buf(freq, (U8 *)&g_ChannelVfoInfo.vfoInfo[g_ChannelVfoInfo.switchAB].freq, 8);
+                if (tx)
+                {
+                    chVfo->freqTx.frequency = freq;
+                }
+                else
+                {
+                    chVfo->freqRx.frequency = freq;
+                }
             }
-            ChannleVfoDataInit(g_ChannelVfoInfo.switchAB, 0);
+            Radio_SynchronizeFrequencyPair(g_ChannelVfoInfo.switchAB);
         }
         else
         {
@@ -787,7 +798,7 @@ void OffectFrequency2Buf(U32 freq, U8 *dest, U8 len)
     String buf[11];
     U8 i;
 
-    snprintf(buf, sizeof(buf), "%07lu", (unsigned long)freq);
+    snprintf(buf, sizeof(buf), "%07lu", (unsigned long)(freq / 10));
 
     for (i = 0; i < len; i++)
     { // ASCתΪhex

@@ -27,6 +27,7 @@ extern void Radio_SwitchAOrB(void);
 extern void Radio_ReverseOff(void);
 extern void Radio_ReverseSwitch(void);
 
+extern void Radio_SynchronizeFrequencyPair(U8 flagAB);
 extern void ChannleVfoDataInit(U8 flagAB,U8 readFlag);
 extern void RadioVfoInfo_Init(void);
 #endif

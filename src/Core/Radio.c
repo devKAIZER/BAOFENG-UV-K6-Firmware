@@ -350,6 +350,52 @@ extern void CalculateVfoTxFreq(void)
     }
 }
 
+extern void Radio_SynchronizeFrequencyPair(U8 flagAB)
+{
+    STR_CH_VFO_INFO *chVfo = &g_ChannelVfoInfo.chVfoInfo[flagAB];
+    U32 offset;
+    U32 offsetInMenuUnits;
+    U8 i;
+    String offsetBuf[8];
+
+    if (chVfo->freqTx.frequency > chVfo->freqRx.frequency)
+    {
+        chVfo->freqDir = 1;
+        offset = chVfo->freqTx.frequency - chVfo->freqRx.frequency;
+    }
+    else if (chVfo->freqTx.frequency < chVfo->freqRx.frequency)
+    {
+        chVfo->freqDir = 2;
+        offset = chVfo->freqRx.frequency - chVfo->freqTx.frequency;
+    }
+    else
+    {
+        chVfo->freqDir = 0;
+        offset = 0;
+    }
+
+    chVfo->freqOffset = offset;
+
+    if (chVfo->chVfoMode != VFO_MODE)
+    {
+        return;
+    }
+
+    // VFO offset storage is in 10 Hz menu units; frequencies are in 100 Hz units.
+    VfoFrequency2Buf(chVfo->freqRx.frequency,
+                      g_ChannelVfoInfo.vfoInfo[flagAB].freq, 8);
+    offsetInMenuUnits = offset / 10;
+    snprintf(offsetBuf, sizeof(offsetBuf), "%07lu",
+             (unsigned long)offsetInMenuUnits);
+    for (i = 0; i < 7; i++)
+    {
+        g_ChannelVfoInfo.vfoInfo[flagAB].Offset[i] = offsetBuf[i] - '0';
+    }
+    g_ChannelVfoInfo.vfoInfo[flagAB].dtmfgroup =
+        (g_ChannelVfoInfo.vfoInfo[flagAB].dtmfgroup & 0x1F) |
+        (chVfo->freqDir << 5);
+}
+
 extern void VfoFreqSave(void)
 {
     U8  *buf;
@@ -759,18 +805,7 @@ extern void ChannleVfoDataInit(U8 flagAB,U8 readFlag)
         g_ChannelVfoInfo.chVfoInfo[flagAB].dtmfgroup = g_ChannelVfoInfo.channelInfo[flagAB].dtmfgroup;
         g_ChannelVfoInfo.chVfoInfo[flagAB].pttIdMode = g_ChannelVfoInfo.channelInfo[flagAB].pttID;
 
-        if(g_ChannelVfoInfo.chVfoInfo[flagAB].freqRx.frequency > g_ChannelVfoInfo.chVfoInfo[flagAB].freqTx.frequency)
-        {
-            g_ChannelVfoInfo.chVfoInfo[flagAB].freqDir = 1;
-        }
-        else if(g_ChannelVfoInfo.chVfoInfo[flagAB].freqRx.frequency < g_ChannelVfoInfo.chVfoInfo[flagAB].freqTx.frequency)
-        {
-            g_ChannelVfoInfo.chVfoInfo[flagAB].freqDir = 2;
-        }
-        else
-        {
-            g_ChannelVfoInfo.chVfoInfo[flagAB].freqDir = 0;
-        }
+        Radio_SynchronizeFrequencyPair(flagAB);
     }
     else
     {
@@ -821,4 +856,3 @@ extern void RadioVfoInfo_Init(void)
     g_CurrentVfo = &g_ChannelVfoInfo.chVfoInfo[g_ChannelVfoInfo.switchAB];
     DisplayHomePage();
 }
-
