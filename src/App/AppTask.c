@@ -45,6 +45,25 @@ extern void AppRunTask(void)
 {
     U8 keyEvent;
 
+    if (g_keyScan.keyEvent != KEYID_NONE && alarmDat.alarmStates)
+    {
+        keyEvent = Key_GetRealEvent();
+
+        if (keyEvent == KEYID_SIDEKEY1 || keyEvent == KEYID_SIDEKEY2 ||
+            keyEvent == KEYID_SIDEKEYL1)
+        {
+            keyEvent = Sidekey_GetRemapEvent(keyEvent);
+
+            if (keyEvent == KEYID_SOS)
+            {
+                AlarmFuncSwitch(OFF);
+            }
+        }
+
+        // Alarm cancellation must be handled before the RF-TX key path.
+        return;
+    }
+
     switch (g_rfState)
     {
     case RF_TX:
@@ -55,20 +74,6 @@ extern void AppRunTask(void)
         if (g_keyScan.keyEvent != KEYID_NONE)
         {
             keyEvent = Key_GetRealEvent();
-
-            if (alarmDat.alarmStates)
-            {
-                if (keyEvent == KEYID_SIDEKEY1 || keyEvent == KEYID_SIDEKEY2 || keyEvent == KEYID_SIDEKEYL1)
-                {
-                    keyEvent = Sidekey_GetRemapEvent(keyEvent);
-
-                    if (keyEvent == KEYID_SOS)
-                    {
-                        AlarmFuncSwitch(OFF);
-                    }
-                }
-                break;
-            }
 
             switch (g_sysRunPara.sysRunMode)
             {
