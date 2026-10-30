@@ -356,7 +356,8 @@ extern void Radio_SynchronizeFrequencyPair(U8 flagAB)
     U32 offset;
     U32 offsetInMenuUnits;
     U8 i;
-    String offsetBuf[8];
+    U8 offsetDigit;
+    String offsetBuf[7];
 
     if (chVfo->freqTx.frequency > chVfo->freqRx.frequency)
     {
@@ -385,8 +386,13 @@ extern void Radio_SynchronizeFrequencyPair(U8 flagAB)
     VfoFrequency2Buf(chVfo->freqRx.frequency,
                       g_ChannelVfoInfo.vfoInfo[flagAB].freq, 8);
     offsetInMenuUnits = offset / 10;
-    snprintf(offsetBuf, sizeof(offsetBuf), "%07lu",
-             (unsigned long)offsetInMenuUnits);
+    // Offset[] stores seven 10 Hz digits, not a null-terminated string.
+    for (i = 7; i != 0; i--)
+    {
+        offsetDigit = offsetInMenuUnits % 10;
+        offsetInMenuUnits /= 10;
+        offsetBuf[i - 1] = (String)('0' + offsetDigit);
+    }
     for (i = 0; i < 7; i++)
     {
         g_ChannelVfoInfo.vfoInfo[flagAB].Offset[i] = offsetBuf[i] - '0';
