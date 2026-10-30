@@ -1,6 +1,7 @@
 #include "includes.h"
 
 static U8 periodSqlLevel = 0xff;
+static U8 periodSqlChannel = 0xff;
 static U8 sqCnt = 0;
 static U8 rogerToneStage = 0;
 static U8 rogerToneTicks = 0;
@@ -675,10 +676,10 @@ extern void RF_TxTask(void)
         Rfic_SetPA(0);
         Rfic_RxTxOnOffSetup(RFIC_IDLE);
         ResetTimeKeyLockAndPowerSave();
-        DisplayHomePage();
         RF_PowerSet(g_ChannelVfoInfo.BandFlag, PWR_OFF);
         g_rfTxState = TX_READY;
         g_rfState = RF_RX;
+        DisplayHomePage();
         if (totEndPending)
         {
             totEndPending = 0;
@@ -702,6 +703,22 @@ const U8 RssiLevel[5][4] =
         {132, 128, 124, 120}  // AM ,116
 };
 
+static U8 RadioSignalLevel(U16 rssi)
+{
+    U16 low = RssiLevel[g_ChannelVfoInfo.BandFlag][3];
+    U16 high = RssiLevel[g_ChannelVfoInfo.BandFlag][0];
+
+    if (rssi < low)
+    {
+        return 0;
+    }
+    if (rssi >= high)
+    {
+        return 9;
+    }
+    return 1 + ((rssi - low) * 8) / (high - low);
+}
+
 extern void CalculateSqlLevel(void)
 {
     U16 rssi;
@@ -717,22 +734,8 @@ extern void CalculateSqlLevel(void)
 
         if (g_radioInform.dualRxFlag == 0)
         {
-            U16 low = RssiLevel[g_ChannelVfoInfo.BandFlag][3];
-            U16 high = RssiLevel[g_ChannelVfoInfo.BandFlag][0];
-            U8 signalLevel;
-
-            if (rssi < low)
-            {
-                signalLevel = 0;
-            }
-            else if (rssi >= high)
-            {
-                signalLevel = 9;
-            }
-            else
-            {
-                signalLevel = 1 + ((rssi - low) * 8) / (high - low);
-            }
+            U8 signalLevel = RadioSignalLevel(rssi);
+            periodSqlChannel = 0xfe;
 
             if (periodSqlLevel != signalLevel)
             {
@@ -742,39 +745,29 @@ extern void CalculateSqlLevel(void)
             return;
         }
 
-        // SQL
-        if (rssi < RssiLevel[g_ChannelVfoInfo.BandFlag][3])
         {
-            rssi = 0;
-        }
-        else if (rssi < RssiLevel[g_ChannelVfoInfo.BandFlag][2])
-        {
-            rssi = 1;
-        }
-        else if (rssi < RssiLevel[g_ChannelVfoInfo.BandFlag][1])
-        {
-            rssi = 2;
-        }
-        else if (rssi < RssiLevel[g_ChannelVfoInfo.BandFlag][0])
-        {
-            rssi = 3;
-        }
-        else
-        {
-            rssi = 4;
-        }
-
-        if (periodSqlLevel != rssi)
-        {
-            DisplaySingalFlag(rssi, 1);
-            periodSqlLevel = rssi;
+            U8 signalLevel;
+            if (periodSqlChannel != g_ChannelVfoInfo.dualAB)
+            {
+                periodSqlChannel = g_ChannelVfoInfo.dualAB;
+                periodSqlLevel = 0xff;
+                DisplayDualWatchResetMeter();
+            }
+            signalLevel = RadioSignalLevel(rssi);
+            if (periodSqlLevel != signalLevel)
+            {
+                DisplayDualWatchSignal(signalLevel);
+                periodSqlLevel = signalLevel;
+            }
         }
     }
     else
     {
         if (periodSqlLevel != 0xff)
         {
+            DisplayDualWatchResetMeter();
             periodSqlLevel = 0xff;
+            periodSqlChannel = 0xff;
         }
     }
 }
@@ -790,6 +783,7 @@ extern void RF_RxEnd(void)
     g_sysRunPara.rfRxFlag.rxReceived = OFF;
     g_sysRunPara.rfRxFlag.rxReceiveOn = OFF;
     periodSqlLevel = 0xff;
+    DisplayDualWatchResetMeter();
     g_sysRunPara.rfTxFlag.voxDetDly = 10;
 
     if (DtmfGetMatchStatue() == 0)
@@ -944,6 +938,7 @@ extern void RF_RxTask(void)
 
             g_sysRunPara.rfRxFlag.rxReceiveOn = ON;
             g_sysRunPara.rfRxFlag.rxReceived = ON;
+            periodSqlLevel = 0xff;
             ctcsDetFlag = 0;
             tailDetFlag = 0;
             g_rfRxState = WAIT_RXEND;

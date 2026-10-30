@@ -196,6 +196,7 @@ extern void Radio_TxPowerSWitch(void)
         g_ChannelVfoInfo.vfoInfo[g_ChannelVfoInfo.switchAB].txPower = (g_ChannelVfoInfo.vfoInfo[g_ChannelVfoInfo.switchAB].txPower & 0xF0) | tempPower;
     }
     DisplayRadioHome();
+    DisplayStateBar();
 }
 
 extern void Radio_TxKeyTone(U8 event, U8 para)
@@ -290,4 +291,3 @@ extern void Radio_TxKeyTone(U8 event, U8 para)
         }  
     }
 }
-

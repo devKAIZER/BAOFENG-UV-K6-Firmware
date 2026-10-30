@@ -5,6 +5,66 @@ const U8 *SignalLevelStr[] =
     iconSingalEmpty,iconSingal1,iconSingal2,iconSingal3,iconSingalFull
 };
 
+#define DW_STATUS_Y             0
+#define DW_METER_Y              10
+#define DW_VFO_A_Y              18
+#define DW_VFO_B_Y              42
+#define DW_MEM_A_Y              18
+#define DW_MEM_A_NAME_Y         26
+#define DW_MEM_B_Y              42
+#define DW_MEM_B_NAME_Y         50
+#define DW_TEXT_AREA_X          8
+#define DW_TEXT_AREA_WIDTH      104
+#define DW_VFO_CHANNEL_X        13
+#define DW_MEM_CHANNEL_X        10
+#define DW_VFO_FREQ_X           43
+#define DW_MEM_FREQ_X           46
+#define DW_META_X               112
+
+static void DisplayDualWatchStatus(void)
+{
+    String mode[4] = "DW";
+    String power[2];
+    String offset[2];
+    U8 tx = g_rfState == RF_TX;
+    U8 selected = g_ChannelVfoInfo.switchAB;
+    STR_CH_VFO_INFO *vfo = &g_ChannelVfoInfo.chVfoInfo[selected];
+
+    LCD_ClearArea(DW_STATUS_Y, 0, 108, 8);
+    LCD_DisplayNumber(DW_STATUS_Y, 1, (U8 *)mode, LCD_DIS_NORMAL);
+
+    power[0] = vfo->txPower ? 'L' : 'H';
+    power[1] = '\0';
+    LCD_DisplayNumber(DW_STATUS_Y, 19, (U8 *)power, LCD_DIS_NORMAL);
+
+    offset[0] = '+';
+    offset[1] = '\0';
+    if (vfo->tx->frequency < vfo->rx->frequency)
+    {
+        offset[0] = '-';
+    }
+    if (vfo->tx->frequency != vfo->rx->frequency)
+    {
+        LCD_DisplayNumber(DW_STATUS_Y, 31, (U8 *)offset, LCD_DIS_NORMAL);
+    }
+
+    if (tx && vfo->tx->dcsCtsType != SUBAUDIO_NONE)
+    {
+        LCD_DisplayNumber(DW_STATUS_Y, 43, (U8 *)"C", LCD_DIS_NORMAL);
+    }
+    if (g_radioInform.voxSwitch)
+    {
+        LCD_DisplayPicture(DW_STATUS_Y, 55, ICON_VOX_SIZEX,
+                           ICON_VOX_SIZEY, iconVox, LCD_DIS_NORMAL);
+    }
+    if (g_radioInform.dtmfTone)
+    {
+        LCD_DisplayPicture(DW_STATUS_Y, 67, ICON_DTMF_SIZEX,
+                           ICON_DTMF_SIZEY, iconDTMF, LCD_DIS_NORMAL);
+    }
+    DisplayUpdateLockFlag(0);
+}
+
 extern void DisplayProgrom(void)
 {
     LCD_ClearFullBuf();
@@ -75,6 +135,10 @@ extern void DisplayStateBar(void)
     {
     }    
 
+    if (g_radioInform.dualRxFlag)
+    {
+        DisplayDualWatchStatus();
+    }
     DisplayBattaryFlag(0);
 
     LCD_UpdateStateBar();
@@ -458,19 +522,19 @@ static void DisplaySingleWatchMeter(U8 level, U8 tx, U8 update)
         filled = level;
     }
 
-    SC5260_ClearArea(10, 22, 76, 8, 0);
-    LCD_DisplayNumber(10, 22, (U8 *)label, LCD_DIS_NORMAL);
+    SC5260_ClearArea(DW_METER_Y, 22, 76, 8, 0);
+    LCD_DisplayNumber(DW_METER_Y, 22, (U8 *)label, LCD_DIS_NORMAL);
 
     for (i = 0; i < 10; i++)
     {
         x = 38 + i * 6;
         if (i < filled)
         {
-            SC5260_ClearArea(11, x, 5, 5, 1);
+            SC5260_ClearArea(DW_METER_Y + 1, x, 5, 5, 1);
         }
         else
         {
-            LCD_DrawRectangle(11, x, 5, 5, 0);
+            LCD_DrawRectangle(DW_METER_Y + 1, x, 5, 5, 0);
         }
     }
 
@@ -609,6 +673,150 @@ extern void DisplaySingleWatchSignal(U8 level)
     }
 }
 
+extern void DisplayDualWatchSignal(U8 level)
+{
+    if (g_radioInform.dualRxFlag == 1 && g_sysRunPara.sysRunMode == MODE_MAIN)
+    {
+        DisplaySingleWatchMeter(level, 0, 1);
+    }
+}
+
+extern void DisplayDualWatchResetMeter(void)
+{
+    if (g_radioInform.dualRxFlag == 1 && g_sysRunPara.sysRunMode == MODE_MAIN)
+    {
+        DisplaySingleWatchMeter(0, 0, 1);
+    }
+}
+
+static void DisplayDualWatchChannel(U8 channel, U8 row, U8 selected, U8 tx)
+{
+    String channelBuf[8] = {0};
+    String frequencyBuf[12] = {0};
+    U8 textWidth;
+    U32 frequency;
+    STR_CH_VFO_INFO *vfo = &g_ChannelVfoInfo.chVfoInfo[channel];
+
+    if (vfo->chVfoMode == VFO_MODE)
+    {
+        sprintf(channelBuf, "CH %c", channel ? 'B' : 'A');
+    }
+    else
+    {
+        sprintf(channelBuf, "CH%03u",
+                (unsigned int)g_ChannelVfoInfo.channelNum[channel] + 1U);
+    }
+    LCD_ClearArea(row, 0, ICON_ARROWA_SIZEX, ICON_ARROWA_SIZEY);
+    if (selected)
+    {
+        LCD_DisplayPicture(row, 0,
+                           channel ? ICON_ARROWB_SIZEX : ICON_ARROWA_SIZEX,
+                           channel ? ICON_ARROWB_SIZEY : ICON_ARROWA_SIZEY,
+                           channel ? iconArrowB : iconArrowA, LCD_DIS_NORMAL);
+    }
+    LCD_ClearArea(row, DW_TEXT_AREA_X, DW_TEXT_AREA_WIDTH, 8);
+    textWidth = vfo->chVfoMode == VFO_MODE ? 24 : 30;
+    textWidth += 6 + 63;
+    LCD_DisplayNumber(row,
+                     DW_TEXT_AREA_X + (DW_TEXT_AREA_WIDTH - textWidth) / 2,
+                     (U8 *)channelBuf, LCD_DIS_NORMAL);
+
+    frequency = (tx && channel == g_ChannelVfoInfo.switchAB) ?
+                vfo->tx->frequency : vfo->rx->frequency;
+    sprintf(frequencyBuf, "%03lu.%05lu",
+            (unsigned long)(frequency / 100000U),
+            (unsigned long)(frequency % 100000U));
+    LCD_DisplayBoldNum6X7(row,
+                          vfo->chVfoMode == VFO_MODE ?
+                          DW_VFO_FREQ_X : DW_MEM_FREQ_X,
+                          (U8 *)frequencyBuf);
+
+    LCD_ClearArea(row, DW_META_X, 16, 7);
+    if (tx)
+    {
+        LCD_DisplayPicture(row, DW_META_X, ICON_SINGALTX_SIZEX,
+                           ICON_SINGALTX_SIZEY, iconSingalTx, LCD_DIS_NORMAL);
+    }
+    else if (vfo->rx->frequency >= 10800000U &&
+        vfo->rx->frequency < 13600000U)
+    {
+        LCD_DisplayPicture(row, DW_META_X, ICON_AM_SIZEX, ICON_AM_SIZEY,
+                           iconAM, LCD_DIS_NORMAL);
+    }
+    else if (vfo->wideNarrow)
+    {
+        LCD_DisplayPicture(row, DW_META_X, ICON_NARROW_SIZEX,
+                           ICON_NARROW_SIZEY, iconNarrow, LCD_DIS_NORMAL);
+    }
+}
+
+static void DisplayDualWatchName(U8 channel, U8 row)
+{
+    String name[13] = {0};
+    U8 nameWidth;
+    U8 nameX;
+
+    LCD_ClearArea(row, DW_TEXT_AREA_X, DW_TEXT_AREA_WIDTH, 8);
+    if (g_ChannelVfoInfo.chVfoInfo[channel].chVfoMode == CHAN_MODE &&
+        FillChannelName2Buf(g_ChannelVfoInfo.chVfoInfo[channel].channelName, name))
+    {
+        nameWidth = strlen((char *)name) * 6;
+        nameX = DW_TEXT_AREA_X + (DW_TEXT_AREA_WIDTH - nameWidth) / 2;
+        LCD_DisplayNumber(row, nameX, (U8 *)name, LCD_DIS_NORMAL);
+    }
+}
+
+static U8 DisplayDualWatchInputRow(void)
+{
+    if (g_ChannelVfoInfo.chVfoInfo[0].chVfoMode == VFO_MODE &&
+        g_ChannelVfoInfo.chVfoInfo[1].chVfoMode == VFO_MODE)
+    {
+        return g_ChannelVfoInfo.switchAB ? DW_VFO_B_Y : DW_VFO_A_Y;
+    }
+
+    return g_ChannelVfoInfo.switchAB ? DW_MEM_B_Y : DW_MEM_A_Y;
+}
+
+static U8 DisplayDualWatchInputFrequencyX(void)
+{
+    return g_ChannelVfoInfo.chVfoInfo[g_ChannelVfoInfo.switchAB].chVfoMode ==
+                   VFO_MODE ?
+               DW_VFO_FREQ_X :
+               DW_MEM_FREQ_X;
+}
+
+static U8 DisplayDualWatchInputChannelX(void)
+{
+    return g_ChannelVfoInfo.chVfoInfo[g_ChannelVfoInfo.switchAB].chVfoMode ==
+                   VFO_MODE ?
+               DW_VFO_CHANNEL_X :
+               DW_MEM_CHANNEL_X;
+}
+
+static void DisplayDualWatchHome(U8 tx)
+{
+    SC5260_ClearArea(9, 0, 128, 55, 0);
+    DisplayDualWatchStatus();
+    DisplaySingleWatchMeter(0, tx, 0);
+    if (g_ChannelVfoInfo.chVfoInfo[0].chVfoMode == VFO_MODE &&
+        g_ChannelVfoInfo.chVfoInfo[1].chVfoMode == VFO_MODE)
+    {
+        DisplayDualWatchChannel(0, DW_VFO_A_Y, g_ChannelVfoInfo.switchAB == 0,
+                                tx && g_ChannelVfoInfo.switchAB == 0);
+        DisplayDualWatchChannel(1, DW_VFO_B_Y, g_ChannelVfoInfo.switchAB == 1,
+                                tx && g_ChannelVfoInfo.switchAB == 1);
+    }
+    else
+    {
+        DisplayDualWatchChannel(0, DW_MEM_A_Y, g_ChannelVfoInfo.switchAB == 0,
+                                tx && g_ChannelVfoInfo.switchAB == 0);
+        DisplayDualWatchName(0, DW_MEM_A_NAME_Y);
+        DisplayDualWatchChannel(1, DW_MEM_B_Y, g_ChannelVfoInfo.switchAB == 1,
+                                tx && g_ChannelVfoInfo.switchAB == 1);
+        DisplayDualWatchName(1, DW_MEM_B_NAME_Y);
+    }
+}
+
 static void DisplaySingleWatchHome(U8 tx, U8 signalLevel)
 {
     String line[20] = {0};
@@ -688,41 +896,7 @@ extern void DisplayRadioHome(void)
         return;
     }
 
-    else
-    {
-        if(g_ChannelVfoInfo.chVfoInfo[0].chVfoMode == CHAN_MODE)
-        {
-            DisplayChannelMsg(g_radioInform.channleDisA,0,DIS_RX);
-            DisplayChannelNum(g_ChannelVfoInfo.channelNum[0],0);
-        }
-        else
-        {
-            DisplayChannelMsg(CH_DISFREQ,0,DIS_RX);
-            DisplayChannelNum(0xFFFF,0); 
-        }
-
-        if(g_ChannelVfoInfo.chVfoInfo[1].chVfoMode == CHAN_MODE)
-        {
-            DisplayChannelMsg(g_radioInform.channleDisB,1,DIS_RX);
-            DisplayChannelNum(g_ChannelVfoInfo.channelNum[1],1);
-        }
-        else
-        {
-            DisplayChannelMsg(CH_DISFREQ,1,DIS_RX);
-            DisplayChannelNum(0xFFFF,1);
-        } 
-
-        if(g_ChannelVfoInfo.switchAB == 0)
-        {
-            LCD_DisplayPicture(13,1,ICON_ARROWA_SIZEX,ICON_ARROWA_SIZEY,iconArrowA,LCD_DIS_NORMAL);
-            LCD_ClearArea(41,1,ICON_ARROWB_SIZEX,ICON_ARROWB_SIZEY);
-        }
-        else
-        {
-            LCD_DisplayPicture(41,1,ICON_ARROWB_SIZEX,ICON_ARROWB_SIZEY,iconArrowB,LCD_DIS_NORMAL);
-            LCD_ClearArea(13,1,ICON_ARROWA_SIZEX,ICON_ARROWA_SIZEY);
-        }
-    }
+    DisplayDualWatchHome(0);
 
     LCD_UpdateWorkAre();
 }
@@ -741,6 +915,7 @@ extern void DisplayHomePage(void)
 extern void DisplayInputChNum(void)
 {
     U8 buf[11],i,flag,posY;
+    U8 dualBuf[6];
 
     buf[0] = 'M';
     buf[1] = '-';
@@ -777,6 +952,26 @@ extern void DisplayInputChNum(void)
             posY = 21;
         }
     }
+    if(g_radioInform.dualRxFlag)
+    {
+        posY = DisplayDualWatchInputRow();
+        dualBuf[0] = 'C';
+        dualBuf[1] = 'H';
+        dualBuf[2] = ' ';
+        dualBuf[3] = ' ';
+        dualBuf[4] = ' ';
+        dualBuf[5] = '\0';
+        for(i = 0; i < g_inputbuf.len && i < 3; i++)
+        {
+            dualBuf[2 + i] = g_inputbuf.buf[i];
+        }
+        LCD_ClearArea(posY, DW_TEXT_AREA_X, DW_TEXT_AREA_WIDTH, 8);
+        LCD_DisplayNumber(posY, DisplayDualWatchInputChannelX(),
+                          dualBuf, LCD_DIS_NORMAL);
+        LCD_UpdateWorkAre();
+        return;
+    }
+
     LCD_DisplayBoldNum6X7(posY,1,buf);
 
     LCD_UpdateWorkAre();
@@ -792,16 +987,29 @@ extern void DisplayInputVfoFreq(void)
     buf[3] = '.';
     j = 0;
 
-    for(i=0;i<g_inputbuf.len;i++)
+    for(i=0;i<g_inputbuf.len && j < 9;i++)
     {
         if(i == 3)
         {
             j++;
         }
-        buf[j++] = g_inputbuf.buf[i];
+        if(j < 9)
+        {
+            buf[j++] = g_inputbuf.buf[i];
+        }
     }
 
     buf[9] = 0;
+
+    if(g_radioInform.dualRxFlag)
+    {
+        posY = DisplayDualWatchInputRow();
+        LCD_ClearArea(posY, DW_TEXT_AREA_X, DW_TEXT_AREA_WIDTH, 8);
+        buf[8] = 0;
+        LCD_DisplayBoldNum6X7(posY, DisplayDualWatchInputFrequencyX(), buf);
+        LCD_UpdateWorkAre();
+        return;
+    }
 
     memcpy(fontBuf,&buf[7],2);
     buf[7] = 0;	
@@ -860,10 +1068,7 @@ extern void DisplayTxSingalFlag(U8 level)
 
 extern void DisplayRxMode(void)
 {
-    if (g_radioInform.dualRxFlag != 0)
-    {
-        DisplaySingalFlag(4,0);
-    }
+    DisplayStateBar();
     DisplayRadioHome();
 }
 
@@ -876,37 +1081,8 @@ extern void DisplayTxMode(void)
         return;
     }
 
-    if(g_CurrentVfo->txPower)
-    {
-        DisplayTxSingalFlag(2);
-    }
-    else
-    {
-        DisplayTxSingalFlag(4);
-    }
-
-    if(g_CurrentVfo->chVfoMode == CHAN_MODE)
-    {
-        if(g_ChannelVfoInfo.switchAB)
-        {
-            DisplayChannelMsg(g_radioInform.channleDisB,1,DIS_TX); 
-        }
-        else
-        {
-            DisplayChannelMsg(g_radioInform.channleDisA,0,DIS_TX); 
-        }
-    }
-    else
-    {
-        if(g_ChannelVfoInfo.switchAB)
-        {
-            DisplayChannelMsg(CH_DISFREQ,1,DIS_TX); 
-        }
-        else
-        {
-            DisplayChannelMsg(CH_DISFREQ,0,DIS_TX); 
-        }
-    } 
+    DisplayStateBar();
+    DisplayDualWatchHome(1);
 
     LCD_UpdateWorkAre();
 }
@@ -1163,4 +1339,3 @@ extern void DisplaySoftVersion(void)
     //ʱ2Sʾ
     DelaySysMs(2000);
 }
-

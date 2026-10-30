@@ -72,5 +72,6 @@ extern void DualStandbyTask(void)
         g_ChannelVfoInfo.dualAB = (g_ChannelVfoInfo.switchAB + 1) & 1;
     }
     g_CurrentVfo = &g_ChannelVfoInfo.chVfoInfo[g_ChannelVfoInfo.dualAB];
+    DisplayDualWatchResetMeter();
     g_rfRxState = RX_READY;
 }

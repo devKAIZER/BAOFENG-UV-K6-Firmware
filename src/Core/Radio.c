@@ -659,6 +659,7 @@ extern void Radio_SwitchAOrB(void)
     }
     g_CurrentVfo = &g_ChannelVfoInfo.chVfoInfo[g_ChannelVfoInfo.switchAB];
     DisplayRadioHome();
+    DisplayStateBar();
     RxReset();
 }
 
