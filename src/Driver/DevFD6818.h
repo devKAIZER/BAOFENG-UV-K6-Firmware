@@ -154,7 +154,7 @@ extern U32 Rfic_CheckFreqScan(void);
 extern U8  Rfic_GetSCtsDcsType(void);
 extern void Rfic_CtcDcsScan_Setup(U32 freq);
 extern U32 Rfic_GetCtsDcsData(void);
-extern void Rfic_ScanQT_Enable(void);
+extern void Rfic_ScanQT_Enable(U8 dcsInverted);
 extern void Rfic_ScanQT_Disable(void);
 
 /*                           MDC1200                            */

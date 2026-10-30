@@ -9,7 +9,8 @@ extern void QTScanDisplay(U8 ctsDcsType, U32 dat, U8 isStandard)
     {
         if(isStandard == 1)
         {
-            sprintf( disBuf, "   D%03loN ", (unsigned long)dat );
+            sprintf( disBuf, "   D%03lo%c ", (unsigned long)dat,
+                ctsDcsType == SUBAUDIO_DCS_I ? 'I' : 'N' );
 		    LCD_DisplayText(49,28,(U8 *)&disBuf,FONTSIZE_12x12,LCD_DIS_NORMAL);
         }
         else
@@ -37,7 +38,7 @@ extern void QTScanDisplayStatus(U8 status)
 {
     String disBuf[13] = {0};
     memset( disBuf, ' ', 13 );
-    sprintf( disBuf, "   SCANQT   "  );
+    sprintf( disBuf, " TONE SCAN  "  );
     LCD_DisplayText(17,28,(U8 *)&disBuf,FONTSIZE_12x12,LCD_DIS_NORMAL);
 
     if(status == 0)
@@ -66,4 +67,3 @@ extern void QTScanDisplayHome(void)
     
     QTScanDisplayStatus(0);
 }
-

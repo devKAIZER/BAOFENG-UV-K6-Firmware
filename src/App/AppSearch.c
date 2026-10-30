@@ -138,7 +138,7 @@ extern U16 CheckIsStandardCTCSS(U32 dcsData)
         }
     }
 
-    return searchFreqImofs.CtsResult;
+    return 0;
 }
 
 extern void SearchFreqTask(void)

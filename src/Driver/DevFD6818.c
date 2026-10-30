@@ -1483,10 +1483,10 @@ U8  Rfic_GetSCtsDcsType(void)
     return ctsDcsCodeType;
 }
 
-void Rfic_ScanQT_Enable(void)
+void Rfic_ScanQT_Enable(U8 dcsInverted)
 {
     Rfic_RxTxOnOffSetup(RFIC_IDLE);
-    Rfic_WriteWord(0x51, 0x0300); // Set Subaudio Filter BW Mode
+    Rfic_WriteWord(0x51, 0x0300 | (dcsInverted ? BIT13 : 0));
     Rfic_RxTxOnOffSetup(RFIC_RXON);
 }
 
@@ -1639,4 +1639,3 @@ U16 Rfic_ReadWord(U8  devAddr)
 
     return(devData);
 }
-

@@ -15,6 +15,8 @@ extern void EnterRemoteScanQTMode(void)
     ResetInputBuf();
 
     g_sysRunPara.sysRunMode = MODE_SCAN_QT;
+    memset(&g_ScanQTInfo, 0, sizeof(g_ScanQTInfo));
+    g_ScanQTInfo.timeOut = 30;
     g_ScanQTInfo.state = SCANQT_STEPUP;
 
     QTScanDisplayHome();
@@ -22,6 +24,7 @@ extern void EnterRemoteScanQTMode(void)
 
 extern void ExitRemoteScanQTMode(void)
 {
+    Rfic_ScanQT_Disable();
     g_sysRunPara.sysRunMode = MODE_MAIN;
     ResetInputBuf();
     DualStandbyWorkOFF();
@@ -59,7 +62,7 @@ extern void TaskRemoteScanQT(void)
             }
         }
 
-        Rfic_ScanQT_Enable();
+        Rfic_ScanQT_Enable(g_ScanQTInfo.dcsInverted);
         QTScanDisplayStatus(1);
         sqCnt = 0;
         g_ScanQTInfo.state = SCANQT_WAIT;
@@ -85,17 +88,45 @@ extern void TaskRemoteScanQT(void)
             sqCnt = 0;
         }
 
+        if (g_ScanQTInfo.timeOut != 0)
+        {
+            g_ScanQTInfo.timeOut--;
+        }
+        else
+        {
+            g_ScanQTInfo.dcsInverted = !g_ScanQTInfo.dcsInverted;
+            g_ScanQTInfo.timeOut = 30;
+            g_ScanQTInfo.state = SCANQT_STEPUP;
+            break;
+        }
+
         g_ScanQTInfo.dcsCtsDat = Rfic_GetCtsDcsData();
         if (g_ScanQTInfo.dcsCtsDat != 0)
         {
             g_ScanQTInfo.dcsCtsType = Rfic_GetSCtsDcsType();
+            if (g_ScanQTInfo.dcsCtsType > SUBAUDIO_CTS &&
+                g_ScanQTInfo.dcsInverted)
+            {
+                g_ScanQTInfo.dcsCtsType = SUBAUDIO_DCS_I;
+            }
             if (g_ScanQTInfo.dcsCtsType == SUBAUDIO_CTS)
             {
                 g_ScanQTInfo.dcsCtsDat = g_ScanQTInfo.dcsCtsDat * 10 * 10000 / 206489;
                 if (g_ScanQTInfo.dcsCtsDat > 600)
                 {
-                    g_ScanQTInfo.dcsCtsDat = CheckIsStandardCTCSS(g_ScanQTInfo.dcsCtsDat);
-                    QTScanDisplay(SUBAUDIO_CTS, g_ScanQTInfo.dcsCtsDat, 0);
+                    g_ScanQTInfo.dcsCtsDat =
+                        CheckIsStandardCTCSS(g_ScanQTInfo.dcsCtsDat);
+                    if (g_ScanQTInfo.dcsCtsDat != 0)
+                    {
+                        LCD_BackLightSetOn();
+                        ResetTimeKeyLockAndPowerSave();
+                        QTScanDisplay(SUBAUDIO_CTS,
+                                      g_ScanQTInfo.dcsCtsDat, 0);
+                    }
+                    else
+                    {
+                        g_ScanQTInfo.dcsCtsType = SUBAUDIO_NONE;
+                    }
                 }
                 else
                 {
@@ -112,14 +143,22 @@ extern void TaskRemoteScanQT(void)
                 {
                     g_ScanQTInfo.dcsCtsDat = tempDCS;
                     g_ScanQTInfo.dcsIndex = searchFreqImofs.CtsResult;
+                    if (g_ScanQTInfo.dcsCtsType == SUBAUDIO_DCS_I)
+                    {
+                        g_ScanQTInfo.dcsIndex += 105;
+                    }
                     g_ScanQTInfo.isStandarDCS = 1;
-                    QTScanDisplay(SUBAUDIO_DCS_N, g_ScanQTInfo.dcsCtsDat, 1);
+                    LCD_BackLightSetOn();
+                    ResetTimeKeyLockAndPowerSave();
+                    QTScanDisplay(g_ScanQTInfo.dcsCtsType,
+                                  g_ScanQTInfo.dcsCtsDat, 1);
                 }
                 else
                 {
                     g_ScanQTInfo.dcsIndex = 0;
                     g_ScanQTInfo.isStandarDCS = 0;
-                    QTScanDisplay(SUBAUDIO_DCS_N, g_ScanQTInfo.dcsCtsDat, 0);
+                    QTScanDisplay(g_ScanQTInfo.dcsCtsType,
+                                  g_ScanQTInfo.dcsCtsDat, 0);
                 }
             }
 
@@ -141,16 +180,15 @@ extern void SaveQTScanResult(void)
         if (g_ChannelVfoInfo.chVfoInfo[g_ChannelVfoInfo.switchAB].chVfoMode == VFO_MODE)
         {
             g_ChannelVfoInfo.vfoInfo[g_ChannelVfoInfo.switchAB].rxDCSCTSNum = g_ScanQTInfo.dcsCtsDat;
-            g_ChannelVfoInfo.vfoInfo[g_ChannelVfoInfo.switchAB].txDCSCTSNum = g_ScanQTInfo.dcsCtsDat;
+            g_ChannelVfoInfo.vfoInfo[g_ChannelVfoInfo.switchAB].vfoFlag.Byte &= 0xFE;
         }
         else
         {
             g_ChannelVfoInfo.channelInfo[g_ChannelVfoInfo.switchAB].rxDCSCTSNum = g_ScanQTInfo.dcsCtsDat;
-            g_ChannelVfoInfo.channelInfo[g_ChannelVfoInfo.switchAB].txDCSCTSNum = g_ScanQTInfo.dcsCtsDat;
             g_ChannelVfoInfo.channelInfo[g_ChannelVfoInfo.switchAB].chFlag3.Byte &= 0xFE;
         }
     }
-    else if (g_ScanQTInfo.dcsCtsType == SUBAUDIO_DCS_N)
+    else if (g_ScanQTInfo.dcsCtsType > SUBAUDIO_CTS)
     {
         if (g_ScanQTInfo.isStandarDCS == 1)
         {

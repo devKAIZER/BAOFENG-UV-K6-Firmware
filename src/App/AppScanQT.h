@@ -24,6 +24,7 @@ typedef struct
     U32 dcsCtsDat;
     U8 isStandarDCS;
     U16 dcsIndex;
+    U8 dcsInverted;
 } STR_REMOTESCANQT;
 
 extern void EnterRemoteScanQTMode(void);
