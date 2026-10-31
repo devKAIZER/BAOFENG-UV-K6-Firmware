@@ -703,10 +703,10 @@ const U8 RssiLevel[5][4] =
         {132, 128, 124, 120}  // AM ,116
 };
 
-static U8 RadioSignalLevel(U16 rssi)
+static U8 RadioSignalLevel(U16 rssi, U8 band)
 {
-    U16 low = RssiLevel[g_ChannelVfoInfo.BandFlag][3];
-    U16 high = RssiLevel[g_ChannelVfoInfo.BandFlag][0];
+    U16 low = RssiLevel[band][3];
+    U16 high = RssiLevel[band][0];
 
     if (rssi < low)
     {
@@ -719,9 +719,17 @@ static U8 RadioSignalLevel(U16 rssi)
     return 1 + ((rssi - low) * 8) / (high - low);
 }
 
+extern void ResetSqlLevel(void)
+{
+    periodSqlLevel = 0xff;
+    periodSqlChannel = 0xff;
+}
+
 extern void CalculateSqlLevel(void)
 {
     U16 rssi;
+    U8 receiverChannel;
+    U8 receiverBand;
 
     if (!(g_rfState == RF_RX && g_rfRxState == WAIT_RXEND))
     {
@@ -730,11 +738,14 @@ extern void CalculateSqlLevel(void)
 
     if (g_sysRunPara.rfRxFlag.rxReceiveOn == ON)
     {
+        receiverChannel = g_ChannelVfoInfo.dualAB;
+        GetHardWorkBand(g_CurrentVfo->rx->frequency / 10000);
+        receiverBand = g_ChannelVfoInfo.BandFlag;
         rssi = Rfic_GetRssiVal();
 
         if (g_radioInform.dualRxFlag == 0)
         {
-            U8 signalLevel = RadioSignalLevel(rssi);
+            U8 signalLevel = RadioSignalLevel(rssi, receiverBand);
             periodSqlChannel = 0xfe;
 
             if (periodSqlLevel != signalLevel)
@@ -747,13 +758,13 @@ extern void CalculateSqlLevel(void)
 
         {
             U8 signalLevel;
-            if (periodSqlChannel != g_ChannelVfoInfo.dualAB)
+            if (periodSqlChannel != receiverChannel)
             {
-                periodSqlChannel = g_ChannelVfoInfo.dualAB;
+                periodSqlChannel = receiverChannel;
                 periodSqlLevel = 0xff;
                 DisplayDualWatchResetMeter();
             }
-            signalLevel = RadioSignalLevel(rssi);
+            signalLevel = RadioSignalLevel(rssi, receiverBand);
             if (periodSqlLevel != signalLevel)
             {
                 DisplayDualWatchSignal(signalLevel);
@@ -782,7 +793,7 @@ extern void RF_RxEnd(void)
     g_rfRxState = RX_READY;
     g_sysRunPara.rfRxFlag.rxReceived = OFF;
     g_sysRunPara.rfRxFlag.rxReceiveOn = OFF;
-    periodSqlLevel = 0xff;
+    ResetSqlLevel();
     DisplayDualWatchResetMeter();
     g_sysRunPara.rfTxFlag.voxDetDly = 10;
 
