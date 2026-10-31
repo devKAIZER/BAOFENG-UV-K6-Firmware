@@ -696,11 +696,11 @@ extern void RF_TxTask(void)
 
 const U8 RssiLevel[5][4] =
     {
-        {135, 128, 124, 120}, // V ,116
-        {101, 94, 90, 86},    // U, 82
-        {108, 101, 97, 93},   // 220-260, 89
-        {85, 78, 74, 71},     // 350-390, 67
-        {132, 128, 124, 120}  // AM ,116
+        {135, 128, 124, 72}, // V
+        {101, 94, 90, 64},   // U
+        {108, 101, 97, 68},  // 220-260
+        {85, 78, 74, 48},    // 350-390
+        {132, 128, 124, 72}  // AM
 };
 
 static U8 RadioSignalLevel(U16 rssi, U8 band)
@@ -731,54 +731,43 @@ extern void CalculateSqlLevel(void)
     U8 receiverChannel;
     U8 receiverBand;
 
-    if (!(g_rfState == RF_RX && g_rfRxState == WAIT_RXEND))
+    if (g_rfState != RF_RX ||
+        (g_rfRxState != GET_CALL && g_rfRxState != WAIT_RXEND))
     {
         return;
     }
 
-    if (g_sysRunPara.rfRxFlag.rxReceiveOn == ON)
+    receiverChannel = g_ChannelVfoInfo.dualAB;
+    GetHardWorkBand(g_CurrentVfo->rx->frequency / 10000);
+    receiverBand = g_ChannelVfoInfo.BandFlag;
+    rssi = Rfic_GetRssiVal();
+
+    if (g_radioInform.dualRxFlag == 0)
     {
-        receiverChannel = g_ChannelVfoInfo.dualAB;
-        GetHardWorkBand(g_CurrentVfo->rx->frequency / 10000);
-        receiverBand = g_ChannelVfoInfo.BandFlag;
-        rssi = Rfic_GetRssiVal();
+        U8 signalLevel = RadioSignalLevel(rssi, receiverBand);
+        periodSqlChannel = 0xfe;
 
-        if (g_radioInform.dualRxFlag == 0)
+        if (periodSqlLevel != signalLevel)
         {
-            U8 signalLevel = RadioSignalLevel(rssi, receiverBand);
-            periodSqlChannel = 0xfe;
-
-            if (periodSqlLevel != signalLevel)
-            {
-                DisplaySingleWatchSignal(signalLevel);
-                periodSqlLevel = signalLevel;
-            }
-            return;
+            DisplaySingleWatchSignal(signalLevel);
+            periodSqlLevel = signalLevel;
         }
-
-        {
-            U8 signalLevel;
-            if (periodSqlChannel != receiverChannel)
-            {
-                periodSqlChannel = receiverChannel;
-                periodSqlLevel = 0xff;
-                DisplayDualWatchResetMeter();
-            }
-            signalLevel = RadioSignalLevel(rssi, receiverBand);
-            if (periodSqlLevel != signalLevel)
-            {
-                DisplayDualWatchSignal(signalLevel);
-                periodSqlLevel = signalLevel;
-            }
-        }
+        return;
     }
-    else
+
     {
-        if (periodSqlLevel != 0xff)
+        U8 signalLevel;
+        if (periodSqlChannel != receiverChannel)
         {
-            DisplayDualWatchResetMeter();
+            periodSqlChannel = receiverChannel;
             periodSqlLevel = 0xff;
-            periodSqlChannel = 0xff;
+            DisplayDualWatchResetMeter();
+        }
+        signalLevel = RadioSignalLevel(rssi, receiverBand);
+        if (periodSqlLevel != signalLevel)
+        {
+            DisplayDualWatchSignal(signalLevel);
+            periodSqlLevel = signalLevel;
         }
     }
 }
