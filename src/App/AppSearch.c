@@ -423,12 +423,10 @@ extern void SearchFreqTask(void)
                 else
                 {
                     searchFreqImofs.dcsIsStandard = 0;
+                    searchFreqImofs.CtsResult = 0;
+                    searchFreqImofs.dcsCtsType = SUBAUDIO_NONE;
 
-                    SearchFreqModeDisplayDCSData(
-                        SUBAUDIO_DCS_N,
-                        searchFreqImofs.CtsResult,
-                        0
-                    );
+                    SearchFreqModeDisplayDCSData(SUBAUDIO_NONE, 0, 0);
                 }
             }
 

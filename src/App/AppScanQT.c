@@ -152,17 +152,23 @@ extern void TaskRemoteScanQT(void)
                     ResetTimeKeyLockAndPowerSave();
                     QTScanDisplay(g_ScanQTInfo.dcsCtsType,
                                   g_ScanQTInfo.dcsCtsDat, 1);
+                    g_ScanQTInfo.state = SCANQT_STOP;
                 }
                 else
                 {
+                    g_ScanQTInfo.dcsCtsType = SUBAUDIO_NONE;
+                    g_ScanQTInfo.dcsCtsDat = 0;
                     g_ScanQTInfo.dcsIndex = 0;
                     g_ScanQTInfo.isStandarDCS = 0;
-                    QTScanDisplay(g_ScanQTInfo.dcsCtsType,
-                                  g_ScanQTInfo.dcsCtsDat, 0);
+                    QTScanDisplay(SUBAUDIO_NONE, 0, 0);
                 }
             }
 
-            g_ScanQTInfo.state = SCANQT_STOP;
+            if (g_ScanQTInfo.dcsCtsType == SUBAUDIO_CTS ||
+                g_ScanQTInfo.isStandarDCS == 1)
+            {
+                g_ScanQTInfo.state = SCANQT_STOP;
+            }
         }
 
         break;
@@ -207,23 +213,6 @@ extern void SaveQTScanResult(void)
                     g_ChannelVfoInfo.channelInfo[g_ChannelVfoInfo.switchAB].chFlag3.Byte &= 0xFE; // 
                     g_ChannelVfoInfo.channelInfo[g_ChannelVfoInfo.switchAB].rxDCSCTSNum = g_ScanQTInfo.dcsIndex;
                 }
-            }
-        }
-        else
-        {
-            if (g_ChannelVfoInfo.chVfoInfo[g_ChannelVfoInfo.switchAB].chVfoMode == CHAN_MODE)
-            {
-                g_ChannelVfoInfo.channelInfo[g_ChannelVfoInfo.switchAB].decoderCode = g_ScanQTInfo.dcsCtsDat;
-                g_ChannelVfoInfo.channelInfo[g_ChannelVfoInfo.switchAB].decoderCode &= 0X007FFFFF;
-                g_ChannelVfoInfo.channelInfo[g_ChannelVfoInfo.switchAB].decoderCode |= 0xA0000000; // 
-                g_ChannelVfoInfo.channelInfo[g_ChannelVfoInfo.switchAB].chFlag3.Byte |= 0X01;      // 
-            }
-            else
-            {
-                g_ChannelVfoInfo.vfoInfo[g_ChannelVfoInfo.switchAB].decoderCode = g_ScanQTInfo.dcsCtsDat;
-                g_ChannelVfoInfo.vfoInfo[g_ChannelVfoInfo.switchAB].decoderCode &= 0X007FFFFF;
-                g_ChannelVfoInfo.vfoInfo[g_ChannelVfoInfo.switchAB].decoderCode |= 0xA0000000; // 
-                g_ChannelVfoInfo.vfoInfo[g_ChannelVfoInfo.switchAB].vfoFlag.Byte |= 0X01;      // 
             }
         }
     }

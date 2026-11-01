@@ -1517,9 +1517,6 @@ extern void Rfic_SwitchFM_AM(U8 mode)
 U32 Rfic_GetCtsDcsData(void)
 {
     U32 subaudio;
-    U8  i;
-    U8  buf[5];
-    U8  cntFF,cnt00;
     U16 temp;
 
     temp = Rfic_ReadWord(0x69);
@@ -1528,28 +1525,11 @@ U32 Rfic_GetCtsDcsData(void)
         subaudio = temp & 0x0FFF;
         subaudio <<= 12;
         subaudio = subaudio | (Rfic_ReadWord(0x6A) & 0X0FFF);
+        subaudio &= 0x007FFFFF;
         ctsDcsCodeType = SUBAUDIO_DCS_N;
-        buf[0] = subaudio & 0xFF;
-        buf[1] = (subaudio >> 4) & 0xff;
-        buf[2] = (subaudio >> 8) & 0xff;
-        buf[3] = (subaudio >> 12) & 0xff;
-        buf[4] = (subaudio >> 16) & 0xff;
 
-        cntFF = 0;
-        cnt00 = 0;
-        for(i = 0; i < 5; i++)
-        {
-            if(buf[i] == 0xFF)
-            {
-                cntFF++;
-            }
-            else if(buf[i] == 0x00)
-            {
-                cnt00++;
-            }
-        }
-
-        if(cntFF >= 4 || cnt00 >= 4)
+        if(subaudio == 0x002AAAAA || subaudio == 0x00555555 ||
+           subaudio == 0x007FFFFF)
         {
             ctsDcsCodeType = SUBAUDIO_NONE;
             subaudio = 0;
