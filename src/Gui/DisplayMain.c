@@ -500,12 +500,13 @@ extern void DisplayChannelName(U8 disAB)
     LCD_DisplayText(14,16,(U8 *)nameBuf,FONTSIZE_16x16,LCD_DIS_NORMAL);
 }
 
-static void DisplaySingleWatchMeter(U8 level, U8 tx, U8 update)
+static void DisplaySingleWatchMeterDbm(U8 level, U8 tx, U8 update, S16 dbm)
 {
     U8 i;
     U8 filled;
     U8 x;
     String label[4];
+    String dbmLabel[6];
 
     if (level > 9)
     {
@@ -524,7 +525,17 @@ static void DisplaySingleWatchMeter(U8 level, U8 tx, U8 update)
     }
 
     SC5260_ClearArea(DW_METER_Y, 22, 76, 8, 0);
+    SC5260_ClearArea(DW_METER_Y, 100, 28, 8, 0);
     LCD_DisplayNumber(DW_METER_Y, 22, (U8 *)label, LCD_DIS_NORMAL);
+    if (dbm == 32767)
+    {
+        memcpy(dbmLabel, "---", 4);
+    }
+    else
+    {
+        snprintf(dbmLabel, sizeof(dbmLabel), "%d", dbm);
+    }
+    LCD_DisplayNumber(DW_METER_Y, 100, (U8 *)dbmLabel, LCD_DIS_NORMAL);
 
     for (i = 0; i < 10; i++)
     {
@@ -543,6 +554,11 @@ static void DisplaySingleWatchMeter(U8 level, U8 tx, U8 update)
     {
         LCD_UpdateWorkAre();
     }
+}
+
+static void DisplaySingleWatchMeter(U8 level, U8 tx, U8 update)
+{
+    DisplaySingleWatchMeterDbm(level, tx, update, 32767);
 }
 
 static U8 CopySingleWatchName(const U8 *source, String *dest)
@@ -674,12 +690,29 @@ extern void DisplaySingleWatchSignal(U8 level)
     }
 }
 
+extern void DisplaySingleWatchSignalDbm(U8 level, S16 dbm)
+{
+    if (g_radioInform.dualRxFlag == 0 && g_sysRunPara.sysRunMode == MODE_MAIN)
+    {
+        DisplaySingleWatchMeterDbm(level, 0, 1, dbm);
+    }
+}
+
 extern void DisplayDualWatchSignal(U8 level)
 {
     if (g_radioInform.dualRxFlag == 1 && g_sysRunPara.sysRunMode == MODE_MAIN)
     {
         DisplayDualWatchRxIndicator();
         DisplaySingleWatchMeter(level, 0, 1);
+    }
+}
+
+extern void DisplayDualWatchSignalDbm(U8 level, S16 dbm)
+{
+    if (g_radioInform.dualRxFlag == 1 && g_sysRunPara.sysRunMode == MODE_MAIN)
+    {
+        DisplayDualWatchRxIndicator();
+        DisplaySingleWatchMeterDbm(level, 0, 1, dbm);
     }
 }
 

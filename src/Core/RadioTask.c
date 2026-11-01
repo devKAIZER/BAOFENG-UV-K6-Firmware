@@ -1,6 +1,7 @@
 #include "includes.h"
 
 static U8 periodSqlLevel = 0xff;
+static S16 periodSqlDbm = 32767;
 static U8 periodSqlChannel = 0xff;
 static U8 sqCnt = 0;
 static U8 rogerToneStage = 0;
@@ -716,12 +717,82 @@ static U8 RadioSignalLevel(U16 rssi, U8 band)
     {
         return 9;
     }
+<<<<<<< Updated upstream
     return 1 + ((rssi - low) * 8) / (high - low);
+=======
+    if (rssi < RssiSLevelThreshold[band][1])
+    {
+        return 2;
+    }
+    if (rssi < RssiSLevelThreshold[band][2])
+    {
+        return 3;
+    }
+    return 4;
+}
+
+static S16 RadioSignalDbm(U16 rssi, U8 band)
+{
+    U8 threshold;
+    U8 nextThreshold;
+    S16 dbm;
+
+    if (band >= 5 || rssi == 0)
+    {
+        return 32767;
+    }
+
+    threshold = RssiSLevelThreshold[band][0];
+    nextThreshold = RssiSLevelThreshold[band][1];
+    if (rssi < threshold)
+    {
+        return -115;
+    }
+    if (rssi < nextThreshold)
+    {
+        dbm = -115;
+        dbm += (S16)(((U32)(rssi - threshold) * 6U) /
+                     (U32)(nextThreshold - threshold));
+        return dbm;
+    }
+
+    threshold = nextThreshold;
+    nextThreshold = RssiSLevelThreshold[band][2];
+    if (rssi < nextThreshold)
+    {
+        dbm = -109;
+        dbm += (S16)(((U32)(rssi - threshold) * 6U) /
+                     (U32)(nextThreshold - threshold));
+        return dbm;
+    }
+
+    return -103;
+}
+
+static void ResetDisplayedSignalLevel(void)
+{
+    if (periodSqlLevel == 0xff)
+    {
+        return;
+    }
+
+    if (g_radioInform.dualRxFlag)
+    {
+        DisplayDualWatchResetMeter();
+    }
+    else
+    {
+        DisplaySingleWatchSignal(0);
+    }
+    periodSqlLevel = 0xff;
+    periodSqlDbm = 32767;
+>>>>>>> Stashed changes
 }
 
 extern void ResetSqlLevel(void)
 {
     periodSqlLevel = 0xff;
+    periodSqlDbm = 32767;
     periodSqlChannel = 0xff;
 }
 
@@ -745,12 +816,19 @@ extern void CalculateSqlLevel(void)
     if (g_radioInform.dualRxFlag == 0)
     {
         U8 signalLevel = RadioSignalLevel(rssi, receiverBand);
+        S16 dbm = RadioSignalDbm(rssi, receiverBand);
         periodSqlChannel = 0xfe;
 
+<<<<<<< Updated upstream
         if (periodSqlLevel != signalLevel)
+=======
+        if (rssi != 0 &&
+            (periodSqlLevel != signalLevel || periodSqlDbm != dbm))
+>>>>>>> Stashed changes
         {
-            DisplaySingleWatchSignal(signalLevel);
+            DisplaySingleWatchSignalDbm(signalLevel, dbm);
             periodSqlLevel = signalLevel;
+            periodSqlDbm = dbm;
         }
         return;
     }
@@ -764,10 +842,19 @@ extern void CalculateSqlLevel(void)
             DisplayDualWatchResetMeter();
         }
         signalLevel = RadioSignalLevel(rssi, receiverBand);
+<<<<<<< Updated upstream
         if (periodSqlLevel != signalLevel)
+=======
+>>>>>>> Stashed changes
         {
-            DisplayDualWatchSignal(signalLevel);
-            periodSqlLevel = signalLevel;
+            S16 dbm = RadioSignalDbm(rssi, receiverBand);
+            if (rssi != 0 &&
+                (periodSqlLevel != signalLevel || periodSqlDbm != dbm))
+            {
+                DisplayDualWatchSignalDbm(signalLevel, dbm);
+                periodSqlLevel = signalLevel;
+                periodSqlDbm = dbm;
+            }
         }
     }
 }
