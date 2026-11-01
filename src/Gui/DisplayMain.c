@@ -950,28 +950,8 @@ extern void DisplayHomePage(void)
 
 extern void DisplayInputChNum(void)
 {
-    U8 buf[11],i,flag,posY;
+    U8 buf[4],i,posY;
     U8 dualBuf[6];
-
-    buf[0] = 'M';
-    buf[1] = '-';
-    buf[2] = '-';
-    buf[3] = '-';
-
-    flag = 0;
-    for(i=0;i<g_inputbuf.len;i++)
-    {
-        if(g_inputbuf.buf[i] == '0' && flag == 0)
-        {
-            buf[i + 1] = ' ';
-        }
-        else
-        {
-            flag = 1;
-            buf[i + 1] = g_inputbuf.buf[i];
-        }
-    }
-    buf[4] = 0;
 
     if(g_radioInform.dualRxFlag == 0)
     {
@@ -1008,34 +988,43 @@ extern void DisplayInputChNum(void)
         return;
     }
 
-    LCD_DisplayBoldNum6X7(posY,1,buf);
+    buf[0] = '-';
+    buf[1] = '-';
+    buf[2] = '-';
+    buf[3] = 0;
+    for (i = 0; i < g_inputbuf.len && i < 3; i++)
+    {
+        buf[i] = g_inputbuf.buf[i];
+    }
+    LCD_ClearArea(56, 64, 18, 8);
+    LCD_DisplayNumber(56, 64, buf, LCD_DIS_NORMAL);
 
     LCD_UpdateWorkAre();
 }
 
 extern void DisplayInputVfoFreq(void)
 {
-    U8 i,j,posY;
+    U8 i,j,posY,displayLen;
     U8 buf[10];
-    U8 fontBuf[3];
 
-    memset(&buf[0],'-',9);
+    displayLen = g_radioInform.dualRxFlag ? 9 : 7;
+    memset(&buf[0],'-',displayLen);
     buf[3] = '.';
     j = 0;
 
-    for(i=0;i<g_inputbuf.len && j < 9;i++)
+    for(i=0;i<g_inputbuf.len && j < displayLen;i++)
     {
         if(i == 3)
         {
             j++;
         }
-        if(j < 9)
+        if(j < displayLen)
         {
             buf[j++] = g_inputbuf.buf[i];
         }
     }
 
-    buf[9] = 0;
+    buf[displayLen] = 0;
 
     if(g_radioInform.dualRxFlag)
     {
@@ -1047,28 +1036,8 @@ extern void DisplayInputVfoFreq(void)
         return;
     }
 
-    memcpy(fontBuf,&buf[7],2);
-    buf[7] = 0;	
-    fontBuf[2] = 0;
-
-    if(g_radioInform.dualRxFlag == 0)
-    {
-        posY = 39;
-    }
-    else
-    {
-        if(g_ChannelVfoInfo.switchAB)
-        {
-            posY = 43;
-        }
-        else
-        {
-            posY = 15;
-        }
-    }
-
-    LCD_DisplayBoldNum12X13(posY - 1, 30, (U8 *)buf);
-    LCD_DisplayBoldNum6X7(posY + 5, 115, fontBuf);
+    LCD_ClearArea(32, 40, 63, 7);
+    LCD_DisplayBoldNum6X7(32, 38, (U8 *)buf);
 
     LCD_UpdateWorkAre();
 }
